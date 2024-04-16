@@ -1,35 +1,22 @@
-import evox
-import jax
-from evox import algorithms, problems, workflows, monitors
-import jax.numpy as jnp
-from jax import random
-from tqdm import tqdm
-
-pso = algorithms.PSO(
-    lb=jnp.full(shape=(2,), fill_value=-32),
-    ub=jnp.full(shape=(2,), fill_value=32),
-    pop_size=100,
-)
-ackley = problems.numerical.Ackley()
-
-key = jax.random.PRNGKey(42)
-
-# create a new monitor and workflow
-monitor = monitors.StdSOMonitor()
-workflow = workflows.StdWorkflow(
-    pso,
-    ackley,
-    monitors=[monitor],
-    record_pop = True, # <- use this!
-)
-
-state = workflow.init(key)
-for i in range(10):
-    state = workflow.step(state)
-monitor.flush()
+import numpy as np
+import pickle
+from utils import *
 
 
+with open('resources/results', 'rb') as f:
+    functions_final_fitness = pickle.load(f)
 
-print(monitor.get_best_fitness())
-print(monitor.get_best_solution())
+print(functions_final_fitness.shape)
+function_names = ['f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12']
+algo_names = ['PSO', 'CMA-ES', 'DE']
+seed_names = [f'Seed {i + 1}' for i in range(30)]
 
+cec_2022 = [pd.DataFrame(functions_final_fitness[i, :, :]).transpose()
+                for i in range(functions_final_fitness.shape[0])]
+for df in cec_2022:
+    df.columns = algo_names
+    df.index = seed_names
+
+print(cec_2022[0])
+
+compile_and_boxplot(functions_final_fitness)

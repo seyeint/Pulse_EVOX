@@ -1,54 +1,99 @@
-class ExampleGA(Algorithm):
-    def __init__(self, pop_size, ndim, flip_prob=0):
-        super().__init__()
-        # those are hyperparameters that stay fixed.
+# --------------------------------------------------------------------------------------
+# 1. NSGA-II algorithm is described in the following papers:
+#
+# Title: A fast and elitist multiobjective genetic algorithm: NSGA-II
+# Link: https://ieeexplore.ieee.org/document/996017
+# --------------------------------------------------------------------------------------
+
+import jax
+import jax.numpy as jnp
+
+from evox.operators import (
+    non_dominated_sort,
+    crowding_distance,
+    selection,
+    mutation,
+    crossover,
+)
+from evox import Algorithm, jit_class, State
+
+@jit_class
+class NSGA2(Algorithm):
+    """NSGA-II algorithm
+
+    link: https://ieeexplore.ieee.org/document/996017
+    """
+    def __init__(
+        self,
+        lb,
+        ub,
+        n_objs,
+        pop_size,
+        selection_op=None,
+        mutation_op=None,
+        crossover_op=None,
+    ):
+        self.lb = lb
+        self.ub = ub
+        self.n_objs = n_objs
+        self.dim = lb.shape[0]
         self.pop_size = pop_size
-        self.ndim = ndim
-        # the probability of fliping each bit
-        self.flip_prob = flip_prob
+
+        self.selection = selection_op
+        self.mutation = mutation_op
+        self.crossover = crossover_op
+
+        if self.selection is None:
+            self.selection = selection.UniformRand(1)
+        if self.mutation is None:
+            self.mutation = mutation.Polynomial((self.lb, self.ub))
+        if self.crossover is None:
+            self.crossover = crossover.SimulatedBinary()
 
     def setup(self, key):
-        # initialize the state
-        # state are mutable data like the population, offsprings
-        # the population is randomly initialized.
-        # we don't have any offspring now, but initialize it as a placeholder
-        # because jax want static shaped arrays.
-        key, subkey = random.split(key)
-        pop = random.uniform(subkey, (self.pop_size, self.ndim)) < 0.5
+        key, subkey = jax.random.split(key)
+        population = (
+            jax.random.uniform(subkey, shape=(self.pop_size, self.dim))
+            * (self.ub - self.lb)
+            + self.lb
+        )
         return State(
-            pop=pop,
-            offsprings=jnp.empty((self.pop_size * 2, self.ndim)),
-            fit=jnp.full((self.pop_size,), jnp.inf),
+            population=population,
+            fitness=jnp.zeros((self.pop_size, self.n_objs)),
+            next_generation=population,
             key=key,
         )
 
     def init_ask(self, state):
-        # initial the fitness for our initial population
-        return pop, state
+        return state.population, state
 
     def init_tell(self, state, fitness):
-        # update the fitness for the initial population
-        return state.update(fit=fitness)
+        state = state.update(fitness=fitness)
+        return state
 
     def ask(self, state):
-        key, mut_key, x_key = random.split(state.key, 3)
-        # here we do mutation and crossover (reproduction)
-        # for simplicity, we didn't use any mating selections
-        # so the offspring is twice as large as the population
-        offsprings = jnp.concatenate(
-            (
-                mutation.bitflip(mut_key, state.pop, self.flip_prob),
-                crossover.one_point(x_key, state.pop),
-            ),
-            axis=0,
-        )
-        # return the candidate solution and update the state
-        return offsprings, state.update(offsprings=offsprings, key=key)
+        key, sel_key1, x_key, mut_key = jax.random.split(state.key, 4)
+        crossovered = self.selection(sel_key1, state.population, state.fitness)
+        crossovered = self.crossover(x_key, state.population)
+        next_generation = self.mutation(mut_key, crossovered)
+
+        next_generation = jnp.clip(next_generation, self.lb, self.ub)
+
+        return next_generation, state.update(next_generation=next_generation, key=key)
 
     def tell(self, state, fitness):
-        # here we do selection
-        merged_pop = jnp.concatenate([state.pop, state.offsprings])
-        merged_fit = jnp.concatenate([state.fit, fitness])
-        new_pop, new_fit = selection.topk_fit(merged_pop, merged_fit, self.pop_size)
-        # replace the old population
-        return state.update(pop=new_pop, fit=new_fit)
+        merged_pop = jnp.concatenate([state.population, state.next_generation], axis=0)
+        merged_fitness = jnp.concatenate([jnp.squeeze(state.fitness), fitness], axis=0)
+        merged_fitness = jnp.expand_dims(merged_fitness, axis=1)
+
+        rank = non_dominated_sort(merged_fitness)
+        order = jnp.argsort(rank)
+        worst_rank = rank[order[self.pop_size]]
+        mask = rank == worst_rank
+        crowding_dis = crowding_distance(merged_fitness, mask)
+
+        combined_order = jnp.lexsort((-crowding_dis, rank))[: self.pop_size]
+        survivor = merged_pop[combined_order]
+        survivor_fitness = merged_fitness[combined_order]
+        state = state.update(population=survivor, fitness=survivor_fitness)
+        return state

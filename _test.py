@@ -19,4 +19,4 @@ for df in cec_2022:
 
 print(cec_2022[0])
 
-compile_and_boxplot(functions_final_fitness)
+compile_and_boxplot(functions_final_fitness, True)

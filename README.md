@@ -1,5 +1,3 @@
-# Pulse_EVOX
-=======
 # Pulse with EVOX
 
 <br>EVOX is a relatively recent framework for scalable evolutionary computation. Frameworks like these are extremely underrated, especially when their engineering design is intelligent and sufficiently abstracted for different purposes.<br />

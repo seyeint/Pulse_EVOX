@@ -4,12 +4,18 @@ import matplotlib.pyplot as plt
 import warnings
 warnings.filterwarnings("ignore")
 
-def compile_and_boxplot(functions_final_fitness, save_fig=False):
+def bitstring_to_real_number(candidate_solution):
+    # candidate solution (pop_size, 20*20)
+    # now do something to decode them
+    #return <decoded result>
+    pass
+
+def compile_and_boxplot(functions_final_fitness, n_seeds, save_fig=False):
     """ Transforms our array of final results in order to create plot with ABF (average best fitness) distributions for all algorithms."""
 
     function_names = ['f1', 'f2', 'f3', 'f4', 'f5', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12']
     algo_names = ['PSO', 'CMA-ES', 'DE']
-    seed_names = [f'Seed {i + 1}' for i in range(30)]
+    seed_names = [f'Seed {i + 1}' for i in range(n_seeds)]
 
     """Turning the results array into a list of dataframes (one df for each function)."""
     cec_2022 = [pd.DataFrame(functions_final_fitness[i, :, :]).transpose()
@@ -46,7 +52,9 @@ def compile_and_boxplot(functions_final_fitness, save_fig=False):
         j += 1
         k += 1
 
-    plt.show()
-
     if save_fig:
         plt.savefig("resources/boxplot_test.png", bbox_inches="tight")
+
+    plt.show()
+
+

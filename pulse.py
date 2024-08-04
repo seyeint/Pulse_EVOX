@@ -1,99 +1,132 @@
-# --------------------------------------------------------------------------------------
-# 1. NSGA-II algorithm is described in the following papers:
-#
-# Title: A fast and elitist multiobjective genetic algorithm: NSGA-II
-# Link: https://ieeexplore.ieee.org/document/996017
-# --------------------------------------------------------------------------------------
-
-import jax
+from evox import Algorithm, Problem, State, jit_class, operators, workflows, monitors
 import jax.numpy as jnp
+from jax import vmap, lax, random
 
-from evox.operators import (
-    non_dominated_sort,
-    crowding_distance,
-    selection,
-    mutation,
-    crossover,
-)
-from evox import Algorithm, jit_class, State
+
+def extension_ray_crossover(key, parents):
+    p1, p2 = parents
+    # TODO
+    return parents
+
+
+def one_point_crossover(key, parents):
+    p1, p2 = parents
+    # TODO
+    return parents
+
+
+def crossover(key, perf, parents):
+    # crossover on a pair of parents -- (2, dim)
+    return lax.cond(perf == 3,
+        extension_ray_crossover,
+        one_point_crossover,
+        key, parents
+    )
+
+
+def batch_crossover(key, perf, parents):
+    # crossover on multiple pairs of parents -- (n_pair, 2, dim)
+    n_pair, _, _dim = parents.shape
+    keys = random.split(key, n_pair)
+    return vmap(crossover)(keys, perf, parents)
+
 
 @jit_class
-class NSGA2(Algorithm):
-    """NSGA-II algorithm
-
-    link: https://ieeexplore.ieee.org/document/996017
-    """
-    def __init__(
-        self,
-        lb,
-        ub,
-        n_objs,
-        pop_size,
-        selection_op=None,
-        mutation_op=None,
-        crossover_op=None,
-    ):
-        self.lb = lb
-        self.ub = ub
-        self.n_objs = n_objs
-        self.dim = lb.shape[0]
+class GeneticAlgorithmPmin1(Algorithm):
+    def __init__(self, pop_size, dim, mutation, p_c, p_m):
         self.pop_size = pop_size
-
-        self.selection = selection_op
-        self.mutation = mutation_op
-        self.crossover = crossover_op
-
-        if self.selection is None:
-            self.selection = selection.UniformRand(1)
-        if self.mutation is None:
-            self.mutation = mutation.Polynomial((self.lb, self.ub))
-        if self.crossover is None:
-            self.crossover = crossover.SimulatedBinary()
+        self.dim = dim
+        self.crossover = batch_crossover
+        self.mutation = mutation
+        self.n_offspring = self.pop_size // 2
+        assert self.n_offspring % 2 == 0, "n_offspring must be even"
+        self.selection = operators.selection.Tournament(self.n_offspring)
+        self.p_c = p_c
+        self.p_m = p_m
 
     def setup(self, key):
-        key, subkey = jax.random.split(key)
-        population = (
-            jax.random.uniform(subkey, shape=(self.pop_size, self.dim))
-            * (self.ub - self.lb)
-            + self.lb
-        )
+        key, subkey = random.split(key)
+        population = random.choice(subkey, 2, shape=(self.pop_size, self.dim)).astype(jnp.bool_)
         return State(
+            contrib=jnp.ones((4, )) / 4,
+            total_cross=jnp.zeros((4, ), dtype=int),
+            succ_cross=jnp.zeros((4, ), dtype=int),
             population=population,
-            fitness=jnp.zeros((self.pop_size, self.n_objs)),
-            next_generation=population,
-            key=key,
+            parents=jnp.empty((self.n_offspring, self.dim), dtype=population.dtype),
+            parents_index=jnp.empty((self.n_offspring, ), dtype=int),
+            offspring=jnp.empty((self.n_offspring, self.dim), dtype=population.dtype),
+            fitness=jnp.empty((self.pop_size, ), dtype=int),
+            perf=jnp.empty((self.n_offspring // 2, ), dtype=int),
+            key=key
         )
+
+    def _is_succ_cross(self, parents, offspring, par_fit, off_fit):
+        # return True if it is a successful crossover
+        # successful means one of the offspring satisfy the following:
+        # 1. better than both parents
+        # 2. different than both parents
+
+        # parents, offspring --- (2, self.dim)
+        # par_fit, off_fit ----- (2, )
+
+        is_better = off_fit <= jnp.min(par_fit)
+        is_eq = jnp.array([
+            jnp.array_equal(off_fit[0], parents[0]) | jnp.array_equal(off_fit[0], parents[1]),
+            jnp.array_equal(off_fit[1], parents[0]) | jnp.array_equal(off_fit[1], parents[1])
+        ])
+        # if any offspring satisfy: 1. not equal 2. better
+        return jnp.any(~is_eq & is_better)
+
+    def _update_variables(self, state, off_fit):
+        par_fit = state.fitness[state.parents_index]
+        parents = state.parents.reshape(-1, 2, self.dim)
+        offspring = state.offspring.reshape(-1, 2, self.dim)
+        par_fit = par_fit.reshape(-1, 2)
+        off_fit = off_fit.reshape(-1, 2)
+        is_succ_cross = vmap(self._is_succ_cross)(parents, offspring, par_fit, off_fit)
+        succ_cross = state.succ_cross.at[state.perf].add(is_succ_cross)
+        total_cross = state.total_cross.at[state.perf].add(1)
+        return state.replace(succ_cross=succ_cross, total_cross=total_cross)
+
+
+    def _update_contrib(self, state):
+        contrib = state.contrib / state.total_cross
+        total = jnp.sum(state.total_cross)
+        contrib = lax.select(
+            total == 0.0,
+            jnp.ones((4, )) / 4,
+            0.1 + (0.6 * (contrib / total))
+        )
+        return state.replace(contrib=contrib)
 
     def init_ask(self, state):
         return state.population, state
 
     def init_tell(self, state, fitness):
-        state = state.update(fitness=fitness)
-        return state
+        return state.replace(fitness=fitness)
 
     def ask(self, state):
-        key, sel_key1, x_key, mut_key = jax.random.split(state.key, 4)
-        crossovered = self.selection(sel_key1, state.population, state.fitness)
-        crossovered = self.crossover(x_key, state.population)
-        next_generation = self.mutation(mut_key, crossovered)
-
-        next_generation = jnp.clip(next_generation, self.lb, self.ub)
-
-        return next_generation, state.update(next_generation=next_generation, key=key)
+        key, sel_key, cross_key, mut_key = random.split(state.key, 4)
+        # choice a perf based on the current contribution
+        # every 2 offsprings needs 1 perf
+        perf = random.choice(state.key, 4, shape=(self.n_offspring // 2,), p=state.contrib)
+        # select a batch of parents
+        parents, parents_index = self.selection(key, state.population, state.offspring)
+        # reshape into pairs of two, and do crossover on each pair
+        offspring = self.crossover(key, perf, parents.reshape(-1, 2, self.dim)).reshape(-1, self.dim)
+        # mutation
+        offspring = self.mutation(key, offspring)
+        new_state = state.replace(
+            perf=perf,
+            offspring=offspring,
+            parents=parents,
+            parents_index=parents_index,
+            key=key
+        )
+        return offspring, new_state
 
     def tell(self, state, fitness):
-        merged_pop = jnp.concatenate([state.population, state.next_generation], axis=0)
-        merged_fitness = jnp.concatenate([jnp.squeeze(state.fitness), fitness], axis=0)
-        merged_fitness = jnp.expand_dims(merged_fitness, axis=1)
-
-        rank = non_dominated_sort(merged_fitness)
-        order = jnp.argsort(rank)
-        worst_rank = rank[order[self.pop_size]]
-        mask = rank == worst_rank
-        crowding_dis = crowding_distance(merged_fitness, mask)
-
-        combined_order = jnp.lexsort((-crowding_dis, rank))[: self.pop_size]
-        survivor = merged_pop[combined_order]
-        survivor_fitness = merged_fitness[combined_order]
-        state = state.update(population=survivor, fitness=survivor_fitness)
+        # contrib update
+        state = self._update_variables(state, fitness)
+        state = self._update_contrib(state)
         return state

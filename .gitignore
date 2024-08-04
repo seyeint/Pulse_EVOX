@@ -1,0 +1,4 @@
+# Default ignored files
+_test.py
+.idea
+__pychache__/

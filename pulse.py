@@ -5,10 +5,23 @@ from functools import partial
 
 
 def hamming_distance(a, b):
+    # Calculate the Hamming distance between two binary arrays.
     return jnp.sum(a != b)
 
 
 def difference_function(tau, tau_max, d_i, minimization):
+    """
+    Compute the difference function D for preference-based selection.
+
+    Args:
+    tau (int): Current preference level.
+    tau_max (int): Maximum preference level.
+    d_i (float): Relative distance between individuals.
+    minimization (bool): True if the problem is a minimization problem.
+
+    Returns:
+    float: The calculated difference function value.
+    """
     if minimization:
         return 0.5 + (tau / tau_max) * (0.5 - d_i)
     else:
@@ -16,6 +29,17 @@ def difference_function(tau, tau_max, d_i, minimization):
 
 
 def tournament(key, population, fitness, tournament_size):
+    """
+    Perform tournament selection.
+
+    Args:
+    population (jnp.array): The current population.
+    fitness (jnp.array): Fitness values of the population.
+    tournament_size (int): Number of individuals in each tournament.
+
+    Returns:
+    int: Index of the tournament winner.
+    """
     keys = random.split(key, tournament_size)
     indices = vmap(lambda k: random.randint(k, (), 0, population.shape[0]))(keys)
     selected = fitness[indices]
@@ -24,6 +48,17 @@ def tournament(key, population, fitness, tournament_size):
 
 
 def difference_function_tournament(key, parent1, population, fitness, tournament_size, tau, tau_max, minimization):
+    """
+    Perform tournament selection using the difference function for the second parent.
+
+    Args:
+    parent1 (jnp.array): The first parent.
+    population, fitness, tournament_size: Same as in tournament function.
+    tau, tau_max, minimization: Same as in difference_function.
+
+    Returns:
+    int: Index of the selected second parent.
+    """
     keys = random.split(key, tournament_size)
     indices = vmap(lambda k: random.randint(k, (), 0, population.shape[0]))(keys)
 
@@ -39,6 +74,17 @@ def difference_function_tournament(key, parent1, population, fitness, tournament
 
 
 def full_tournament(key, population, fitness, pref, tournament_size, tau_max, minimization):
+    """
+    Perform full tournament selection for all parents in parallel.
+
+    Args:
+    population, fitness: Current population and their fitness values.
+    pref (jnp.array): Preference levels for each pair selection.
+    tournament_size, tau_max, minimization: Parameters for tournament and difference function.
+
+    Returns:
+    tuple: Selected parents and their indices in the population.
+    """
     pop_size = population.shape[0]
     keys = random.split(key, pop_size * 2)
 
@@ -60,7 +106,15 @@ def full_tournament(key, population, fitness, pref, tournament_size, tau_max, mi
 
 
 def extension_ray_crossover(key, parents):
-    # create offsprings by extending from [p1,p2[, second offspring by extending from [p2,p1[
+    """
+    Perform extension ray crossover (non-geometric).
+
+    Args:
+    parents (jnp.array): Pair of parents.
+
+    Returns:
+    tuple: Offsprings. By extending from [p1,p2[ & [p2,p1[
+    """
     p1, p2 = parents
     commonality = p1 == p2
     offspring1 = jnp.where(commonality, ~p2, p2)
@@ -69,7 +123,15 @@ def extension_ray_crossover(key, parents):
 
 
 def one_point_crossover(key, parents):
-    # create offsprings inside [p1,p2]
+    """
+    Perform one-point crossover (geometric).
+
+    Args:
+    parents (jnp.array): Pair of parents.
+
+    Returns:
+    tuple: Two offsprings inside [p1,p2]
+    """
     p1, p2 = parents
     cut_point = random.randint(key, (), 0, p1.shape[0])
     offspring1 = jnp.concatenate([p1[:cut_point], p2[cut_point:]])
@@ -78,7 +140,16 @@ def one_point_crossover(key, parents):
 
 
 def crossover(key, pref, parents):
-    # crossover on a pair of parents -- (2, dim)
+    """
+    Choose between geometric and non-geometric crossover based on preference.
+
+    Args:
+    pref (int): Preference level determining crossover type.
+    parents (jnp.array): Pair of parents -- (2, dim)
+
+    Returns:
+    tuple: Two offspring created by the selected crossover method.
+    """
     return lax.cond(pref == 3,
                     extension_ray_crossover,
                     one_point_crossover,
@@ -87,6 +158,16 @@ def crossover(key, pref, parents):
 
 
 def batch_crossover(key, pref, parents):
+    """
+    Apply crossover to multiple pairs of parents in parallel.
+
+    Args:
+    pref (jnp.array): Preference levels for each pair.
+    parents (jnp.array): All parent pairs.
+
+    Returns:
+    jnp.array: All offspring created by crossover.
+    """
     # crossover on multiple pairs of parents -- (n_pair, 2, dim)
     n_pair, _, _dim = parents.shape  # 1 n_pair is n_offspring / 2
     keys = random.split(key, n_pair)
@@ -100,7 +181,7 @@ class Pulse(Algorithm):
         self.dim = dim
         self.crossover = batch_crossover
         self.mutation = mutation
-        self.n_offspring = self.pop_size  # we substitute all pop
+        self.n_offspring = self.pop_size  # substitute all pop
         assert self.n_offspring % 2 == 0, "n_offspring must be even"
         self.tournament_size = tournament_size
         self.tau_max = tau_max
@@ -146,6 +227,7 @@ class Pulse(Algorithm):
         return jnp.any(~is_eq & is_better)
 
     def _update_variables(self, state, off_fit):
+        # Update the counts of successful and total crossovers.
         par_fit = state.fitness[state.parents_index]
         parents = state.parents.reshape(-1, 2, self.dim)
         offspring = state.offspring.reshape(-1, 2, self.dim)
@@ -157,12 +239,13 @@ class Pulse(Algorithm):
         return state.replace(succ_cross=succ_cross, total_cross=total_cross)
 
     def _update_contrib(self, state):
+        # Update the contribution values for each preference level.
         contrib = state.contrib / state.total_cross
         total = jnp.sum(state.total_cross)
         contrib = lax.select(
             total == 0.0,
             jnp.ones((4,)) / 4,
-            0.1 + (0.6 * (contrib / total))  # here contrib and total are arrays right? hence i am updating all 4 contribs not just 1
+            0.1 + (0.6 * (contrib / total))
         )
         return state.replace(contrib=contrib)
 
@@ -173,6 +256,7 @@ class Pulse(Algorithm):
         return state.replace(fitness=fitness)
 
     def ask(self, state):
+        # Generate new offspring through selection, crossover, and mutation.
         key, sel_key, cross_key, mut_key = random.split(state.key, 4)
         # choice a pref based on the current contribution
         # every 2 offsprings needs 1 pref
@@ -193,7 +277,7 @@ class Pulse(Algorithm):
         return offspring, new_state
 
     def tell(self, state, fitness):
-        # contrib update
+        # Process fitness values of offspring and update algorithm state - contributions of preferences.
         state = self._update_variables(state, fitness)
         state = self._update_contrib(state)
         return state

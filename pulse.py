@@ -23,7 +23,7 @@ def tournament(key, population, fitness, tournament_size):
     return winner_index
 
 
-def preference_tournament(key, parent1, population, fitness, tournament_size, tau, tau_max, minimization):
+def difference_function_tournament(key, parent1, population, fitness, tournament_size, tau, tau_max, minimization):
     keys = random.split(key, tournament_size)
     indices = vmap(lambda k: random.randint(k, (), 0, population.shape[0]))(keys)
 
@@ -42,11 +42,11 @@ def full_tournament(key, population, fitness, pref, tournament_size, tau_max, mi
     pop_size = population.shape[0]
     keys = random.split(key, pop_size * 2)
 
-    # Select first parents
+    # select first parents
     parent1_indices = vmap(partial(tournament, population=population, fitness=fitness, tournament_size=tournament_size))(keys[:pop_size])
 
-    # Select second parents based on preference
-    parent2_indices = vmap(partial(preference_tournament,
+    # select second parents based on preference dif function
+    parent2_indices = vmap(partial(difference_function_tournament,
                                    population=population,
                                    fitness=fitness,
                                    tournament_size=tournament_size,
@@ -94,7 +94,7 @@ def batch_crossover(key, pref, parents):
 
 
 @jit_class
-class GeneticAlgorithmPmin1(Algorithm):
+class Pulse(Algorithm):
     def __init__(self, pop_size, dim, mutation, p_c, p_m, tournament_size=3, tau_max=3):
         self.pop_size = pop_size
         self.dim = dim

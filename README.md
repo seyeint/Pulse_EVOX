@@ -6,3 +6,4 @@
 
 ![image](https://github.com/seyeint/Pulse_EVOX/assets/36778187/4852a47e-acaf-452a-bcff-282a2871f5c1)
 
+![image](resources/skeleton.png)

@@ -5,10 +5,10 @@ import pickle
 import numpy as np
 import evox
 import jax
-from evox import algorithms, problems, workflows, monitors
+from evox import algorithms, problems, workflows, monitors, operators
 import jax.numpy as jnp
 from tqdm import tqdm
-from pulse import GeneticAlgorithmPmin1 as pulse  # this class i will work towards Pulse
+from pulse import Pulse
 from utils import *
 
 problem_set = ([problems.numerical.cec2022_so.CEC2022TestSuit.create(x) for x in range(1, 13)])
@@ -27,7 +27,13 @@ de = algorithms.DE(
     ub=jnp.full(shape=(20,), fill_value=1),
     pop_size=400,)
 
-algorithm_list = [pso, cma_es, de]
+alg = Pulse(
+    pop_size=100, dim=16,
+    mutation=operators.mutation.Bitflip(0.0),
+    p_c=1.0, p_m=0.0,)
+
+
+algorithm_list = [alg]  # [pso, cma_es, de]
 n_seeds = 10
 n_iterations = 200
 
@@ -35,7 +41,7 @@ functions_final_fitness = np.full((len(problem_set), len(algorithm_list), n_seed
 
 t0 = time.time()
 for x in range(n_seeds):
-    key = jax.random.PRNGKey(random.randint(0, 2 ** 32 - 1))
+    key = jax.random.PRNGKey(42)  # random.randint(0, 2 ** 32 - 1)
 
     for i, algo in enumerate(algorithm_list):
         print(f'\n\nSeed {x+1} - Algorithm working on functions: {str(algo).split('.')[-1].split(' object')[0]}\n{"-"*39}')

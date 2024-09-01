@@ -1,14 +1,25 @@
 import pandas as pd
 import seaborn as sns
+import jax.numpy as jnp
 import matplotlib.pyplot as plt
 import warnings
+
 warnings.filterwarnings("ignore")
 
-def bitstring_to_real_number(candidate_solution):
-    # candidate solution (pop_size, 20*20)
-    # now do something to decode them
-    #return <decoded result>
-    pass
+def bitstring_to_real_number(bitstring, lb, ub, n_dims):
+    bits_per_dim = len(bitstring) // n_dims
+    real_numbers = []
+    for i in range(n_dims):
+        start = i * bits_per_dim
+        end = (i + 1) * bits_per_dim
+        binary = bitstring[start:end]
+        decimal = jnp.sum(binary * (2 ** jnp.arange(bits_per_dim)[::-1]))
+        normalized = decimal / (2 ** bits_per_dim - 1)
+        real_number = lb + (ub - lb) * normalized
+        real_numbers.append(real_number)
+    return jnp.array(real_numbers)
+
+
 
 def compile_and_boxplot(functions_final_fitness, n_seeds, save_fig=False):
     """ Transforms our array of final results in order to create plot with ABF (average best fitness) distributions for all algorithms."""

@@ -86,10 +86,10 @@ def full_tournament(key, population, fitness, pref, tournament_size, tau_max, mi
     tuple: Selected parents and their indices in the population.
     """
     pop_size = population.shape[0]
-    keys = random.split(key, pop_size * 2)
+    keys = random.split(key, pop_size)
 
     # select first parents
-    parent1_indices = vmap(partial(tournament, population=population, fitness=fitness, tournament_size=tournament_size))(keys[:pop_size])
+    parent1_indices = vmap(partial(tournament, population=population, fitness=fitness, tournament_size=tournament_size))(keys[:pop_size // 2])
 
     # select second parents based on preference dif function
     parent2_indices = vmap(partial(difference_function_tournament,
@@ -97,7 +97,7 @@ def full_tournament(key, population, fitness, pref, tournament_size, tau_max, mi
                                    fitness=fitness,
                                    tournament_size=tournament_size,
                                    tau_max=tau_max,
-                                   minimization=minimization))(keys[pop_size:], population[parent1_indices], pref)
+                                   minimization=minimization))(key=keys[pop_size // 2:], parent1=population[parent1_indices], tau=pref)
 
     parents = jnp.stack([population[parent1_indices], population[parent2_indices]], axis=1)
     parents_index = jnp.stack([parent1_indices, parent2_indices], axis=1)
@@ -134,8 +134,9 @@ def one_point_crossover(key, parents):
     """
     p1, p2 = parents
     cut_point = random.randint(key, (), 0, p1.shape[0])
-    offspring1 = jnp.concatenate([p1[:cut_point], p2[cut_point:]])
-    offspring2 = jnp.concatenate([p2[:cut_point], p1[cut_point:]])
+    cut_mask = jnp.arange(p1.shape[0]) < cut_point
+    offspring1 = jnp.where(cut_mask, p1, p2)
+    offspring2 = jnp.where(cut_mask, p2, p1)
     return offspring1, offspring2
 
 

@@ -12,8 +12,6 @@ from pulse import Pulse
 from utils import *
 
 def conditional_transform(alg, lb, ub, n_dims):
-    if isinstance(alg, Pulse):
-        return lambda x: bitstring_to_real_number(x, lb, ub, n_dims)
     return None
 
 
@@ -53,10 +51,13 @@ for x in range(n_seeds):
 
     for i, algo in enumerate(algorithm_list):
         print(f'\n\nSeed {x+1} - Algorithm working on functions: {str(algo).split('.')[-1].split(' object')[0]}\n{"-"*39}')
-        sol_transform = conditional_transform(algo, -100, 100, 20)
+        if isinstance(algo, Pulse):
+            sol_transforms = [lambda x: decode_solution(x, -10, 10, 20)]
+        else:
+            sol_transforms = []
         for j, function in enumerate(problem_set):
             monitor = monitors.StdSOMonitor()
-            workflow = workflows.StdWorkflow(algo, function, monitors=[monitor], sol_transforms=[sol_transform])
+            workflow = workflows.StdWorkflow(algo, function, monitors=[monitor], sol_transforms=sol_transforms)
             # 1 sol_transforms=[bitstring_to_real_number], this is where i must turn my 400 bits into 20 numbers ?
             # i'm assuming we must create a function for that in utils for example and call her here?
             # and what if i need sol transform just in pulse but not in PSO, DE etc?

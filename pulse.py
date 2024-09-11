@@ -119,7 +119,7 @@ def extension_ray_crossover(key, parents):
     commonality = p1 == p2
     offspring1 = jnp.where(commonality, ~p2, p2)
     offspring2 = jnp.where(commonality, ~p1, p1)
-    return offspring1, offspring2
+    return jnp.stack([offspring1, offspring2], axis=0)
 
 
 def one_point_crossover(key, parents):
@@ -137,7 +137,7 @@ def one_point_crossover(key, parents):
     cut_mask = jnp.arange(p1.shape[0]) < cut_point
     offspring1 = jnp.where(cut_mask, p1, p2)
     offspring2 = jnp.where(cut_mask, p2, p1)
-    return offspring1, offspring2
+    return jnp.stack([offspring1, offspring2], axis=0)
 
 
 def crossover(key, pref, parents):
@@ -201,10 +201,10 @@ class Pulse(Algorithm):
             total_cross=jnp.zeros((4,), dtype=int),
             succ_cross=jnp.zeros((4,), dtype=int),
             population=population,
-            parents=jnp.empty((self.n_offspring, self.dim), dtype=population.dtype),
-            parents_index=jnp.empty((self.n_offspring,), dtype=int),  # what is this for in the general code?
+            parents=jnp.empty((self.n_offspring // 2, 2, self.dim), dtype=population.dtype),
+            parents_index=jnp.empty((self.n_offspring // 2, 2), dtype=int),  # what is this for in the general code?
             offspring=jnp.empty((self.n_offspring, self.dim), dtype=population.dtype),
-            fitness=jnp.empty((self.pop_size,), dtype=int),
+            fitness=jnp.empty((self.pop_size,), dtype=float),
             pref=jnp.empty((self.n_offspring // 2,), dtype=int),
             key=key
         )
@@ -266,6 +266,7 @@ class Pulse(Algorithm):
         parents, parents_index = self.selection(sel_key, state.population, state.fitness, pref)
         # reshape into pairs of two, and do crossover on each pair
         offspring = self.crossover(cross_key, pref, parents)
+        offspring = offspring.reshape(self.pop_size, self.dim)
         # mutation
         offspring = self.mutation(mut_key, offspring)
         new_state = state.replace(

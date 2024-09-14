@@ -241,13 +241,14 @@ class Pulse(Algorithm):
 
     def _update_contrib(self, state):
         # Update the contribution values for each preference level.
-        contrib = state.contrib / state.total_cross
-        total = jnp.sum(state.total_cross)
-        contrib = lax.select(
-            total == 0.0,
-            jnp.ones((4,)) / 4,
-            0.1 + (0.6 * (contrib / total))
-        )
+        contrib = state.succ_cross / state.total_cross
+    
+        total = jnp.sum(contrib)
+        contrib = lax.cond(
+            total == 0,
+            lambda _: jnp.ones((4,)) / 4,  # Case when total is 0
+            lambda _: 0.1 + (0.6 * (contrib / total)),  # Case when total is not 0
+            None) # maybe this None operand is not needed here test after 
         return state.replace(contrib=contrib)
 
     def init_ask(self, state):

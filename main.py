@@ -11,9 +11,6 @@ from tqdm import tqdm
 from pulse import Pulse
 from utils import *
 
-def conditional_transform(alg, lb, ub, n_dims):
-    return None
-
 
 problem_set = ([problems.numerical.cec2022_so.CEC2022TestSuit.create(x) for x in range(1, 13)])
 domain_dim = 20
@@ -58,10 +55,6 @@ for x in range(n_seeds):
         for j, function in enumerate(problem_set):
             monitor = monitors.StdSOMonitor()
             workflow = workflows.StdWorkflow(algo, function, monitors=[monitor], sol_transforms=sol_transforms)
-            # 1 sol_transforms=[bitstring_to_real_number], this is where i must turn my 400 bits into 20 numbers ?
-            # i'm assuming we must create a function for that in utils for example and call her here?
-            # and what if i need sol transform just in pulse but not in PSO, DE etc?
-            # i must define sol_tranform = None if algo not pulse else my function?
             state = workflow.init(key)
 
             for k in tqdm(range(n_iterations)):

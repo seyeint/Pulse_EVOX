@@ -34,7 +34,7 @@ def _decode_real_number(lb, ub, bits_per_dim, binary):
     return real_number
 
 
-def compile_and_boxplot(functions_final_fitness, n_seeds, save_fig=False):
+def compile_and_boxplot(algorithm_list, functions_final_fitness, n_seeds, save_fig=False):
     """Transforms our array of final results in order to create plot with ABF (average best fitness) distributions for all algorithms."""
 
     function_names = [
@@ -51,7 +51,7 @@ def compile_and_boxplot(functions_final_fitness, n_seeds, save_fig=False):
         "f11",
         "f12",
     ]
-    algo_names = ['Pulse', "PSO", "CMA-ES", "DE"]
+    algo_names = [type(algo).__name__ for algo in algorithm_list]
     seed_names = [f"Seed {i + 1}" for i in range(n_seeds)]
 
     """Turning the results array into a list of dataframes (one df for each function)."""
@@ -63,6 +63,8 @@ def compile_and_boxplot(functions_final_fitness, n_seeds, save_fig=False):
         df.columns = algo_names
         df.index = seed_names
 
+    print(cec_2022)
+    
     fig, axs = plt.subplots(4, 3, figsize=(14, 10))
     k, i, j = 0, 0, 0
     colors = {

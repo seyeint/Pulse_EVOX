@@ -35,9 +35,9 @@ pulse = Pulse(
     mutation=operators.mutation.Bitflip(0.0),  # no mutation
     p_c=1.0, p_m=0.0,)  # no mutation
 
-
 algorithm_list = [pulse, pso, cma_es, de]  # ignoring these algos at the moment...
-n_seeds = 5
+
+n_seeds = 2
 main_key = jax.random.PRNGKey(42)
 seed_keys = jax.random.split(main_key, n_seeds)
 n_iterations = 200
@@ -48,7 +48,7 @@ t0 = time.time()
 for x in range(n_seeds):
     key = seed_keys[x]
     for i, algo in enumerate(algorithm_list):
-        print(f'\n\nSeed {x+1} - Algorithm working on functions: {str(algo).split('.')[-1].split(' object')[0]}\n{"-"*39}')
+        print(f'\n\nSeed {x+1} - Algorithm working on functions: {type(algo).__name__}\n{"-"*39}')
         if isinstance(algo, Pulse):
             sol_transforms = [lambda x: decode_solution(x, lb, ub, n_dims)]
         else:
@@ -76,7 +76,7 @@ print(f'Finished, total time: {(time.time()-t0)/60} minutes.')
 with open('resources/results', 'wb') as f:
     pickle.dump(functions_final_fitness, f)
 
-compile_and_boxplot(functions_final_fitness, n_seeds, save_fig=False)
+compile_and_boxplot(algorithm_list, functions_final_fitness, n_seeds)
 
 
 

@@ -51,7 +51,7 @@ def compile_and_boxplot(functions_final_fitness, n_seeds, save_fig=False):
         "f11",
         "f12",
     ]
-    algo_names = ["PSO", "CMA-ES", "DE"]
+    algo_names = ['Pulse', "PSO", "CMA-ES", "DE"]
     seed_names = [f"Seed {i + 1}" for i in range(n_seeds)]
 
     """Turning the results array into a list of dataframes (one df for each function)."""
@@ -69,6 +69,7 @@ def compile_and_boxplot(functions_final_fitness, n_seeds, save_fig=False):
         "PSO": "c",
         "CMA-ES": "darkviolet",
         "DE": "orange",
+        "Pulse": "black"
     }  # 'P\'': 'r', 'P': 'darkorange', 'SA': 'g'}
 
     for function in cec_2022:

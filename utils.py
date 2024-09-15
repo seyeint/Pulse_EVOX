@@ -59,20 +59,18 @@ def compile_and_boxplot(algorithm_list, functions_final_fitness, n_seeds, save_f
         pd.DataFrame(functions_final_fitness[i, :, :]).transpose()
         for i in range(functions_final_fitness.shape[0])
     ]
-    for df in cec_2022:
+    for i, df in enumerate(cec_2022):
         df.columns = algo_names
         df.index = seed_names
+        df.to_csv(f'resources/function_{i+1}_results.csv', index=True, index_label='Seed')
 
-    print(cec_2022)
-    
     fig, axs = plt.subplots(4, 3, figsize=(14, 10))
     k, i, j = 0, 0, 0
-    colors = {
-        "PSO": "c",
-        "CMA-ES": "darkviolet",
-        "DE": "orange",
-        "Pulse": "black"
-    }  # 'P\'': 'r', 'P': 'darkorange', 'SA': 'g'}
+    # Define a list of colors to cycle through
+    color_list = ['c', 'darkviolet', 'orange', 'black', 'red', 'darkorange', 'green', 'blue', 'purple', 'brown']
+    
+    # Create a dictionary mapping algorithm names to colors
+    colors = {algo_name: color_list[i % len(color_list)] for i, algo_name in enumerate(algo_names)}
 
     for function in cec_2022:
         function_name = function_names[k]

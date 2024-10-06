@@ -7,6 +7,7 @@ from evox import algorithms, problems, workflows, monitors, operators
 import jax.numpy as jnp
 from tqdm import tqdm
 from pulse import Pulse
+from pulse_old import Pulse_old
 from utils import *
 
 
@@ -35,21 +36,29 @@ pulse = Pulse(
     mutation=operators.mutation.Bitflip(0.0),  # no mutation
     p_c=1.0, p_m=0.0,)  # no mutation
 
-algorithm_list = [pulse, pso, cma_es, de]  # ignoring these algos at the moment...
+pulse_old = Pulse_old(
+    pop_size=400, dim=n_dims*bits_per_dim,  # 20-bit encoding for each solution
+    mutation=operators.mutation.Bitflip(0.0),  # no mutation
+    p_c=1.0, p_m=0.0,)  # no mutation
 
-n_seeds = 2
+algorithm_list = [pulse, pulse_old]  # ignoring these algos at the moment...
+
+n_seeds = 10
 main_key = jax.random.PRNGKey(42)
 seed_keys = jax.random.split(main_key, n_seeds)
-n_iterations = 200
+n_iterations = 400 
 
 functions_final_fitness = np.full((len(problem_set), len(algorithm_list), n_seeds), fill_value=[None]*n_seeds)
+
+# Initialize a 4D array to store elite fitnesses for each generation
+elite_trajectories = np.full((len(problem_set), len(algorithm_list), n_seeds, n_iterations), fill_value=np.inf)
 
 t0 = time.time()
 for x in range(n_seeds):
     key = seed_keys[x]
     for i, algo in enumerate(algorithm_list):
         print(f'\n\nSeed {x+1} - Algorithm working on functions: {type(algo).__name__}\n{"-"*39}')
-        if isinstance(algo, Pulse):
+        if isinstance(algo, Pulse) or isinstance(algo, Pulse_old):
             sol_transforms = [lambda x: decode_solution(x, lb, ub, n_dims)]
         else:
             sol_transforms = []
@@ -63,6 +72,7 @@ for x in range(n_seeds):
             for k in tqdm(range(n_iterations)):
                 state = workflow.step(state)
                 elite = min(elite, monitor.get_best_fitness().tolist())
+                elite_trajectories[j, i, x, k] = elite  # Store elite fitness for this generation
 
             monitor.flush()
             functions_final_fitness[j, i, x] = elite
@@ -77,6 +87,12 @@ with open('resources/results', 'wb') as f:
     pickle.dump(functions_final_fitness, f)
 
 compile_and_boxplot(algorithm_list, functions_final_fitness, n_seeds)
+
+# Save the elite trajectories
+with open('resources/elite_trajectories.pkl', 'wb') as f:
+    pickle.dump(elite_trajectories, f)
+
+plot_elite_trajectories(algorithm_list, elite_trajectories)
 
 
 

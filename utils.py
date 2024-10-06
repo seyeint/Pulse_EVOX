@@ -5,9 +5,14 @@ import seaborn as sns
 import jax.numpy as jnp
 import matplotlib.pyplot as plt
 import warnings
+import numpy as np
 
 warnings.filterwarnings("ignore")
 
+FUNCTION_NAMES = [
+    "f1", "f2", "f3", "f4", "f5", "f6",
+    "f7", "f8", "f9", "f10", "f11", "f12"
+]
 
 @partial(jit, static_argnums=[3])  # n_dims is static
 def decode_solution(bitstring_population, lb, ub, n_dims):
@@ -37,20 +42,7 @@ def _decode_real_number(lb, ub, bits_per_dim, binary):
 def compile_and_boxplot(algorithm_list, functions_final_fitness, n_seeds, save_fig=False):
     """Transforms our array of final results in order to create plot with ABF (average best fitness) distributions for all algorithms."""
 
-    function_names = [
-        "f1",
-        "f2",
-        "f3",
-        "f4",
-        "f5",
-        "f6",
-        "f7",
-        "f8",
-        "f9",
-        "f10",
-        "f11",
-        "f12",
-    ]
+    function_names = FUNCTION_NAMES
     algo_names = [type(algo).__name__ for algo in algorithm_list]
     seed_names = [f"Seed {i + 1}" for i in range(n_seeds)]
 
@@ -105,3 +97,41 @@ def compile_and_boxplot(algorithm_list, functions_final_fitness, n_seeds, save_f
         plt.savefig("resources/boxplot_test.png", bbox_inches="tight")
 
     plt.show()
+
+
+def plot_elite_trajectories(algorithm_list, elite_trajectories):
+    n_problems, n_algorithms, n_seeds, n_iterations = elite_trajectories.shape
+    
+    fig, axs = plt.subplots(4, 3, figsize=(20, 24))
+    fig.suptitle('Elite Fitness Trajectories for All Functions', fontsize=16)
+    
+    # Define a list of colors to cycle through
+    color_list = ['c', 'darkviolet', 'orange', 'black', 'red', 'darkorange', 'green', 'blue', 'purple', 'brown']
+    
+    for j, function_name in enumerate(FUNCTION_NAMES):
+        row = j // 3
+        col = j % 3
+        ax = axs[row, col]
+        
+        for i, algo in enumerate(algorithm_list):
+            mean_trajectory = np.mean(elite_trajectories[j, i], axis=0)
+            std_trajectory = np.std(elite_trajectories[j, i], axis=0)
+            
+            color = color_list[i % len(color_list)]
+            ax.plot(range(n_iterations), mean_trajectory, label=type(algo).__name__, color=color)
+            ax.fill_between(range(n_iterations), 
+                            mean_trajectory - std_trajectory, 
+                            mean_trajectory + std_trajectory, 
+                            alpha=0.2, color=color)
+        
+        ax.set_title(f'Function {function_name}')
+        ax.set_xlabel('Generation')
+        ax.set_ylabel('Elite Fitness')
+        ax.set_yscale('log')  # Use log scale for fitness values
+        ax.legend()
+        
+    plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+    plt.savefig('resources/all_trajectory_plots.png', dpi=300, bbox_inches='tight')
+    plt.close()
+
+    print("All trajectory plots have been generated and saved as 'all_trajectory_plots.png' in the 'resources' directory.")

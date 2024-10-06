@@ -161,11 +161,7 @@ def crossover(key, pref, parents):
     Returns:
     tuple: Two offspring created by the selected crossover method.
     """
-    return lax.cond(pref == 3,
-                    extension_ray_crossover,
-                    one_point_crossover,
-                    key, parents
-                    )
+    return extension_ray_crossover(key, parents)
 
 
 def batch_crossover(key, pref, parents):
@@ -186,7 +182,7 @@ def batch_crossover(key, pref, parents):
 
 
 @jit_class
-class Pulse(Algorithm):
+class Pulse_old(Algorithm):
     def __init__(self, pop_size, dim, mutation, p_c, p_m, tournament_size=3, tau_max=3):
         self.pop_size = pop_size
         self.dim = dim

@@ -4,9 +4,15 @@ from jax import vmap, lax, random, debug
 from functools import partial
 
 
-def hamming_distance(a, b):
-    # Calculate the Hamming distance between two binary arrays.
-    return jnp.sum(a != b)
+def euclidean_distance(a, b):
+    # Calculate the normalized Euclidean distance between two real-valued vectors
+    return jnp.sqrt(jnp.sum((a - b)**2))
+
+
+def relative_distance(a, b, n_dims, lb, ub):
+    # Calculate relative distance normalized by the maximum possible distance in the space
+    max_possible_dist = jnp.sqrt(n_dims) * (ub - lb)
+    return euclidean_distance(a, b) / max_possible_dist
 
 
 def difference_function(tau, tau_max, d_i, minimization):
@@ -47,7 +53,7 @@ def tournament(key, population, fitness, tournament_size):
     return winner_index
 
 
-def difference_function_tournament(key, parent1, population, fitness, tournament_size, tau, tau_max, minimization):
+def difference_function_tournament(key, parent1, population, fitness, tournament_size, tau, tau_max, minimization, n_dims, lb, ub, debug_flag=False):
     """
     Perform tournament selection using the difference function for the second parent.
 
@@ -55,6 +61,8 @@ def difference_function_tournament(key, parent1, population, fitness, tournament
     parent1 (jnp.array): The first parent.
     population, fitness, tournament_size: Same as in tournament function.
     tau, tau_max, minimization: Same as in difference_function.
+    n_dims, lb, ub: Parameters for relative distance calculation.
+    debug_flag (bool): Whether to print debug information.
 
     Returns:
     int: Index of the selected second parent.
@@ -65,25 +73,23 @@ def difference_function_tournament(key, parent1, population, fitness, tournament
     candidates = population[indices]
     candidate_fitness = fitness[indices]
 
-    d_i = vmap(lambda c: hamming_distance(parent1, c) / parent1.shape[0])(candidates)
+    # Calculate all relative distances
+    d_i = vmap(lambda c: relative_distance(parent1, c, n_dims, lb, ub))(candidates)
+    
+    # Print statistics of the distances if debug is enabled
+    if debug_flag:
+        debug.print("Distance stats - Min: {} Max: {} Mean: {} Std: {}", 
+                   jnp.min(d_i), jnp.max(d_i), jnp.mean(d_i), jnp.std(d_i))
     
     D = difference_function(tau, tau_max, d_i, minimization)
 
     adjusted_fitness = candidate_fitness * D
     winner_index = indices[jnp.argmin(adjusted_fitness)]
-
-    #debug.print("d_i: {}, difference function: {}, Candidate fitness: {},\n pref: {}, Adjusted fitness: {}, winner index: {}", 
-    #            d_i, 
-    #            D,
-    #            candidate_fitness,
-    #            tau,
-    #            adjusted_fitness,
-    #            winner_index)
     
     return winner_index
 
 
-def full_tournament(key, population, fitness, pref, tournament_size, tau_max, minimization):
+def full_tournament(key, population, fitness, pref, tournament_size, tau_max, minimization, n_dims, lb, ub, debug_flag=False):
     """
     Perform full tournament selection for all parents in parallel.
 
@@ -91,6 +97,8 @@ def full_tournament(key, population, fitness, pref, tournament_size, tau_max, mi
     population, fitness: Current population and their fitness values.
     pref (jnp.array): Preference levels for each pair selection.
     tournament_size, tau_max, minimization: Parameters for tournament and difference function.
+    n_dims, lb, ub: Parameters for relative distance calculation.
+    debug_flag (bool): Whether to print debug information.
 
     Returns:
     tuple: Selected parents and their indices in the population.
@@ -101,13 +109,17 @@ def full_tournament(key, population, fitness, pref, tournament_size, tau_max, mi
     # select first parents
     parent1_indices = vmap(partial(tournament, population=population, fitness=fitness, tournament_size=tournament_size))(keys[:pop_size // 2])
 
-    # select second parents based on preference dif function
+    # select second parents based on preference dif function (for each parent1, select a parent2 using diff tourn with all pop)
     parent2_indices = vmap(partial(difference_function_tournament,
                                    population=population,
                                    fitness=fitness,
                                    tournament_size=tournament_size,
                                    tau_max=tau_max,
-                                   minimization=minimization))(key=keys[pop_size // 2:], parent1=population[parent1_indices], tau=pref)
+                                   minimization=minimization,
+                                   n_dims=n_dims,
+                                   lb=lb,
+                                   ub=ub,
+                                   debug_flag=debug_flag))(key=keys[pop_size // 2:], parent1=population[parent1_indices], tau=pref)
 
     parents = jnp.stack([population[parent1_indices], population[parent2_indices]], axis=1)
     parents_index = jnp.stack([parent1_indices, parent2_indices], axis=1)
@@ -115,38 +127,38 @@ def full_tournament(key, population, fitness, pref, tournament_size, tau_max, mi
     return parents, parents_index
 
 
-def extension_ray_crossover(key, parents):
+def geometric_crossover(key, parents):
     """
-    Perform extension ray crossover (non-geometric).
+    Perform geometric crossover in continuous space.
 
     Args:
     parents (jnp.array): Pair of parents.
 
     Returns:
-    tuple: Offsprings. By extending from [p1,p2[ & [p2,p1[
+    tuple: Two offspring inside [p1,p2]
     """
     p1, p2 = parents
-    commonality = p1 == p2
-    offspring1 = jnp.where(commonality, ~p2, p2)
-    offspring2 = jnp.where(commonality, ~p1, p1)
+    alpha = random.uniform(key)
+    offspring1 = alpha * p1 + (1-alpha) * p2
+    offspring2 = (1-alpha) * p1 + alpha * p2
     return jnp.stack([offspring1, offspring2], axis=0)
 
 
-def one_point_crossover(key, parents):
+def non_geometric_crossover(key, parents):
     """
-    Perform one-point crossover (geometric).
+    Perform non-geometric (extension ray) crossover in continuous space.
 
     Args:
     parents (jnp.array): Pair of parents.
 
     Returns:
-    tuple: Two offsprings inside [p1,p2]
+    tuple: Two offspring extending beyond p2 and p1 respectively
     """
     p1, p2 = parents
-    cut_point = random.randint(key, (), 0, p1.shape[0])
-    cut_mask = jnp.arange(p1.shape[0]) < cut_point
-    offspring1 = jnp.where(cut_mask, p1, p2)
-    offspring2 = jnp.where(cut_mask, p2, p1)
+    direction = p2 - p1
+    alpha = 1 #mexico  # Control extension amount.. alpha = 1 would be the correct translation of my thesis
+    offspring1 = p2 + alpha * direction      # Extend beyond p2
+    offspring2 = p1 - alpha * direction      # Extend beyond p1
     return jnp.stack([offspring1, offspring2], axis=0)
 
 
@@ -161,7 +173,11 @@ def crossover(key, pref, parents):
     Returns:
     tuple: Two offspring created by the selected crossover method.
     """
-    return extension_ray_crossover(key, parents)
+    return lax.cond(pref == 1,
+                    non_geometric_crossover,  # if pref == 5
+                    geometric_crossover,      # if pref != 5
+                    key, parents
+                    )
 
 
 def batch_crossover(key, pref, parents):
@@ -180,35 +196,66 @@ def batch_crossover(key, pref, parents):
     keys = random.split(key, n_pair)
     return vmap(crossover)(keys, pref, parents)
 
+def glued_space_transform(x, lb, ub):
+    """
+    Transform coordinates using glued space instead of clipping.
+    
+    Args:
+    x (jnp.array): Input coordinates
+    lb (float): Lower bound
+    ub (float): Upper bound
+    
+    Returns:
+    jnp.array: Transformed coordinates within bounds
+    """
+    range_size = ub - lb 
+    # Normalize to [0, range_size] first by subtracting lb
+    normalized = x - lb
+    # Use modulo to wrap around, then add lb back
+    wrapped = normalized % range_size + lb
+    return wrapped
+
 
 @jit_class
-class Pulse_old(Algorithm):
-    def __init__(self, pop_size, dim, mutation, p_c, p_m, tournament_size=3, tau_max=3):
+class Pulse_real_glued(Algorithm):
+    def __init__(self, pop_size, dim, lb, ub, mutation, p_c, p_m, tournament_size=3, tau_max=3, debug=False):
         self.pop_size = pop_size
         self.dim = dim
+        self.lb = lb
+        self.ub = ub
         self.crossover = batch_crossover
         self.mutation = mutation
-        self.n_offspring = self.pop_size  # substitute all pop
+        self.n_offspring = self.pop_size
         assert self.n_offspring % 2 == 0, "n_offspring must be even"
         self.tournament_size = tournament_size
         self.tau_max = tau_max
         self.selection = partial(full_tournament,
                                  tournament_size=self.tournament_size,
                                  tau_max=self.tau_max,
-                                 minimization=True)  # Set to False if maximizing
+                                 minimization=True,
+                                 n_dims=self.dim,
+                                 lb=self.lb,
+                                 ub=self.ub,
+                                 debug_flag=debug)
         self.p_c = p_c
         self.p_m = p_m
+        self.debug = debug
 
     def setup(self, key):
         key, subkey = random.split(key)
-        population = random.choice(subkey, 2, shape=(self.pop_size, self.dim)).astype(jnp.bool_)
+        population = random.uniform(
+            subkey, 
+            shape=(self.pop_size, self.dim),
+            minval=self.lb,
+            maxval=self.ub
+        )
         return State(
             contrib=jnp.ones((4,)) / 4,
             total_cross=jnp.zeros((4,), dtype=int),
             succ_cross=jnp.zeros((4,), dtype=int),
             population=population,
             parents=jnp.empty((self.n_offspring // 2, 2, self.dim), dtype=population.dtype),
-            parents_index=jnp.empty((self.n_offspring // 2, 2), dtype=int),  # what is this for in the general code?
+            parents_index=jnp.empty((self.n_offspring // 2, 2), dtype=int),
             offspring=jnp.empty((self.n_offspring, self.dim), dtype=population.dtype),
             fitness=jnp.empty((self.pop_size,), dtype=float),
             pref=jnp.empty((self.n_offspring // 2,), dtype=int),
@@ -226,9 +273,11 @@ class Pulse_old(Algorithm):
 
         is_better = off_fit <= jnp.min(par_fit)  # most problems are minimization, otherwise we have to pay attention
 
+        # Use small threshold for floating point comparison
+        epsilon = 1e-6
         is_eq = jnp.array([
-            jnp.array_equal(offspring[0], parents[0]) | jnp.array_equal(offspring[0], parents[1]),
-            jnp.array_equal(offspring[1], parents[0]) | jnp.array_equal(offspring[1], parents[1])
+            jnp.all(jnp.abs(offspring[0] - parents[0]) < epsilon) | jnp.all(jnp.abs(offspring[0] - parents[1]) < epsilon),
+            jnp.all(jnp.abs(offspring[1] - parents[0]) < epsilon) | jnp.all(jnp.abs(offspring[1] - parents[1]) < epsilon)
         ])
         # if any offspring satisfy: 1. not equal 2. better
         return jnp.any(~is_eq & is_better)
@@ -274,7 +323,8 @@ class Pulse_old(Algorithm):
         
         key, sel_key, cross_key, mut_key = random.split(state.key, 4)
         
-        debug.print("Current contribution values: {}", state.contrib)
+        if self.debug:
+            debug.print("Current contribution values: {}", state.contrib)
         
         # choice a pref based on the current contribution
         # every 2 offsprings needs 1 pref
@@ -288,22 +338,29 @@ class Pulse_old(Algorithm):
         final_counts, _ = lax.scan(count_preferences, initial_counts, pref)
         percentages = final_counts / jnp.sum(final_counts) * 100
         
-        debug.print("Preferences shape: {}, Percentages: {}", pref.shape, jnp.column_stack((jnp.arange(4), percentages)))
+        if self.debug:
+            debug.print("Preferences shape: {}, Percentages: {}", pref.shape, jnp.column_stack((jnp.arange(4), percentages)))
         
         # select a batch of parents
         parents, parents_index = self.selection(sel_key, state.population, state.fitness, pref)
-        debug.print("Selected parents shape: {}", parents.shape)
-        debug.print("Parents index shape: {}", parents_index.shape)
+        if self.debug:
+            debug.print("Selected parents shape: {}", parents.shape)
+            debug.print("Parents index shape: {}", parents_index.shape)
         
         # reshape into pairs of two, and do crossover on each pair
         offspring = self.crossover(cross_key, pref, parents)
         offspring = offspring.reshape(self.pop_size, self.dim)
-        debug.print("Offspring shape after crossover: {}", offspring.shape)
-        
+        if self.debug:
+            debug.print("Offspring shape after crossover: {}", offspring.shape)
+
         # mutation
         offspring = self.mutation(mut_key, offspring)
-        debug.print("Offspring shape after mutation: {}", offspring.shape)
+        if self.debug:
+            debug.print("Offspring shape after mutation: {}", offspring.shape)
         
+        # Ensure offspring are within bounds with glued space
+        offspring = glued_space_transform(offspring, self.lb, self.ub)
+
         new_state = state.replace(
             pref=pref,
             offspring=offspring,
@@ -315,14 +372,17 @@ class Pulse_old(Algorithm):
 
     def tell(self, state, fitness):
         # Process fitness values of offspring and update algorithm state - contributions of preferences.
-        debug.print("Fitness shape: {}", fitness.shape)
-        debug.print("Fitness statistics - Min: {} Max: {} Mean: {}", jnp.min(fitness), jnp.max(fitness), jnp.mean(fitness))
+        if self.debug:
+            debug.print("Fitness shape: {}", fitness.shape)
+            debug.print("Fitness statistics - Min: {} Max: {} Mean: {}", jnp.min(fitness), jnp.max(fitness), jnp.mean(fitness))
         
         state = self._update_variables(state, fitness)
-        debug.print("Updated successful crossovers: {}", state.succ_cross)
-        debug.print("Updated total crossovers: {}", state.total_cross)
+        if self.debug:
+            debug.print("Updated successful crossovers: {}", state.succ_cross)
+            debug.print("Updated total crossovers: {}", state.total_cross)
         
         state = self._update_contrib(state)
-        debug.print("Updated contribution values: {} \n\n-------------------------\n", state.contrib)
+        if self.debug:
+            debug.print("Updated contribution values: {} \n\n-------------------------\n", state.contrib)
         
         return state

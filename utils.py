@@ -46,6 +46,10 @@ def compile_and_boxplot(algorithm_list, functions_final_fitness, n_seeds, save_f
     algo_names = [type(algo).__name__ for algo in algorithm_list]
     seed_names = [f"Seed {i + 1}" for i in range(n_seeds)]
 
+    # Convert JAX arrays to NumPy values properly (plot trajectories doesn't need this because numpy>seaborn handling jax)
+    functions_final_fitness = np.array(functions_final_fitness)
+    functions_final_fitness = np.vectorize(lambda x: float(x))(functions_final_fitness)
+
     """Turning the results array into a list of dataframes (one df for each function)."""
     cec_2022 = [
         pd.DataFrame(functions_final_fitness[i, :, :]).transpose()

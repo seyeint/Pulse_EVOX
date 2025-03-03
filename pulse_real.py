@@ -1,17 +1,16 @@
-from evox import Algorithm, Problem, State, jit_class, operators, workflows, monitors
-import jax.numpy as jnp
-from jax import vmap, lax, random, debug
+from evox.core import Algorithm, Problem, vmap
+from evox.utils import clamp
 from functools import partial
-
+import torch
 
 def euclidean_distance(a, b):
     # Calculate the normalized Euclidean distance between two real-valued vectors
-    return jnp.sqrt(jnp.sum((a - b)**2))
+    return torch.sqrt(torch.sum((a - b)**2))
 
 
 def relative_distance(a, b, n_dims, lb, ub):
     # Calculate relative distance normalized by the maximum possible distance in the space
-    max_possible_dist = jnp.sqrt(n_dims) * (ub - lb)
+    max_possible_dist = (n_dims ** 0.5) * (ub - lb)
     return euclidean_distance(a, b) / max_possible_dist
 
 
@@ -34,11 +33,12 @@ def difference_function(tau, tau_max, d_i, minimization):
         return 0.5 + (tau / tau_max) * (d_i - 0.5)
 
 
-def tournament(key, population, fitness, tournament_size):
+def tournament(_idx, population, fitness, tournament_size):
     """
     Perform tournament selection.
 
     Args:
+    _idx as a hack to make it work with vmap
     population (jnp.array): The current population.
     fitness (jnp.array): Fitness values of the population.
     tournament_size (int): Number of individuals in each tournament.
@@ -46,14 +46,13 @@ def tournament(key, population, fitness, tournament_size):
     Returns:
     int: Index of the tournament winner.
     """
-    keys = random.split(key, tournament_size)
-    indices = vmap(lambda k: random.randint(k, (), 0, population.shape[0]))(keys)
+    indices = torch.randint(size=(tournament_size,), low=0, high=population.shape[0])
     selected = fitness[indices]
-    winner_index = indices[jnp.argmin(selected)]
+    winner_index = indices[torch.argmin(selected)]
     return winner_index
 
 
-def difference_function_tournament(key, parent1, population, fitness, tournament_size, tau, tau_max, minimization, n_dims, lb, ub, debug_flag=False):
+def difference_function_tournament(parent1, tau, population, fitness, tournament_size, tau_max, minimization, n_dims, lb, ub, debug_flag=False):
     """
     Perform tournament selection using the difference function for the second parent.
 
@@ -67,29 +66,28 @@ def difference_function_tournament(key, parent1, population, fitness, tournament
     Returns:
     int: Index of the selected second parent.
     """
-    keys = random.split(key, tournament_size)
-    indices = vmap(lambda k: random.randint(k, (), 0, population.shape[0]))(keys)
+    indices = torch.randint(size=(tournament_size,), low=0, high=population.shape[0])
 
     candidates = population[indices]
     candidate_fitness = fitness[indices]
 
     # Calculate all relative distances
-    d_i = vmap(lambda c: relative_distance(parent1, c, n_dims, lb, ub))(candidates)
+    d_i = vmap(lambda c: relative_distance(parent1, c, n_dims, lb, ub), randomness="different")(candidates)
     
     # Print statistics of the distances if debug is enabled
     if debug_flag:
-        debug.print("Distance stats - Min: {} Max: {} Mean: {} Std: {}", 
-                   jnp.min(d_i), jnp.max(d_i), jnp.mean(d_i), jnp.std(d_i))
+        print("Distance stats - Min: {} Max: {} Mean: {} Std: {}", 
+              torch.min(d_i), torch.max(d_i), torch.mean(d_i), torch.std(d_i))
     
     D = difference_function(tau, tau_max, d_i, minimization)
 
     adjusted_fitness = candidate_fitness * D
-    winner_index = indices[jnp.argmin(adjusted_fitness)]
+    winner_index = indices[torch.argmin(adjusted_fitness)]
     
     return winner_index
 
 
-def full_tournament(key, population, fitness, pref, tournament_size, tau_max, minimization, n_dims, lb, ub, debug_flag=False):
+def full_tournament(population, fitness, pref, tournament_size, tau_max, minimization, n_dims, lb, ub, debug_flag=False):
     """
     Perform full tournament selection for all parents in parallel.
 
@@ -104,30 +102,36 @@ def full_tournament(key, population, fitness, pref, tournament_size, tau_max, mi
     tuple: Selected parents and their indices in the population.
     """
     pop_size = population.shape[0]
-    keys = random.split(key, pop_size)
 
     # select first parents
-    parent1_indices = vmap(partial(tournament, population=population, fitness=fitness, tournament_size=tournament_size))(keys[:pop_size // 2])
+    parent1_indices = vmap(
+        partial(
+            tournament, 
+            population=population, 
+            fitness=fitness, 
+            tournament_size=tournament_size), randomness="different")(torch.arange(pop_size // 2))
 
     # select second parents based on preference dif function (for each parent1, select a parent2 using diff tourn with all pop)
-    parent2_indices = vmap(partial(difference_function_tournament,
-                                   population=population,
-                                   fitness=fitness,
-                                   tournament_size=tournament_size,
-                                   tau_max=tau_max,
-                                   minimization=minimization,
-                                   n_dims=n_dims,
-                                   lb=lb,
-                                   ub=ub,
-                                   debug_flag=debug_flag))(key=keys[pop_size // 2:], parent1=population[parent1_indices], tau=pref)
-
-    parents = jnp.stack([population[parent1_indices], population[parent2_indices]], axis=1)
-    parents_index = jnp.stack([parent1_indices, parent2_indices], axis=1)
+    parent2_indices = vmap(
+        partial(
+            difference_function_tournament,
+            population=population,
+            fitness=fitness,
+            tournament_size=tournament_size,
+            tau_max=tau_max,
+            minimization=minimization,
+            n_dims=n_dims,
+            lb=lb,
+            ub=ub,
+            debug_flag=debug_flag),randomness="different")(population[parent1_indices], pref)
+    
+    parents = torch.stack([population[parent1_indices], population[parent2_indices]], axis=1)
+    parents_index = torch.stack([parent1_indices, parent2_indices], axis=1)
 
     return parents, parents_index
 
 
-def geometric_crossover(key, parents):
+def geometric_crossover(parents):
     """
     Perform geometric crossover in continuous space.
 
@@ -138,13 +142,13 @@ def geometric_crossover(key, parents):
     tuple: Two offspring inside [p1,p2]
     """
     p1, p2 = parents
-    alpha = random.uniform(key)
+    alpha = torch.rand(size=(1,))
     offspring1 = alpha * p1 + (1-alpha) * p2
     offspring2 = (1-alpha) * p1 + alpha * p2
-    return jnp.stack([offspring1, offspring2], axis=0)
+    return torch.stack([offspring1, offspring2], axis=0)
 
 
-def non_geometric_crossover(key, parents):
+def non_geometric_crossover(parents):
     """
     Perform non-geometric (extension ray) crossover in continuous space.
 
@@ -156,13 +160,13 @@ def non_geometric_crossover(key, parents):
     """
     p1, p2 = parents
     direction = p2 - p1
-    alpha = 1 #random.uniform(key) mexico  # Control extension amount.. alpha = 1 would be the correct translation of my thesis
+    alpha = 1 #torch.rand(size=(1,)) mexico  # Control extension amount.. alpha = 1 would be the correct translation of my thesis
     offspring1 = p2 + alpha * direction      # Extend beyond p2
     offspring2 = p1 - alpha * direction      # Extend beyond p1
-    return jnp.stack([offspring1, offspring2], axis=0)
+    return torch.stack([offspring1, offspring2], axis=0)
 
 
-def crossover(key, pref, parents):
+def crossover(pref, parents):
     """
     Choose between geometric and non-geometric crossover based on preference.
 
@@ -173,33 +177,31 @@ def crossover(key, pref, parents):
     Returns:
     tuple: Two offspring created by the selected crossover method.
     """
-    return lax.cond(pref == 1,
-                    non_geometric_crossover,  # if pref == 5
-                    geometric_crossover,      # if pref != 5
-                    key, parents
-                    )
+    return torch.where(
+        pref == 1, # 4?
+        non_geometric_crossover(parents),
+        geometric_crossover(parents)
+    )
 
 
-def batch_crossover(key, pref, parents):
+def batch_crossover(pref, parents):
     """
     Apply crossover to multiple pairs of parents in parallel.
 
     Args:
-    pref (jnp.array): Preference levels for each pair.
-    parents (jnp.array): All parent pairs.
+    pref: Preference levels for each pair.
+    parents: All parent pairs.
 
     Returns:
-    jnp.array: All offspring created by crossover.
+    torch.Tensor: All offspring created by crossover.
     """
     # crossover on multiple pairs of parents -- (n_pair, 2, dim)
-    n_pair, _, _dim = parents.shape  # 1 n_pair is n_offspring / 2
-    keys = random.split(key, n_pair)
-    return vmap(crossover)(keys, pref, parents)
+    return vmap(crossover, randomness="different")(pref, parents)
 
 
-@jit_class
 class Pulse_real(Algorithm):
     def __init__(self, pop_size, dim, lb, ub, mutation, p_c, p_m, tournament_size=3, tau_max=3, debug=False):
+        super().__init__()
         self.pop_size = pop_size
         self.dim = dim
         self.lb = lb
@@ -210,38 +212,35 @@ class Pulse_real(Algorithm):
         assert self.n_offspring % 2 == 0, "n_offspring must be even"
         self.tournament_size = tournament_size
         self.tau_max = tau_max
-        self.selection = partial(full_tournament,
-                                 tournament_size=self.tournament_size,
-                                 tau_max=self.tau_max,
-                                 minimization=True,
-                                 n_dims=self.dim,
-                                 lb=self.lb,
-                                 ub=self.ub,
-                                 debug_flag=debug)
+        self.selection = partial(
+            full_tournament,
+            tournament_size=self.tournament_size,
+            tau_max=self.tau_max,
+            minimization=True,
+            n_dims=self.dim,
+            lb=self.lb,
+            ub=self.ub,
+            debug_flag=debug)
         self.p_c = p_c
         self.p_m = p_m
         self.debug = debug
 
-    def setup(self, key):
-        key, subkey = random.split(key)
-        population = random.uniform(
-            subkey, 
-            shape=(self.pop_size, self.dim),
-            minval=self.lb,
-            maxval=self.ub
+        self.population = (
+            torch.rand(size=(self.pop_size, self.dim)) * (ub - lb) + lb
         )
-        return State(
-            contrib=jnp.ones((4,)) / 4,
-            total_cross=jnp.zeros((4,), dtype=int),
-            succ_cross=jnp.zeros((4,), dtype=int),
-            population=population,
-            parents=jnp.empty((self.n_offspring // 2, 2, self.dim), dtype=population.dtype),
-            parents_index=jnp.empty((self.n_offspring // 2, 2), dtype=int),
-            offspring=jnp.empty((self.n_offspring, self.dim), dtype=population.dtype),
-            fitness=jnp.empty((self.pop_size,), dtype=float),
-            pref=jnp.empty((self.n_offspring // 2,), dtype=int),
-            key=key
+
+        self.contrib = torch.ones((4,)) / 4
+        self.total_cross = torch.zeros((4,), dtype=int)
+        self.succ_cross = torch.zeros((4,), dtype=int)
+        self.parents = torch.empty(
+            (self.n_offspring // 2, 2, self.dim), dtype=self.population.dtype
         )
+        self.parents_index = torch.empty((self.n_offspring // 2, 2), dtype=int)
+        self.offspring = torch.empty((self.n_offspring, self.dim), dtype=self.population.dtype)
+        self.fitness = torch.empty((self.pop_size,), dtype=float)
+        self.pref = torch.empty((self.n_offspring // 2,), dtype=int)
+        
+        
 
     def _is_succ_cross(self, parents, offspring, par_fit, off_fit):
         # return True if it is a successful crossover
@@ -252,117 +251,111 @@ class Pulse_real(Algorithm):
         # parents, offspring --- (2, self.dim)
         # par_fit, off_fit ----- (2, )
 
-        is_better = off_fit <= jnp.min(par_fit)  # most problems are minimization, otherwise we have to pay attention
+        is_better = off_fit <= torch.min(par_fit)  # most problems are minimization, otherwise we have to pay attention
 
-        # Use small threshold for floating point comparison
+        # Small threshold for floating point comparison
         epsilon = 1e-6
-        is_eq = jnp.array([
-            jnp.all(jnp.abs(offspring[0] - parents[0]) < epsilon) | jnp.all(jnp.abs(offspring[0] - parents[1]) < epsilon),
-            jnp.all(jnp.abs(offspring[1] - parents[0]) < epsilon) | jnp.all(jnp.abs(offspring[1] - parents[1]) < epsilon)
-        ])
-        # if any offspring satisfy: 1. not equal 2. better
-        return jnp.any(~is_eq & is_better)
+        is_eq = torch.stack([
+            torch.all(torch.abs(offspring[0] - parents[0]) < epsilon) | 
+            torch.all(torch.abs(offspring[0] - parents[1]) < epsilon),
+            torch.all(torch.abs(offspring[1] - parents[0]) < epsilon) | 
+            torch.all(torch.abs(offspring[1] - parents[1]) < epsilon),
+        ], dim=0) 
+        # if any offspring satisfy: 1. not equal 2. better # big brain type shi
+        return torch.any(~is_eq & is_better) 
 
-    def _update_variables(self, state, off_fit):
-        # Update the counts of successful and total crossovers.
-        par_fit = state.fitness[state.parents_index]
-        parents = state.parents.reshape(-1, 2, self.dim)
-        offspring = state.offspring.reshape(-1, 2, self.dim)
+    def _update_variables(self, off_fit):
+        # Update the counts of successful and total crossovers. parents should come in the correct shape but just in case reshape 
+        par_fit = self.fitness[self.parents_index]
+        parents = self.parents.reshape(-1, 2, self.dim)
+        offspring = self.offspring.reshape(-1, 2, self.dim)
         par_fit = par_fit.reshape(-1, 2)
         off_fit = off_fit.reshape(-1, 2)
         is_succ_cross = vmap(self._is_succ_cross)(parents, offspring, par_fit, off_fit)
-        succ_cross = state.succ_cross.at[state.pref].add(is_succ_cross)
-        total_cross = state.total_cross.at[state.pref].add(1)
-        return state.replace(succ_cross=succ_cross, total_cross=total_cross)
+        self.succ_cross[self.pref] += is_succ_cross
+        self.total_cross[self.pref] += 1
 
-    def _update_contrib(self, state):
+    def _update_contrib(self):
         # Update the contribution values for each preference level.
-        contrib = state.succ_cross / state.total_cross
-        total = jnp.sum(contrib)
-
-        contrib = lax.select(
-            total == 0,
-            jnp.ones((4,)) / 4,
-            0.1 + (0.6 * (contrib / total))
-            )
-        
-        # Reset succ_cross and total_cross here
-        return state.replace(
-            contrib=contrib,
-            succ_cross=jnp.zeros_like(state.succ_cross),
-            total_cross=jnp.zeros_like(state.total_cross)
+        contrib = self.succ_cross / self.total_cross
+        total = torch.sum(contrib)
+        self.contrib = torch.where(
+            total == 0, torch.ones((4,)) / 4, 0.1 + (0.6 * (contrib / total))
         )
+        # Reset succ_cross and total_cross
+        self.succ_cross = torch.zeros_like(self.succ_cross)
+        self.total_cross = torch.zeros_like(self.total_cross)
 
-    def init_ask(self, state):
-        return state.population, state
+    def init_step(self):
+        self.fitness = self.evaluate(self.population)
 
-    def init_tell(self, state, fitness):
-        return state.replace(fitness=fitness)
-
-    def ask(self, state):
+    def step(self):
         # Generate new offspring through selection, crossover, and mutation.
-        
-        key, sel_key, cross_key, mut_key = random.split(state.key, 4)
-        
         if self.debug:
-            debug.print("Current contribution values: {}", state.contrib)
+            print("Current contribution values: {}", self.contrib)
         
         # choice a pref based on the current contribution
         # every 2 offsprings needs 1 pref
-        pref = random.choice(state.key, 4, shape=(self.n_offspring // 2,), p=state.contrib)
-        
-        def count_preferences(counts, x):
-            counts = counts.at[x].add(1)
-            return counts, counts
+        pref = torch.multinomial(
+            self.contrib, num_samples=self.n_offspring // 2, replacement=True
+        )
 
-        initial_counts = jnp.zeros(4, dtype=jnp.int32)
-        final_counts, _ = lax.scan(count_preferences, initial_counts, pref)
-        percentages = final_counts / jnp.sum(final_counts) * 100
+        counts = torch.zeros(4, dtype=torch.int32)
+        for p in pref:
+            counts[p] += 1
+        final_counts = counts
+        percentages = final_counts / torch.sum(final_counts) * 100
         
         if self.debug:
-            debug.print("Preferences shape: {}, Percentages: {}", pref.shape, jnp.column_stack((jnp.arange(4), percentages)))
+            print("Preferences shape: {}, Percentages: {}",
+                  pref.shape,
+                  torch.column_stack((torch.arange(4), percentages)))
         
         # select a batch of parents
-        parents, parents_index = self.selection(sel_key, state.population, state.fitness, pref)
+        parents, parents_index = self.selection(self.population, self.fitness, pref)
         if self.debug:
-            debug.print("Selected parents shape: {}", parents.shape)
-            debug.print("Parents index shape: {}", parents_index.shape)
+            print("Selected parents shape: {}", parents.shape)
+            print("Parents index shape: {}", parents_index.shape)
         
         # reshape into pairs of two, and do crossover on each pair
-        offspring = self.crossover(cross_key, pref, parents)
+        offspring = self.crossover(pref, parents)
         offspring = offspring.reshape(self.pop_size, self.dim)
         if self.debug:
-            debug.print("Offspring shape after crossover: {}", offspring.shape)
+            print("Offspring shape after crossover: {}", offspring.shape)
 
         # mutation
-        offspring = self.mutation(mut_key, offspring)
+        offspring = self.mutation(offspring)
         if self.debug:
-            debug.print("Offspring shape after mutation: {}", offspring.shape)
+            print("Offspring shape after mutation: {}", offspring.shape)
         
         # Ensure offspring are within bounds
-        offspring = jnp.clip(offspring, self.lb, self.ub) # this is pathetic, glued spaces is the way to go 
-        new_state = state.replace(
-            pref=pref,
-            offspring=offspring,
-            parents=parents,
-            parents_index=parents_index,
-            key=key
-        )
-        return offspring, new_state
+        offspring = clamp(offspring, self.lb, self.ub) # this is pathetic, glued spaces is the way to go 
+        self.pref = pref
+        self.offspring = offspring
+        self.parents = parents
+        self.parents_index = parents_index
 
-    def tell(self, state, fitness):
+        fitness = self.evaluate(offspring) # tell
+
         # Process fitness values of offspring and update algorithm state - contributions of preferences.
         if self.debug:
-            debug.print("Fitness shape: {}", fitness.shape)
-            debug.print("Fitness statistics - Min: {} Max: {} Mean: {}", jnp.min(fitness), jnp.max(fitness), jnp.mean(fitness))
+            print("Fitness shape: {}", fitness.shape)
+            print("Fitness statistics - Min: {} Max: {} Mean: {}",
+                   torch.min(fitness),
+                   torch.max(fitness),
+                   torch.mean(fitness))
         
-        state = self._update_variables(state, fitness)
+        state = self._update_variables(fitness)
         if self.debug:
-            debug.print("Updated successful crossovers: {}", state.succ_cross)
-            debug.print("Updated total crossovers: {}", state.total_cross)
+            print("Updated successful crossovers: {}", state.succ_cross)
+            print("Updated total crossovers: {}", state.total_cross)
         
-        state = self._update_contrib(state)
+        self._update_contrib(state)
         if self.debug:
-            debug.print("Updated contribution values: {} \n\n-------------------------\n", state.contrib)
+            print("Updated contribution values: {} \n\n-------------------------\n", state.contrib)
         
         return state
+    
+    def record_step(self):
+        """A callback function to record the information of the algorithm"""
+        return {"pop": self.population, "fit": self.fitness}

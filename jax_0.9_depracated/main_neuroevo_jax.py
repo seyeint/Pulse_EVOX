@@ -6,8 +6,8 @@ from evox.problems.neuroevolution.brax import BraxProblem
 from evox.utils import ParamsAndVector
 from evox.workflows import EvalMonitor, StdWorkflow
 
-from pulse_real import Pulse_real
-from pulse_real_glued import Pulse_real_glued
+from jax_version_depra.pulse_real_jax import Pulse_real
+from jax_version_depra.pulse_real_glued_jax import Pulse_real_glued
 
 # Neural network policy
 class SimpleMLP(nn.Module):

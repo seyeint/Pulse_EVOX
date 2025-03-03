@@ -2,34 +2,34 @@ import time
 import pickle
 import numpy as np
 import evox
-import torch
-from evox import algorithms, problems, operators
-from evox.problems.numerical import CEC2022
-from evox.workflows import EvalMonitor, StdWorkflow
+import jax
+from evox import algorithms, problems, workflows, monitors, operators, use_state
+import jax.numpy as jnp
 from tqdm import tqdm
 from jax_version_depra.pulse_jax import Pulse
 from jax_version_depra.pulse_real_jax import Pulse_real
 from jax_version_depra.pulse_real_glued_jax import Pulse_real_glued
 from utils import *
 
+
+problem_set = ([problems.numerical.cec2022_so.CEC2022TestSuit.create(x) for x in range(1, 13)])
 n_dims = 20
 lb, ub = -100, 100
 bits_per_dim = 20
-problem_set = ([CEC2022(x, n_dims) for x in range(1, 13)])
 
 print(f'\n{len(problem_set)} functions loaded in the problem_set.')
 
 pso = algorithms.PSO(
-    lb=torch.full(size=(n_dims,), fill_value=lb), # rever o que ele mete em fill_value
-    ub=torch.full(size=(n_dims,), fill_value=ub),
+    lb=jnp.full(shape=(n_dims,), fill_value=lb), # rever o que ele mete em fill_value
+    ub=jnp.full(shape=(n_dims,), fill_value=ub),
     pop_size=400,)
 cma_es = algorithms.CMAES(
-    center_init=torch.zeros(shape=(n_dims,)),
+    center_init=jnp.zeros(shape=(n_dims,)),
     init_stdev=1.0,
     pop_size=400,)
 de = algorithms.DE(
-    lb=torch.full(size=(n_dims,), fill_value=lb),
-    ub=torch.full(size=(n_dims,), fill_value=ub),
+    lb=jnp.full(shape=(n_dims,), fill_value=lb),
+    ub=jnp.full(shape=(n_dims,), fill_value=ub),
     pop_size=400,)
 
 pulse = Pulse(
@@ -57,8 +57,8 @@ pulse_real_glued = Pulse_real_glued(
 algorithm_list = [pso, de, pulse, pulse_real, pulse_real_glued] #pso, de, pulse, pulse_real, 
 
 n_seeds = 3
-#main_key = jax.random.PRNGKey(96)
-#seed_keys = jax.random.split(main_key, n_seeds)
+main_key = jax.random.PRNGKey(96)
+seed_keys = jax.random.split(main_key, n_seeds)
 n_iterations = 400 
 
 functions_final_fitness = np.full((len(problem_set), len(algorithm_list), n_seeds), fill_value=[None]*n_seeds)
@@ -68,7 +68,7 @@ elite_trajectories = np.full((len(problem_set), len(algorithm_list), n_seeds, n_
 
 t0 = time.time()
 for x in range(n_seeds):
-    #key = seed_keys[x]
+    key = seed_keys[x]
     for i, algo in enumerate(algorithm_list):
         print(f'\n\nSeed {x+1} - Algorithm working on functions: {type(algo).__name__}\n{"-"*39}')
         if isinstance(algo, Pulse):
@@ -77,16 +77,14 @@ for x in range(n_seeds):
             sol_transforms = []
 
         for j, function in enumerate(problem_set):
-            monitor = EvalMonitor()
-            workflow = StdWorkflow(algo, function, monitor, solution_transforms=sol_transforms)
+            monitor = monitors.EvalMonitor()
+            workflow = workflows.StdWorkflow(algo, function, monitors=[monitor], solution_transforms=sol_transforms)
+            state = workflow.init(key)
             elite = float("inf")
-            state = workflow.init_step()
-            #compile step function
-            compiled_step = torch.compile(workflow.step)
-            
+
             for k in tqdm(range(n_iterations)):
-                compiled_step()
-                best_fitness = monitor.topk_fitness
+                state = workflow.step(state)
+                best_fitness, state = use_state(monitor.get_best_fitness)(state)
                 elite = min(elite, best_fitness)
                 elite_trajectories[j, i, x, k] = elite  # Store elite fitness for this generation
                 

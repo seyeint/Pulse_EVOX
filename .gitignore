@@ -3,4 +3,6 @@ _test.py
 .idea
 __pycache__
 /test
+resources/csvs/
+resources/model_weights/
 genetic_algorithm_P.py

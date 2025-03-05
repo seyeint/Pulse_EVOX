@@ -56,7 +56,7 @@ def compile_and_boxplot(algorithm_list, functions_final_fitness, n_seeds, save_f
     for i, df in enumerate(cec_2022):
         df.columns = algo_names
         df.index = seed_names
-        df.to_csv(f'resources/function_{i+1}_results.csv', index=True, index_label='Seed')
+        df.to_csv(f'resources/csvs/function_{i+1}_results.csv', index=True, index_label='Seed')
 
     fig, axs = plt.subplots(4, 3, figsize=(14, 10))
     k, i, j = 0, 0, 0

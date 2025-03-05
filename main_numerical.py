@@ -8,6 +8,7 @@ from evox.problems.numerical import CEC2022
 from evox.workflows import EvalMonitor, StdWorkflow
 from tqdm import tqdm
 from pulse_real import Pulse_real
+from pulse_real_glued import Pulse_real_glued
 from utils import *
 
 n_dims = 20
@@ -37,7 +38,14 @@ pulse_real = Pulse_real(
     p_c=1.0, p_m=0.0,
     debug=False)  # Set to True to enable debug prints
 
-algorithm_list = [pso, de, pulse_real] #pso, de, pulse, pulse_real, 
+pulse_real_glued = Pulse_real_glued(
+    pop_size=400, 
+    dim=n_dims,
+    lb=lb, ub=ub,
+    p_c=1.0, p_m=0.0,
+    debug=False)  # Set to True to enable debug prints
+
+algorithm_list = [pso, de, pulse_real, pulse_real_glued] #pso, de, pulse, pulse_real, 
 
 n_seeds = 3
 n_iterations = 400 
@@ -48,16 +56,13 @@ functions_final_fitness = np.full((len(problem_set), len(algorithm_list), n_seed
 elite_trajectories = np.full((len(problem_set), len(algorithm_list), n_seeds, n_iterations), fill_value=np.inf)
 
 t0 = time.time()
+torch.manual_seed(15)  # I already tried afer line 53 x is the seed index from 0 to n_seeds-1
+
 for x in range(n_seeds):
     # Set different random seed for each run
-    torch.manual_seed(x)  # x is the seed index from 0 to n_seeds-1
     for i, algo in enumerate(algorithm_list):
         print(f'\n\nSeed {x+1} - Algorithm working on functions: {type(algo).__name__}\n{"-"*39}')
-        if x==30:#isinstance(algo, Pulse):
-            print("Pulse-nope error")
-            sol_transform = [lambda x: decode_solution(x, lb, ub, n_dims)]
-        else:
-            sol_transform = []
+        sol_transform = [] #add if isinstance(algo, Pulse) when I have pulse discrete ported to
 
         for j, function in enumerate(problem_set):
             monitor = EvalMonitor()
@@ -75,7 +80,7 @@ for x in range(n_seeds):
                 
             functions_final_fitness[j, i, x] = elite
 
-print(functions_final_fitness.shape, functions_final_fitness)
+#print(functions_final_fitness.shape, functions_final_fitness)
 
 print(f'Finished, total time: {(time.time()-t0)/60} minutes.')
 

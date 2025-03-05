@@ -160,7 +160,7 @@ def non_geometric_crossover(parents):
     """
     p1, p2 = parents
     direction = p2 - p1
-    alpha = 1 #torch.rand(size=(1,)) mexico  # Control extension amount.. alpha = 1 would be the correct translation of my thesis
+    alpha = 1  # Control extension amount.. alpha = 1 would be the correct translation of my thesis
     offspring1 = p2 + alpha * direction      # Extend beyond p2
     offspring2 = p1 - alpha * direction      # Extend beyond p1
     return torch.stack([offspring1, offspring2], axis=0)
@@ -199,7 +199,27 @@ def batch_crossover(pref, parents):
     return vmap(crossover, randomness="different")(pref, parents)
 
 
-class Pulse_real(Algorithm):
+def glued_space_transform(x, lb, ub):
+    """
+    Transform coordinates using glued space instead of clipping.
+    
+    Args:
+    x (torch.Tensor): Input coordinates
+    lb (float): Lower bound
+    ub (float): Upper bound
+    
+    Returns:
+    torch.Tensor: Transformed coordinates within bounds
+    """
+    range_size = ub - lb 
+    # Normalize to [0, range_size] first by subtracting lb
+    normalized = x - lb
+    # Use modulo to wrap around, then add lb back
+    wrapped = normalized % range_size + lb
+    return wrapped
+
+
+class Pulse_real_glued(Algorithm):
     def __init__(self, pop_size, dim, lb, ub, p_c, p_m, tournament_size=3, tau_max=3, debug=False):
         super().__init__()
         self.pop_size = pop_size
@@ -207,7 +227,7 @@ class Pulse_real(Algorithm):
         self.lb = lb
         self.ub = ub
         self.crossover = batch_crossover
-        self.mutation = None #mutation
+        self.mutation = None  # mutation
         self.n_offspring = self.pop_size
         assert self.n_offspring % 2 == 0, "n_offspring must be even"
         self.tournament_size = tournament_size
@@ -328,8 +348,9 @@ class Pulse_real(Algorithm):
         if self.debug:
             print("Offspring shape after mutation: {}", offspring.shape)
         
-        # Ensure offspring are within bounds
-        offspring = clamp(offspring, self.lb, self.ub) # this is pathetic, glued spaces is the way to go 
+        # Ensure offspring are within bounds using glued space transformation
+        offspring = glued_space_transform(offspring, self.lb, self.ub)
+        
         self.pref = pref
         self.offspring = offspring
         self.parents = parents
@@ -345,17 +366,17 @@ class Pulse_real(Algorithm):
                    torch.max(fitness),
                    torch.mean(fitness))
         
-        state = self._update_variables(fitness)
+        self._update_variables(fitness)
         if self.debug:
-            print("Updated successful crossovers: {}", state.succ_cross)
-            print("Updated total crossovers: {}", state.total_cross)
+            print("Updated successful crossovers: {}", self.succ_cross)
+            print("Updated total crossovers: {}", self.total_cross)
         
         self._update_contrib()
         if self.debug:
-            print("Updated contribution values: {} \n\n-------------------------\n", state.contrib)
+            print("Updated contribution values: {} \n\n-------------------------\n", self.contrib)
         
-        return state
+        return self
     
     def record_step(self):
         """A callback function to record the information of the algorithm"""
-        return {"pop": self.population, "fit": self.fitness}
+        return {"pop": self.population, "fit": self.fitness} 

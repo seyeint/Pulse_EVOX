@@ -7,9 +7,7 @@ from evox import algorithms, problems, operators
 from evox.problems.numerical import CEC2022
 from evox.workflows import EvalMonitor, StdWorkflow
 from tqdm import tqdm
-from jax_version_depra.pulse_jax import Pulse
-from jax_version_depra.pulse_real_jax import Pulse_real
-from jax_version_depra.pulse_real_glued_jax import Pulse_real_glued
+from pulse_real import Pulse_real
 from utils import *
 
 n_dims = 20
@@ -24,41 +22,24 @@ pso = algorithms.PSO(
     ub=torch.full(size=(n_dims,), fill_value=ub),
     pop_size=400,)
 cma_es = algorithms.CMAES(
-    center_init=torch.zeros(shape=(n_dims,)),
-    init_stdev=1.0,
+    mean_init=torch.zeros(size=(n_dims,)),
+    sigma=1.0,
     pop_size=400,)
 de = algorithms.DE(
     lb=torch.full(size=(n_dims,), fill_value=lb),
     ub=torch.full(size=(n_dims,), fill_value=ub),
     pop_size=400,)
 
-pulse = Pulse(
-    pop_size=400, dim=n_dims*bits_per_dim,  # 20-bit encoding for each solution
-    mutation=operators.mutation.Bitflip(0.0),  # no mutation
-    p_c=1.0, p_m=0.0,
-    debug=False)  # Set to True to enable debug prints
-
 pulse_real = Pulse_real(
     pop_size=400, 
     dim=n_dims,  # Now working directly in real space
     lb=lb, ub=ub,
-    mutation=operators.mutation.Gaussian(stdvar=0.0),
     p_c=1.0, p_m=0.0,
     debug=False)  # Set to True to enable debug prints
 
-pulse_real_glued = Pulse_real_glued(
-    pop_size=400, 
-    dim=n_dims,  # Now working directly in real space
-    lb=lb, ub=ub,
-    mutation=operators.mutation.Gaussian(stdvar=0.0),
-    p_c=1.0, p_m=0.0,
-    debug=False)  # Set to True to enable debug prints
-
-algorithm_list = [pso, de, pulse, pulse_real, pulse_real_glued] #pso, de, pulse, pulse_real, 
+algorithm_list = [pso, de, pulse_real] #pso, de, pulse, pulse_real, 
 
 n_seeds = 3
-#main_key = jax.random.PRNGKey(96)
-#seed_keys = jax.random.split(main_key, n_seeds)
 n_iterations = 400 
 
 functions_final_fitness = np.full((len(problem_set), len(algorithm_list), n_seeds), fill_value=[None]*n_seeds)
@@ -68,17 +49,19 @@ elite_trajectories = np.full((len(problem_set), len(algorithm_list), n_seeds, n_
 
 t0 = time.time()
 for x in range(n_seeds):
-    #key = seed_keys[x]
+    # Set different random seed for each run
+    torch.manual_seed(x)  # x is the seed index from 0 to n_seeds-1
     for i, algo in enumerate(algorithm_list):
         print(f'\n\nSeed {x+1} - Algorithm working on functions: {type(algo).__name__}\n{"-"*39}')
-        if isinstance(algo, Pulse):
-            sol_transforms = [lambda x: decode_solution(x, lb, ub, n_dims)]
+        if x==30:#isinstance(algo, Pulse):
+            print("Pulse-nope error")
+            sol_transform = [lambda x: decode_solution(x, lb, ub, n_dims)]
         else:
-            sol_transforms = []
+            sol_transform = []
 
         for j, function in enumerate(problem_set):
             monitor = EvalMonitor()
-            workflow = StdWorkflow(algo, function, monitor, solution_transforms=sol_transforms)
+            workflow = StdWorkflow(algo, function, monitor)
             elite = float("inf")
             state = workflow.init_step()
             #compile step function

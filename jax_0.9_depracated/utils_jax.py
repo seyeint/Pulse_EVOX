@@ -1,10 +1,11 @@
+from jax import jit, vmap
 from functools import partial
 import pandas as pd
 import seaborn as sns
+import jax.numpy as jnp
 import matplotlib.pyplot as plt
 import warnings
 import numpy as np
-from evox.core import vmap
 
 warnings.filterwarnings("ignore")
 
@@ -13,6 +14,7 @@ FUNCTION_NAMES = [
     "f7", "f8", "f9", "f10", "f11", "f12"
 ]
 
+@partial(jit, static_argnums=[3])  # n_dims is static
 def decode_solution(bitstring_population, lb, ub, n_dims):
     """bitstring_population (pop_size, n_dims * bits_per_dim)"""
     return vmap(partial(_bitstring_to_real_number, lb, ub, n_dims))(
@@ -31,7 +33,7 @@ def _decode_real_number(lb, ub, bits_per_dim, binary):
     """Decode a single real number
     Binary is a bool array. lb and ub defines the lower and upper bound of the range.
     """
-    decimal = np.sum(binary * (2 ** np.arange(bits_per_dim)[::-1]))
+    decimal = jnp.sum(binary * (2 ** jnp.arange(bits_per_dim)[::-1]))
     normalized = decimal / (2**bits_per_dim - 1)
     real_number = lb + (ub - lb) * normalized
     return real_number

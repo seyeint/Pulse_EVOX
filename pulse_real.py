@@ -48,8 +48,8 @@ def tournament(_idx, population, fitness, tournament_size):
     """
     indices = torch.randint(size=(tournament_size,), low=0, high=population.shape[0])
     selected = fitness[indices]
-    winner_index = indices[torch.argmin(selected)]
-    return winner_index
+    winner_idx = torch.argmin(selected, dim=0, keepdim=True)
+    return torch.gather(indices, 0, winner_idx).squeeze()
 
 
 def difference_function_tournament(parent1, tau, population, fitness, tournament_size, tau_max, minimization, n_dims, lb, ub, debug_flag=False):
@@ -200,14 +200,14 @@ def batch_crossover(pref, parents):
 
 
 class Pulse_real(Algorithm):
-    def __init__(self, pop_size, dim, lb, ub, mutation, p_c, p_m, tournament_size=3, tau_max=3, debug=False):
+    def __init__(self, pop_size, dim, lb, ub, p_c, p_m, tournament_size=3, tau_max=3, debug=False):
         super().__init__()
         self.pop_size = pop_size
         self.dim = dim
         self.lb = lb
         self.ub = ub
         self.crossover = batch_crossover
-        self.mutation = mutation
+        self.mutation = None #mutation
         self.n_offspring = self.pop_size
         assert self.n_offspring % 2 == 0, "n_offspring must be even"
         self.tournament_size = tournament_size
@@ -324,7 +324,7 @@ class Pulse_real(Algorithm):
             print("Offspring shape after crossover: {}", offspring.shape)
 
         # mutation
-        offspring = self.mutation(offspring)
+        #offspring = self.mutation(offspring)
         if self.debug:
             print("Offspring shape after mutation: {}", offspring.shape)
         

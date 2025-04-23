@@ -178,7 +178,7 @@ def crossover(pref, parents):
     tuple: Two offspring created by the selected crossover method.
     """
     return torch.where(
-        pref == 1, # 4?
+        pref == 3,
         non_geometric_crossover(parents),
         geometric_crossover(parents)
     )

@@ -37,7 +37,7 @@ def _decode_real_number(lb, ub, bits_per_dim, binary):
     return real_number
 
 
-def compile_and_boxplot(algorithm_list, functions_final_fitness, n_seeds, save_fig=False):
+def compile_and_boxplot(algorithm_list, functions_final_fitness, n_seeds, save_fig=True):
     """Transforms our array of final results in order to create plot with ABF (average best fitness) distributions for all algorithms."""
 
     function_names = FUNCTION_NAMES
@@ -96,7 +96,7 @@ def compile_and_boxplot(algorithm_list, functions_final_fitness, n_seeds, save_f
         k += 1
 
     if save_fig:
-        plt.savefig("resources/boxplot_test.png", bbox_inches="tight")
+        plt.savefig("resources/boxplot_ABF.png", bbox_inches="tight")
 
     plt.show()
 

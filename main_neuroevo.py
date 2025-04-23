@@ -1,34 +1,54 @@
 import torch
 import torch.nn as nn
 from evox import algorithms
-from evox.problems.neuroevolution.brax import BraxProblem
+from evox.problems.neuroevolution.mujoco_playground import MujocoProblem
 from evox.utils import ParamsAndVector
 from evox.workflows import EvalMonitor, StdWorkflow
 from pulse_real import Pulse_real
 from pulse_real_glued import Pulse_real_glued
 import time
+import os
+
+# Optional: Mujoco rendering backend (if needed later)
+os.environ["MUJOCO_GL"] = "osmesa"
 
 class SimpleMLP(nn.Module):
     def __init__(self):
         super().__init__()
-        # HalfCheetah: 17-dim observation, 6-dim action
-        self.features = nn.Sequential(nn.Linear(17, 8), nn.Tanh(), nn.Linear(8, 6))
+        # Adjust these dimensions based on Mujoco Playground's envs
+        self.features = nn.Sequential(
+            nn.Linear(5, 128),  
+            nn.Tanh(),
+            nn.Linear(128, 128),
+            nn.Tanh(),
+            nn.Linear(128, 1) 
+        )
 
     def forward(self, x):
         return torch.tanh(self.features(x))
-
+    
 def main():
+
+    """Available envs: ('AcrobotSwingup', 'AcrobotSwingupSparse', 'BallInCup', 'CartpoleBalance', 'CartpoleBalanceSparse', 
+    'CartpoleSwingup', 'CartpoleSwingupSparse', 'CheetahRun', 'FingerSpin', 'FingerTurnEasy', 'FingerTurnHard', 'FishSwim', 
+    'HopperHop', 'HopperStand', 'HumanoidStand', 'HumanoidWalk', 'HumanoidRun', 'PendulumSwingup', 'PointMass', 'ReacherEasy', 
+    'ReacherHard', 'SwimmerSwimmer6', 'WalkerRun', 'WalkerStand', 'WalkerWalk', 'BarkourJoystick', 'BerkeleyHumanoidJoystickFlatTerrain', 
+    'BerkeleyHumanoidJoystickRoughTerrain', 'G1JoystickFlatTerrain', 'G1JoystickRoughTerrain', 'Go1JoystickFlatTerrain', 'Go1JoystickRoughTerrain',
+    'Go1Getup', 'Go1Handstand', 'Go1Footstand', 'H1InplaceGaitTracking', 'H1JoystickGaitTracking', 'Op3Joystick', 'SpotFlatTerrainJoystick',
+    'SpotGetup', 'SpotJoystickGaitTracking', 'T1JoystickFlatTerrain', 'T1JoystickRoughTerrain', 'AlohaHandOver', 'AlohaSinglePegInsertion',
+    'PandaPickCube', 'PandaPickCubeOrientation', 'PandaPickCubeCartesian', 'PandaOpenCabinet', 'PandaRobotiqPushCube', 'LeapCubeReorient', 'LeapCubeRotateZAxis')"""
+
     # Config
-    env_name = "halfcheetah"  # Change as needed
-    algo_name = "PSO"  # Options: "PSO", "DE", "Pulse_real", "Pulse_real_glued"
-    pop_size = 128
-    generations = 10
-    seed = 42
+    env_name = "CartpoleBalance"  
+    algo_name = "Pulse_real"  # Options: "PSO", "DE", "Pulse_real", "Pulse_real_glued"
+    pop_size = 512
+    generations = 1000
+    seed = 77
 
     # Device setup
     device = "cuda" if torch.cuda.is_available() else "cpu"
     if device == "cpu" and torch.backends.mps.is_available():
-        device = "cpu"#"mps" doesn't work
+        device = "cpu"  # "mps" not worth for specific reasons like JAX mujoco backend not supporting mps and more
     print(f"Using device: {device}")
 
     # Seed setup
@@ -56,8 +76,8 @@ def main():
     # Pick the algorithm
     algorithm = algorithms_dict[algo_name]
 
-    # Brax problem
-    problem = BraxProblem(
+    # Mujoco problem (replaced BraxProblem)
+    problem = MujocoProblem(
         policy=model,
         env_name=env_name,
         max_episode_length=1000,
@@ -67,7 +87,7 @@ def main():
     )
 
     # Monitor and workflow
-    monitor = EvalMonitor(topk=3, device=device)
+    monitor = EvalMonitor(topk=1, device=device)
     workflow = StdWorkflow(
         algorithm=algorithm,
         problem=problem,
@@ -79,26 +99,25 @@ def main():
 
     # Run
     print(f"\nRunning {algo_name} on {env_name}")
-    start_time = time.time()
+    total_start_time = time.time()
 
     for i in range(generations):
-        if i % 10 == 0:
-            print(f"Generation {i}")
-            if i > 0:
-                print(f"Current best fitness: {monitor.get_best_fitness()}")
+        iter_start_time = time.time()
         workflow.step()
+        iter_end_time = time.time()
+        
+        # Print progress after every iteration
+        print(f"Generation {i} - Best fitness: {monitor.get_best_fitness():.4f} - Time: {iter_end_time - iter_start_time:.2f}s")
 
-    end_time = time.time()
-    print(f"\nTime taken: {end_time - start_time:.2f} seconds")
-    print(f"Top fitness: {monitor.get_best_fitness()}")
+    total_end_time = time.time()
+    print(f"\nTotal time taken: {total_end_time - total_start_time:.2f} seconds")
+    print(f"Final best fitness: {monitor.get_best_fitness()}")
     
     # Save best params
     best_params = adapter.to_params(monitor.get_best_solution())
-    torch.save(best_params, f"{env_name}_{algo_name}_best_params.pt")
-
-    # Optional visualization (uncomment in a notebook)
-    #from IPython.display import HTML
-    #HTML(problem.visualize(best_params))
+    torch.save(best_params, f"resources/model_weights/{env_name}_{algo_name}_best_params.pt")
+    #problem.visualize(best_params, output_type='gif', output_path=f"resources/{env_name}_{algo_name}_best_params")
+    problem.visualize(best_params, output_type='gif', output_path=f"resources/{env_name}_{algo_name}_best_params.gif", camera="fixed")
 
 if __name__ == "__main__":
     main()

@@ -9,6 +9,7 @@ from evox.workflows import EvalMonitor, StdWorkflow
 from tqdm import tqdm
 from pulse_real import Pulse_real
 from pulse_real_glued import Pulse_real_glued
+from pulse_real_glued2 import RidgeAwareGA
 import utils
 from utils import *
 
@@ -58,9 +59,17 @@ pulse_real_glued = Pulse_real_glued(
     p_c=1.0, p_m=0.0,
     debug=False) 
 
-algorithm_list = [pso, de, pulse_real, pulse_real_glued]
+ridge_aware_ga = RidgeAwareGA(
+    pop_size=400,
+    dim=n_dims,
+    lb=lb, ub=ub,
+    debug=False,
+    device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
+)
 
-n_seeds = 30
+algorithm_list = [pso,cma_es,ridge_aware_ga, de, pulse_real, pulse_real_glued]
+
+n_seeds = 5
 n_iterations = 777
 
 # Initialize elite_trajectories with one extra slot for initial fitness

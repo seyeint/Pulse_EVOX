@@ -6,6 +6,7 @@ from evox.utils import ParamsAndVector
 from evox.workflows import EvalMonitor, StdWorkflow
 from pulse_real import Pulse_real
 from pulse_real_glued import Pulse_real_glued
+from pulse_real_glued2 import RidgeAwareGA
 import time
 import os
 
@@ -17,11 +18,18 @@ class SimpleMLP(nn.Module):
         super().__init__()
         # Adjust these dimensions based on Mujoco Playground's envs
         self.features = nn.Sequential(
-            nn.Linear(5, 128),  
-            nn.Tanh(),
+            nn.Linear(94, 128),
+            #nn.LayerNorm(64),  
+            nn.ReLU(),
             nn.Linear(128, 128),
-            nn.Tanh(),
-            nn.Linear(128, 1) 
+            #nn.LayerNorm(64),
+            nn.ReLU(),
+            nn.Linear(128, 512),
+            #nn.LayerNorm(64),
+            nn.ReLU(),
+            nn.Linear(512, 128), 
+            nn.ReLU(),
+            nn.Linear(128, 6)
         )
 
     def forward(self, x):
@@ -29,21 +37,25 @@ class SimpleMLP(nn.Module):
     
 def main():
 
-    """Available envs: ('AcrobotSwingup', 'AcrobotSwingupSparse', 'BallInCup', 'CartpoleBalance', 'CartpoleBalanceSparse', 
+    """
+    Available envs: ('AcrobotSwingup', 'AcrobotSwingupSparse', 'BallInCup', 'CartpoleBalance', 'CartpoleBalanceSparse', 
     'CartpoleSwingup', 'CartpoleSwingupSparse', 'CheetahRun', 'FingerSpin', 'FingerTurnEasy', 'FingerTurnHard', 'FishSwim', 
     'HopperHop', 'HopperStand', 'HumanoidStand', 'HumanoidWalk', 'HumanoidRun', 'PendulumSwingup', 'PointMass', 'ReacherEasy', 
     'ReacherHard', 'SwimmerSwimmer6', 'WalkerRun', 'WalkerStand', 'WalkerWalk', 'BarkourJoystick', 'BerkeleyHumanoidJoystickFlatTerrain', 
     'BerkeleyHumanoidJoystickRoughTerrain', 'G1JoystickFlatTerrain', 'G1JoystickRoughTerrain', 'Go1JoystickFlatTerrain', 'Go1JoystickRoughTerrain',
     'Go1Getup', 'Go1Handstand', 'Go1Footstand', 'H1InplaceGaitTracking', 'H1JoystickGaitTracking', 'Op3Joystick', 'SpotFlatTerrainJoystick',
     'SpotGetup', 'SpotJoystickGaitTracking', 'T1JoystickFlatTerrain', 'T1JoystickRoughTerrain', 'AlohaHandOver', 'AlohaSinglePegInsertion',
-    'PandaPickCube', 'PandaPickCubeOrientation', 'PandaPickCubeCartesian', 'PandaOpenCabinet', 'PandaRobotiqPushCube', 'LeapCubeReorient', 'LeapCubeRotateZAxis')"""
+    'PandaPickCube', 'PandaPickCubeOrientation', 'PandaPickCubeCartesian', 'PandaOpenCabinet', 'PandaRobotiqPushCube', 'LeapCubeReorient', 'LeapCubeRotateZAxis')
+
+    https://github.com/google-deepmind/mujoco_playground/tree/main/mujoco_playground/_src/dm_control_suite/xmls - for camera names
+    """
 
     # Config
-    env_name = "CartpoleBalance"  
-    algo_name = "Pulse_real"  # Options: "PSO", "DE", "Pulse_real", "Pulse_real_glued"
-    pop_size = 512
-    generations = 1000
-    seed = 77
+    env_name = "WalkerWalk"  
+    algo_name = "RidgeAwareGA"  # Options: "PSO", "DE", "Pulse_real", "Pulse_real_glued"
+    pop_size = 64
+    generations = 150
+    seed = 777
 
     # Device setup
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -62,15 +74,17 @@ def main():
     model = SimpleMLP().to(device)
     adapter = ParamsAndVector(dummy_model=model)
     pop_center = adapter.to_vector(dict(model.named_parameters()))
-    lb = torch.full_like(pop_center, -5)
-    ub = torch.full_like(pop_center, 5)
+    b = 10
+    lb = torch.full_like(pop_center, -b)
+    ub = torch.full_like(pop_center, b)
 
     # Initialize all algorithms (but we'll pick one)
     algorithms_dict = {
         "PSO": algorithms.PSO(pop_size=pop_size, lb=lb, ub=ub, device=device),
         "DE": algorithms.DE(pop_size=pop_size, lb=lb, ub=ub, device=device),
-        "Pulse_real": Pulse_real(pop_size=pop_size, dim=len(pop_center), lb=-5, ub=5, p_c=1.0, p_m=0.0, debug=False),
-        "Pulse_real_glued": Pulse_real_glued(pop_size=pop_size, dim=len(pop_center), lb=-5, ub=5, p_c=1.0, p_m=0.0, debug=False),
+        "Pulse_real": Pulse_real(pop_size=pop_size, dim=len(pop_center), lb=-b, ub=b, p_c=1.0, p_m=0.0, debug=False),
+        "Pulse_real_glued": Pulse_real_glued(pop_size=pop_size, dim=len(pop_center), lb=-b, ub=b, p_c=1.0, p_m=0.0, debug=False),
+        "RidgeAwareGA": RidgeAwareGA(pop_size=pop_size, dim=len(pop_center), lb=-b, ub=b, debug=False, device=device)
     }
 
     # Pick the algorithm
@@ -117,7 +131,8 @@ def main():
     best_params = adapter.to_params(monitor.get_best_solution())
     torch.save(best_params, f"resources/model_weights/{env_name}_{algo_name}_best_params.pt")
     #problem.visualize(best_params, output_type='gif', output_path=f"resources/{env_name}_{algo_name}_best_params")
-    problem.visualize(best_params, output_type='gif', output_path=f"resources/{env_name}_{algo_name}_best_params.gif", camera="fixed")
+    problem.visualize(best_params, output_type='gif', output_path=f"resources/1_{env_name}_{algo_name}_best_params.gif", camera="side")
+    problem.visualize(best_params, output_type='gif', output_path=f"resources/2_{env_name}_{algo_name}_best_params.gif", camera="back")
 
 if __name__ == "__main__":
     main()

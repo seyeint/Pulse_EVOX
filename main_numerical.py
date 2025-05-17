@@ -9,7 +9,7 @@ from evox.workflows import EvalMonitor, StdWorkflow
 from tqdm import tqdm
 from pulse_real import Pulse_real
 from pulse_real_glued import Pulse_real_glued
-from pulse_real_glued2 import RidgeAwareGA
+from pulse_real_glued_2 import Pulse
 import utils
 from utils import *
 
@@ -59,7 +59,7 @@ pulse_real_glued = Pulse_real_glued(
     p_c=1.0, p_m=0.0,
     debug=False) 
 
-ridge_aware_ga = RidgeAwareGA(
+ridge_aware_ga = Pulse(
     pop_size=400,
     dim=n_dims,
     lb=lb, ub=ub,

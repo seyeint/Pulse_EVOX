@@ -6,7 +6,7 @@ from evox.utils import ParamsAndVector
 from evox.workflows import EvalMonitor, StdWorkflow
 from pulse_real import Pulse_real
 from pulse_real_glued import Pulse_real_glued
-from pulse_real_glued2 import RidgeAwareGA
+from pulse_real_glued_2 import Pulse
 import time
 import os
 
@@ -14,26 +14,20 @@ import os
 os.environ["MUJOCO_GL"] = "osmesa"
 
 class SimpleMLP(nn.Module):
-    def __init__(self):
+    def __init__(self, in_dim=94, hidden=256, action_dim=6):
         super().__init__()
-        # Adjust these dimensions based on Mujoco Playground's envs
-        self.features = nn.Sequential(
-            nn.Linear(94, 128),
-            #nn.LayerNorm(64),  
+        self.net = nn.Sequential(
+            nn.Linear(in_dim, hidden),
             nn.ReLU(),
-            nn.Linear(128, 128),
-            #nn.LayerNorm(64),
+            nn.Linear(hidden, hidden),
             nn.ReLU(),
-            nn.Linear(128, 512),
-            #nn.LayerNorm(64),
-            nn.ReLU(),
-            nn.Linear(512, 128), 
-            nn.ReLU(),
-            nn.Linear(128, 6)
+            nn.Linear(hidden, 64),
+            #nn.ReLU(),
+            nn.Linear(64, action_dim),
         )
 
     def forward(self, x):
-        return torch.tanh(self.features(x))
+        return torch.tanh(self.net(x))
     
 def main():
 
@@ -53,7 +47,7 @@ def main():
     # Config
     env_name = "WalkerWalk"  
     algo_name = "RidgeAwareGA"  # Options: "PSO", "DE", "Pulse_real", "Pulse_real_glued"
-    pop_size = 64
+    pop_size = 256
     generations = 150
     seed = 777
 
@@ -74,7 +68,7 @@ def main():
     model = SimpleMLP().to(device)
     adapter = ParamsAndVector(dummy_model=model)
     pop_center = adapter.to_vector(dict(model.named_parameters()))
-    b = 10
+    b = 1
     lb = torch.full_like(pop_center, -b)
     ub = torch.full_like(pop_center, b)
 
@@ -84,7 +78,7 @@ def main():
         "DE": algorithms.DE(pop_size=pop_size, lb=lb, ub=ub, device=device),
         "Pulse_real": Pulse_real(pop_size=pop_size, dim=len(pop_center), lb=-b, ub=b, p_c=1.0, p_m=0.0, debug=False),
         "Pulse_real_glued": Pulse_real_glued(pop_size=pop_size, dim=len(pop_center), lb=-b, ub=b, p_c=1.0, p_m=0.0, debug=False),
-        "RidgeAwareGA": RidgeAwareGA(pop_size=pop_size, dim=len(pop_center), lb=-b, ub=b, debug=False, device=device)
+        "RidgeAwareGA": Pulse(pop_size=pop_size, dim=len(pop_center), lb=-b, ub=b, debug=False, device=device)
     }
 
     # Pick the algorithm

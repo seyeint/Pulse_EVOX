@@ -375,6 +375,10 @@ class Pulse_real_glued(Algorithm):
         if self.debug:
             print("Updated contribution values: {} \n\n-------------------------\n", self.contrib)
         
+        # (μ,λ) replacement: offspring become the new population
+        self.population = offspring
+        self.fitness = fitness
+
         return self
     
     def record_step(self):

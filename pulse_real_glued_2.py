@@ -31,7 +31,7 @@ def glued_space(x, lb, ub):
 # ---------------------------------------------------------------------
 # variation operators
 # ---------------------------------------------------------------------
-def geometric_crossover(p1, p2):
+def geometric_crossover(p1, p2, sigma):
     """One point"""
     alpha = torch.rand(1, device=p1.device)
     return alpha * p1 + (1 - alpha) * p2, (1 - alpha) * p1 + alpha * p2
@@ -161,8 +161,25 @@ class Pulse(Algorithm):
         self._sum_reward.zero_(); self._cnt_op.zero_()
 
         # 1/5-success rule
-        success = (off_fit_pair < parent_avg.unsqueeze(1)) if self.minimize \
-                  else (off_fit_pair > parent_avg.unsqueeze(1))
+        parent_fit = torch.stack([fit_old[p1_idx], fit_old[p2_idx]], dim=1)  # (λ2, 2)
+        best_parent = parent_fit.min(dim=1)[0] if self.minimize else parent_fit.max(dim=1)[0]  # (λ2,)
+        
+        # Better than best parent
+        better = (off_fit_pair < best_parent.unsqueeze(1)) if self.minimize else (off_fit_pair > best_parent.unsqueeze(1))
+        
+        # Different from parents
+        epsilon = 1e-6
+        offspring_pairs = offspring.view(λ2, 2, self.dim)  # (λ2, 2, dim)
+        parent_pairs = torch.stack([pop_old[p1_idx], pop_old[p2_idx]], dim=1)  # (λ2, 2, dim)
+        
+        is_eq = torch.zeros(λ2, 2, dtype=torch.bool, device=offspring.device)
+        for i in range(λ2):
+            for j in range(2):  # Each offspring
+                is_eq[i, j] = (torch.all(torch.abs(offspring_pairs[i, j] - parent_pairs[i, 0]) < epsilon) |
+                              torch.all(torch.abs(offspring_pairs[i, j] - parent_pairs[i, 1]) < epsilon))
+        
+        # Success: better AND different
+        success = ~is_eq & better
         sr = success.float().mean()
         self.sigma *= torch.exp(0.2 * (sr - 0.2))
         # Prevent extreme values of sigma, scale based on problem bounds

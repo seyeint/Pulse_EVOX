@@ -46,8 +46,8 @@ def main():
 
     # Config
     env_name = "WalkerWalk"  
-    algo_name = "RidgeAwareGA"  # Options: "PSO", "DE", "Pulse_real", "Pulse_real_glued"
-    pop_size = 256
+    algo_name = "Pulse"  # Options: "PSO", "DE", "Pulse_real", "Pulse_real_glued"
+    pop_size = 700
     generations = 150
     seed = 777
 
@@ -78,7 +78,7 @@ def main():
         "DE": algorithms.DE(pop_size=pop_size, lb=lb, ub=ub, device=device),
         "Pulse_real": Pulse_real(pop_size=pop_size, dim=len(pop_center), lb=-b, ub=b, p_c=1.0, p_m=0.0, debug=False),
         "Pulse_real_glued": Pulse_real_glued(pop_size=pop_size, dim=len(pop_center), lb=-b, ub=b, p_c=1.0, p_m=0.0, debug=False),
-        "RidgeAwareGA": Pulse(pop_size=pop_size, dim=len(pop_center), lb=-b, ub=b, debug=False, device=device)
+        "Pulse": Pulse(pop_size=pop_size, dim=len(pop_center), lb=-b, ub=b, debug=False, device=device)
     }
 
     # Pick the algorithm
@@ -89,7 +89,7 @@ def main():
         policy=model,
         env_name=env_name,
         max_episode_length=1000,
-        num_episodes=3,
+        num_episodes=5,
         pop_size=pop_size,
         device=device,
     )
@@ -123,10 +123,10 @@ def main():
     
     # Save best params
     best_params = adapter.to_params(monitor.get_best_solution())
-    torch.save(best_params, f"resources/model_weights/{env_name}_{algo_name}_best_params.pt")
+    torch.save(best_params, f"resources/neuroevolution/model_weights/{env_name}_{algo_name}_best_params.pt")
     #problem.visualize(best_params, output_type='gif', output_path=f"resources/{env_name}_{algo_name}_best_params")
-    problem.visualize(best_params, output_type='gif', output_path=f"resources/1_{env_name}_{algo_name}_best_params.gif", camera="side")
-    problem.visualize(best_params, output_type='gif', output_path=f"resources/2_{env_name}_{algo_name}_best_params.gif", camera="back")
+    problem.visualize(best_params, output_type='gif', output_path=f"resources/neuroevolution/gifs/1_{env_name}_{algo_name}_best_params.gif", camera="side")
+    problem.visualize(best_params, output_type='gif', output_path=f"resources/neuroevolution/gifs/2_{env_name}_{algo_name}_best_params.gif", camera="back")
 
 if __name__ == "__main__":
     main()

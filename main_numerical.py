@@ -4,116 +4,159 @@ import numpy as np
 import torch
 from evox import algorithms
 from evox.problems.numerical import CEC2022
-from evox.problems.numerical import basic
 from evox.workflows import EvalMonitor, StdWorkflow
 from tqdm import tqdm
-from pulse_real import Pulse_real
-from pulse_real_glued import Pulse_real_glued
-from pulse_real_glued_2 import Pulse
+from pulse4 import PulseConvexRayGA
+from pulse7 import PulseExclusive, OPS, glued_space
+from pulse14 import PulseGreedy
 import utils
 from utils import *
 
+# ---------------------------------------------------------------------------
+# P7 with fixed ρ (best static Pulse variant)
+# ---------------------------------------------------------------------------
+class P7Fixed(PulseExclusive):
+    def __init__(self, fixed_rho, **kwargs):
+        super().__init__(**kwargs)
+        self.fixed_rho = fixed_rho
+    def step(self):
+        r = self.fixed_rho
+        q = torch.tensor([1.0 - r, r], device=self.population.device)
+        self.sigma = self.σ_min * (1.0 - r) + self.σ_max * r
+        pairs = self.pop_size // 2
+        p1_idx, p2_idx = self._choose_parents_exclusive(pairs)
+        op_idx = torch.multinomial(q, pairs, replacement=True)
+        children = []
+        for k, i1, i2 in zip(op_idx.tolist(), p1_idx.tolist(), p2_idx.tolist()):
+            c1, c2 = OPS[k](self.population[i1], self.population[i2], self.sigma)
+            children.extend([c1, c2])
+        offspring = glued_space(torch.stack(children), self.lb, self.ub)
+        off_fit = self.evaluate(offspring)
+        comb = torch.cat([self.population, offspring])
+        cfit = torch.cat([self.fitness, off_fit])
+        best_idx = torch.topk(-cfit if self.minimize else cfit, self.pop_size).indices
+        self.population, self.fitness = comb[best_idx], cfit[best_idx]
+        return self
+
+# ---------------------------------------------------------------------------
+# Config
+# ---------------------------------------------------------------------------
 n_dims = 20
 lb, ub = -100, 100
-problem_set = ([CEC2022(x, n_dims) for x in range(1, 13)])
-problem_set_basic = [
-    basic.Ackley(),
-    basic.Griewank(),
-    basic.Rastrigin(),
-    basic.Rosenbrock(),
-    basic.Schwefel(),
-    basic.Sphere()
-]
+lb_t = torch.full(size=(n_dims,), fill_value=lb)
+ub_t = torch.full(size=(n_dims,), fill_value=ub)
 
-active_problem_set = problem_set 
-utils.FUNCTION_NAMES = [f"f{i+1}" for i in range(len(active_problem_set))] if active_problem_set is problem_set else [type(p).__name__ for p in active_problem_set]
+problem_set_cec2022 = [CEC2022(x, n_dims) for x in range(1, 13)]
+active_problem_set = problem_set_cec2022
+utils.FUNCTION_NAMES = [f"f{i+1}" for i in range(len(active_problem_set))]
 
 print(f'\n{len(active_problem_set)} functions loaded in the active_problem_set.')
-
-pso = algorithms.PSO(
-    lb=torch.full(size=(n_dims,), fill_value=lb),
-    ub=torch.full(size=(n_dims,), fill_value=ub),
-    pop_size=400
-)
-cma_es = algorithms.CMAES(
-    mean_init=torch.zeros(size=(n_dims,)),
-    sigma=1,
-    pop_size=400
-)
-de = algorithms.DE(
-    lb=torch.full(size=(n_dims,), fill_value=lb),
-    ub=torch.full(size=(n_dims,), fill_value=ub),
-    pop_size=400
-)
-pulse_real = Pulse_real(
-    pop_size=400, 
-    dim=n_dims,  # Now working directly in real space
-    lb=lb, ub=ub,
-    p_c=1.0, p_m=0.0,
-    debug=False) 
-
-pulse_real_glued = Pulse_real_glued(
-    pop_size=400, 
-    dim=n_dims,
-    lb=lb, ub=ub,
-    p_c=1.0, p_m=0.0,
-    debug=False) 
-
-ridge_aware_ga = Pulse(
-    pop_size=400,
-    dim=n_dims,
-    lb=lb, ub=ub,
-    debug=False,
-    device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
-)
-
-algorithm_list = [pso,cma_es,ridge_aware_ga, de, pulse_real, pulse_real_glued]
 
 n_seeds = 5
 n_iterations = 777
 
-# Initialize elite_trajectories with one extra slot for initial fitness
-functions_final_fitness = np.full((len(active_problem_set), len(algorithm_list), n_seeds), fill_value=[None]*n_seeds)
-elite_trajectories = np.full((len(active_problem_set), len(algorithm_list), n_seeds, n_iterations + 1), fill_value=np.inf)
+# Algorithm factories
+algo_factories = {
+    "PSO":        lambda: algorithms.PSO(lb=lb_t, ub=ub_t, pop_size=400),
+    "DE":         lambda: algorithms.DE(lb=lb_t, ub=ub_t, pop_size=400),
+    "Pulse4":     lambda: PulseConvexRayGA(pop_size=400, dim=n_dims, lb=lb, ub=ub, debug=False),
+    "P7_r90":     lambda: P7Fixed(fixed_rho=0.90, pop_size=400, dim=n_dims, lb=lb, ub=ub),
+    "P14_borrow": lambda: PulseGreedy(pop_size=400, dim=n_dims, lb=lb, ub=ub, patience=1),
+}
+
+# Algorithms that need eager execution (can't be compiled)
+needs_eager = {"Pulse4", "P7_r90", "P14_borrow"}
+
+# Initialize storage
+functions_final_fitness = np.full(
+    (len(active_problem_set), len(algo_factories), n_seeds), fill_value=[None]*n_seeds
+)
+elite_trajectories = np.full(
+    (len(active_problem_set), len(algo_factories), n_seeds, n_iterations + 1),
+    fill_value=np.inf
+)
 
 t0 = time.time()
 
 for x in range(n_seeds):
-    for i, algo in enumerate(algorithm_list):
-        print(f'\n\nSeed {x+1} - Algorithm working on functions: {type(algo).__name__}\n{"-"*39}')
-        for j, function in enumerate(active_problem_set):
+    for j, function in enumerate(active_problem_set):
+        print(f'\nSeed {x+1} - Function {j+1} ({utils.FUNCTION_NAMES[j]})')
+        print("-" * 50)
+        
+        algorithm_list = [factory() for factory in algo_factories.values()]
+        
+        for i, (algo_key, algo) in enumerate(zip(algo_factories.keys(), algorithm_list)):
+            algo_name = algo_key
+            
+            if hasattr(algo, 'population'):
+                pop_hash = torch.sum(algo.population[0]).item()
+            elif hasattr(algo, 'pop'):
+                pop_hash = torch.sum(algo.pop[0]).item()
+            else:
+                pop_hash = "N/A"
+            print(f"  {algo_name:15} | population hash: {pop_hash:10.4f}")
+            
             monitor = EvalMonitor()
             workflow = StdWorkflow(algo, function, monitor)
             elite = float("inf")
-            state = workflow.init_step()
+            workflow.init_step()
 
-            # Get initial best fitness right after initialization
             best_fitness = monitor.topk_fitness
             elite = min(elite, best_fitness)
             elite_trajectories[j, i, x, 0] = elite
 
-            # Compile step function
-            compiled_step = torch.compile(workflow.step)
+            if algo_name in needs_eager:
+                step_fn = workflow.step
+            else:
+                step_fn = torch.compile(workflow.step, fullgraph=False)
             
-            for k in tqdm(range(n_iterations)):
-                compiled_step()
+            for k in tqdm(range(n_iterations), desc=f"{algo_name}"):
+                step_fn()
                 best_fitness = monitor.topk_fitness
                 elite = min(elite, best_fitness)
                 elite_trajectories[j, i, x, k+1] = elite
                 
             functions_final_fitness[j, i, x] = elite
 
-print(f'Finished, total time: {(time.time()-t0)/60} minutes.')
+print(f'\nFinished, total time: {(time.time()-t0)/60:.1f} minutes.')
 
+# Create a reference algorithm list for plotting
+reference_algorithm_list = [factory() for factory in algo_factories.values()]
 
-""" Save the results for future purposes and visualize them."""
-with open('resources/results', 'wb') as f:
-    pickle.dump(functions_final_fitness, f)
+# Plotting and CSV saving
+compile_and_boxplot(reference_algorithm_list, functions_final_fitness, n_seeds)
+plot_elite_trajectories(reference_algorithm_list, elite_trajectories)
+analyze_initial_fitness_variation(reference_algorithm_list, elite_trajectories)
 
-compile_and_boxplot(algorithm_list, functions_final_fitness, n_seeds)
+# ---------------------------------------------------------------------------
+# Summary table
+# ---------------------------------------------------------------------------
+print("\n" + "=" * 100)
+print("MEDIAN FITNESS ACROSS 5 SEEDS")
+print("=" * 100)
+algo_names = list(algo_factories.keys())
+for j in range(len(active_problem_set)):
+    medians = {}
+    for i, name in enumerate(algo_names):
+        vals = [functions_final_fitness[j, i, s] for s in range(n_seeds)]
+        medians[name] = np.median(vals)
+    best = min(medians.values())
+    row = f"f{j+1:>2}: "
+    for name in algo_names:
+        m = "*" if medians[name] == best else " "
+        row += f"{name}={medians[name]:>12.1f}{m}  "
+    print(row)
 
-# Save the elite trajectories
-with open('resources/elite_trajectories.pkl', 'wb') as f:
-    pickle.dump(elite_trajectories, f)
+# Average ranks
+print("\nAVERAGE RANK:")
+rank_data = {}
+for j in range(len(active_problem_set)):
+    medians = {}
+    for i, name in enumerate(algo_names):
+        vals = [functions_final_fitness[j, i, s] for s in range(n_seeds)]
+        medians[name] = np.median(vals)
+    for rank_pos, name in enumerate(sorted(medians, key=lambda x: medians[x])):
+        rank_data.setdefault(name, []).append(rank_pos + 1)
 
-plot_elite_trajectories(algorithm_list, elite_trajectories)
+for name, ranks in sorted(rank_data.items(), key=lambda x: np.mean(x[1])):
+    print(f"  {name:<15} {np.mean(ranks):.2f}  (ranks: {ranks})")

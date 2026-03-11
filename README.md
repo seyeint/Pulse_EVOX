@@ -11,21 +11,21 @@
 
 ### Elite Fitness Trajectories 
 (RidgeAwareGA is simply Pulse2 but I didn't want to re-run after I started disliking the name)
-![Elite Fitness Trajectories](resources/all_trajectory_plots.png)
+![Elite Fitness Trajectories](resources/numerical/all_trajectory_plots.png)
 
 ### ABF boxplots
-![Boxplot Analysis](resources/boxplot_ABF.png)
+![Boxplot Analysis](resources/numerical/boxplot_ABF.png)
 
 ## Neuroevolution - Walker Walk (MJX) 
 
 Visualization of a MLP evolved with the improved Pulse2 (EA) algorithm for bipedal walking:
 
-![Walker Walk Visualization](resources/1_WalkerWalk_RidgeAwareGA_best_params.gif.gif)
+![Walker Walk Visualization](resources/neuroevolution/gifs/1_WalkerWalk_RidgeAwareGA_best_params.gif.gif)
 
 ## Neuroevolution - Cartpole Balance (MJX)
 
 Visualization of a simple MLP evolved with Pulse (EA) to balance a cartpole:
 
-![Cartpole Balance Visualization](resources/CartpoleBalance_Pulse_real_best_params.gif.gif)
+![Cartpole Balance Visualization](resources/neuroevolution/gifs/CartpoleBalance_Pulse_real_best_params.gif.gif)
 
 

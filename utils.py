@@ -8,10 +8,8 @@ from evox.core import vmap
 
 warnings.filterwarnings("ignore")
 
-FUNCTION_NAMES = [
-    "f1", "f2", "f3", "f4", "f5", "f6",
-    "f7", "f8", "f9", "f10", "f11", "f12"
-]
+# FUNCTION_NAMES will be set dynamically in main_numerical.py based on problem set
+FUNCTION_NAMES = []
 
 def decode_solution(bitstring_population, lb, ub, n_dims):
     """bitstring_population (pop_size, n_dims * bits_per_dim)"""
@@ -56,7 +54,7 @@ def compile_and_boxplot(algorithm_list, functions_final_fitness, n_seeds, save_f
     for i, df in enumerate(cec_2022):
         df.columns = algo_names
         df.index = seed_names
-        df.to_csv(f'resources/csvs/function_{i+1}_results.csv', index=True, index_label='Seed')
+        df.to_csv(f'resources/numerical/boxplot_data/function_{i+1}_results.csv', index=True, index_label='Seed')
 
     fig, axs = plt.subplots(4, 3, figsize=(14, 10))
     k, i, j = 0, 0, 0
@@ -96,13 +94,38 @@ def compile_and_boxplot(algorithm_list, functions_final_fitness, n_seeds, save_f
         k += 1
 
     if save_fig:
-        plt.savefig("resources/boxplot_ABF.png", bbox_inches="tight")
-
-    plt.show()
+        plt.savefig("resources/numerical/boxplot_ABF.png", bbox_inches="tight")
+        plt.close()
+    else:
+        plt.show()
 
 
 def plot_elite_trajectories(algorithm_list, elite_trajectories):
     n_problems, n_algorithms, n_seeds, n_iterations = elite_trajectories.shape
+    
+    # Save trajectory data as individual CSV files
+    algo_names = [type(algo).__name__ for algo in algorithm_list]
+    function_names = FUNCTION_NAMES
+    
+    for j, function_name in enumerate(function_names):
+        for i, algo_name in enumerate(algo_names):
+            for seed in range(n_seeds):
+                trajectory_data = elite_trajectories[j, i, seed, :]
+                
+                # Create DataFrame
+                df = pd.DataFrame({
+                    'generation': range(len(trajectory_data)),
+                    'elite_fitness': trajectory_data,
+                    'algorithm': algo_name,
+                    'function': function_name,
+                    'seed': seed + 1
+                })
+                
+                # Save to CSV
+                filename = f"{algo_name}_{function_name}_seed{seed+1}.csv"
+                df.to_csv(f'resources/numerical/trajectory_data/{filename}', index=False)
+    
+    print(f"Saved {n_problems * n_algorithms * n_seeds} trajectory files to resources/numerical/trajectory_data/")
     
     fig, axs = plt.subplots(4, 3, figsize=(20, 24))
     fig.suptitle('Elite Fitness Trajectories for All Functions', fontsize=16)
@@ -129,11 +152,66 @@ def plot_elite_trajectories(algorithm_list, elite_trajectories):
         ax.set_title(f'Function {function_name}')
         ax.set_xlabel('Generation')
         ax.set_ylabel('Elite Fitness')
-        ax.set_yscale('log')  # Use log scale for fitness values
+        ax.set_yscale('log')  # Using log scale for fitness values
         ax.legend()
         
     plt.tight_layout(rect=[0, 0.03, 1, 0.95])
-    plt.savefig('resources/all_trajectory_plots.png', dpi=300, bbox_inches='tight')
+    plt.savefig('resources/numerical/all_trajectory_plots.png', dpi=300, bbox_inches='tight')
     plt.close()
 
-    print("All trajectory plots have been generated and saved as 'all_trajectory_plots.png' in the 'resources' directory.")
+    print("All trajectory plots have been generated and saved as 'all_trajectory_plots.png' in the 'resources/numerical' directory.")
+
+
+def analyze_initial_fitness_variation(algorithm_list, elite_trajectories):
+    """
+    Creates a plot to analyze initial fitness values across seeds and algorithms to detect potential seeding issues.
+    
+    Args:
+        algorithm_list: List of algorithm objects
+        elite_trajectories: Array of shape (n_problems, n_algorithms, n_seeds, n_iterations+1)
+    """
+    n_problems, n_algorithms, n_seeds, n_iterations = elite_trajectories.shape
+    algo_names = [type(algo).__name__ for algo in algorithm_list]
+    function_names = FUNCTION_NAMES
+    
+    # Extract initial fitness values (index 0 of trajectories)
+    initial_fitness = elite_trajectories[:, :, :, 0]  # Shape: (n_problems, n_algorithms, n_seeds)
+    
+    # Create visualization
+    fig, axes = plt.subplots(4, 3, figsize=(20, 15))
+    fig.suptitle('Initial Fitness Variation Across Seeds (Generation 0)', fontsize=16)
+    
+    for j, function_name in enumerate(function_names):
+        row = j // 3
+        col = j % 3
+        ax = axes[row, col]
+        
+        # Prepare data for this function
+        plot_data = []
+        for i, algo_name in enumerate(algo_names):
+            seed_values = initial_fitness[j, i, :]
+            for seed_idx, value in enumerate(seed_values):
+                plot_data.append({
+                    'Algorithm': algo_name,
+                    'Seed': seed_idx + 1,
+                    'Initial_Fitness': float(value)
+                })
+        
+        df_plot = pd.DataFrame(plot_data)
+        
+        # Create box plot
+        sns.boxplot(data=df_plot, x='Algorithm', y='Initial_Fitness', ax=ax)
+        ax.set_title(f'Function {function_name}')
+        ax.set_yscale('log')
+        ax.tick_params(axis='x', rotation=45)
+        
+        # Add scatter points to show individual seeds
+        sns.stripplot(data=df_plot, x='Algorithm', y='Initial_Fitness', ax=ax, 
+                     color='red', alpha=0.7, size=3)
+    
+    plt.tight_layout()
+    plt.savefig('resources/numerical/initial_fitness_variation_analysis.png', 
+               dpi=300, bbox_inches='tight')
+    plt.close()
+
+    print("Initial fitness variation plot saved to: resources/numerical/initial_fitness_variation_analysis.png")

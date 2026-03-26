@@ -1,0 +1,63 @@
+{
+  "CartpoleSwingup": [
+    {
+      "env_name": "CartpoleSwingup",
+      "seed": 777,
+      "final_reward": 0.0,
+      "total_time_s": 264.6,
+      "num_timesteps": 1000000,
+      "progress": [
+        {
+          "env_steps": 0,
+          "reward": 0.0,
+          "wall_clock_s": 7.4
+        },
+        {
+          "env_steps": 9830400,
+          "reward": 0.0,
+          "wall_clock_s": 49.5
+        },
+        {
+          "env_steps": 19660800,
+          "reward": 0.0,
+          "wall_clock_s": 76.3
+        },
+        {
+          "env_steps": 29491200,
+          "reward": 0.0,
+          "wall_clock_s": 103.1
+        },
+        {
+          "env_steps": 39321600,
+          "reward": 0.0,
+          "wall_clock_s": 129.9
+        },
+        {
+          "env_steps": 49152000,
+          "reward": 0.0,
+          "wall_clock_s": 156.8
+        },
+        {
+          "env_steps": 58982400,
+          "reward": 0.0,
+          "wall_clock_s": 183.7
+        },
+        {
+          "env_steps": 68812800,
+          "reward": 0.0,
+          "wall_clock_s": 210.5
+        },
+        {
+          "env_steps": 78643200,
+          "reward": 0.0,
+          "wall_clock_s": 237.4
+        },
+        {
+          "env_steps": 88473600,
+          "reward": 0.0,
+          "wall_clock_s": 264.3
+        }
+      ]
+    }
+  ]
+}

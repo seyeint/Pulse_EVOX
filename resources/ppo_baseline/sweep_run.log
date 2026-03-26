@@ -1,0 +1,412 @@
+nohup: ignoring input
+Device: gpu | devices: [CudaDevice(id=0)]
+Mode: PAPER QUALITY — SPARSITY SWEEP
+Envs: ['CartpoleSwingup', 'WalkerWalk', 'HumanoidWalk']
+K values: [1, 10, 50, 200, 500, 1000]
+Seeds: 3
+Timesteps: 60,000,000
+
+
+######################################################################
+# ENV: CartpoleSwingup
+######################################################################
+
+  === K=1 (reward every 1 steps) ===
+Warp 1.12.0 initialized:
+   CUDA Toolkit 12.9, Driver 12.7
+   Devices:
+     "cpu"      : "x86_64"
+     "cuda:0"   : "NVIDIA GeForce RTX 4090" (24 GiB, sm_89, mempool enabled)
+   Kernel cache:
+     /root/.cache/warp/1.12.0
+Warp DeprecationWarning: The symbol `warp.types.warp_type_to_np_dtype` will soon be removed from the public API. It can still be accessed from `warp._src.types.warp_type_to_np_dtype` but might be changed or removed without notice.
+    K=1     seed=777  Module mujoco.mjx.warp.ffi 98d2031 load on device 'cuda:0' took 0.32 ms  (cached)
+Module mujoco.mjx.third_party.mujoco_warp._src.smooth 12773d5 load on device 'cuda:0' took 4.95 ms  (cached)
+Module mujoco.mjx.third_party.mujoco_warp._src.constraint abf7b17 load on device 'cuda:0' took 0.30 ms  (cached)
+Module _actuator_velocity__locals__actuator_velocity_9e9ac69a fcc7599 load on device 'cuda:0' took 0.24 ms  (cached)
+Module mujoco.mjx.third_party.mujoco_warp._src.passive f6d4bb4 load on device 'cuda:0' took 0.23 ms  (cached)
+Module mujoco.mjx.third_party.mujoco_warp._src.forward 6f039ed load on device 'cuda:0' took 0.25 ms  (cached)
+Module mujoco.mjx.third_party.mujoco_warp._src.support 343d1ae load on device 'cuda:0' took 0.19 ms  (cached)
+Module _tile_cholesky_factorize_solve__locals__cholesky_factorize_solve_46918bae 3c15edc load on device 'cuda:0' took 17.92 ms  (cached)
+Module mujoco.mjx.third_party.mujoco_warp._src.solver f11a68d load on device 'cuda:0' took 0.31 ms  (cached)
+Module solve_init_jaref__locals__kernel_8feab2f8 8feab2f load on device 'cuda:0' took 0.18 ms  (cached)
+Module mul_m_dense__locals___mul_m_dense_689f1540 689f154 load on device 'cuda:0' took 0.18 ms  (cached)
+Module update_constraint_gauss_cost__locals__kernel_c770dbda c770dbd load on device 'cuda:0' took 0.18 ms  (cached)
+Module update_gradient_JTDAJ_dense_tiled__locals__kernel_5a285672 71bd8ea load on device 'cuda:0' took 30.26 ms  (cached)
+Module update_gradient_cholesky__locals__kernel_0b589cea 975bb23 load on device 'cuda:0' took 19.55 ms  (cached)
+Module linesearch_iterative__locals__kernel_9acd46d2 b8a4b50 load on device 'cuda:0' took 0.25 ms  (cached)
+                 0 steps  reward=   22.81  (6.4s)
+         9,830,400 steps  reward=  381.75  (48.4s)
+        58,982,400 steps  reward=  681.91  (182.4s)
+        68,812,800 steps  reward=  582.57  (209.3s)
+        78,643,200 steps  reward=  533.01  (236.2s)
+        88,473,600 steps  reward=  668.77  (263.0s)
+  → final=668.8  peak=734.6  (263s)
+    K=1     seed=888                   0 steps  reward=   13.47  (4.0s)
+         9,830,400 steps  reward=  260.06  (44.8s)
+        58,982,400 steps  reward=  690.90  (178.6s)
+        68,812,800 steps  reward=  789.31  (205.3s)
+        78,643,200 steps  reward=  814.10  (232.0s)
+        88,473,600 steps  reward=  766.07  (258.7s)
+  → final=766.1  peak=830.7  (259s)
+    K=1     seed=999                   0 steps  reward=   19.03  (5.2s)
+         9,830,400 steps  reward=  235.38  (46.5s)
+        58,982,400 steps  reward=  575.17  (180.6s)
+        68,812,800 steps  reward=  749.25  (207.5s)
+        78,643,200 steps  reward=  793.54  (234.4s)
+        88,473,600 steps  reward=  768.56  (261.2s)
+  → final=768.6  peak=829.2  (261s)
+
+  === K=10 (reward every 10 steps) ===
+    K=10    seed=777                   0 steps  reward=   22.81  (4.0s)
+         9,830,400 steps  reward=  184.89  (43.9s)
+        58,982,400 steps  reward=  810.52  (178.3s)
+        68,812,800 steps  reward=  742.95  (205.1s)
+        78,643,200 steps  reward=  608.82  (232.0s)
+        88,473,600 steps  reward=  596.97  (258.9s)
+  → final=597.0  peak=810.5  (259s)
+    K=10    seed=888                   0 steps  reward=   13.47  (5.5s)
+         9,830,400 steps  reward=  222.29  (44.5s)
+        58,982,400 steps  reward=  794.93  (178.8s)
+        68,812,800 steps  reward=  831.07  (205.7s)
+        78,643,200 steps  reward=  842.06  (232.5s)
+        88,473,600 steps  reward=  853.20  (259.3s)
+  → final=853.2  peak=853.2  (260s)
+    K=10    seed=999                   0 steps  reward=   19.03  (3.7s)
+         9,830,400 steps  reward=  325.77  (43.3s)
+        58,982,400 steps  reward=  450.38  (177.6s)
+        68,812,800 steps  reward=  638.88  (204.5s)
+        78,643,200 steps  reward=  734.18  (231.5s)
+        88,473,600 steps  reward=  636.05  (258.3s)
+  → final=636.1  peak=734.2  (259s)
+
+  === K=50 (reward every 50 steps) ===
+    K=50    seed=777                   0 steps  reward=   22.81  (6.3s)
+         9,830,400 steps  reward=  151.26  (46.3s)
+        58,982,400 steps  reward=  815.36  (181.1s)
+        68,812,800 steps  reward=  809.31  (208.0s)
+        78,643,200 steps  reward=  818.29  (234.9s)
+        88,473,600 steps  reward=  817.36  (261.8s)
+  → final=817.4  peak=825.6  (262s)
+    K=50    seed=888                   0 steps  reward=   13.47  (4.9s)
+         9,830,400 steps  reward=  217.51  (48.4s)
+        58,982,400 steps  reward=  823.72  (183.2s)
+        68,812,800 steps  reward=  799.90  (210.1s)
+        78,643,200 steps  reward=  803.48  (237.0s)
+        88,473,600 steps  reward=  770.68  (263.9s)
+  → final=770.7  peak=823.7  (264s)
+    K=50    seed=999                   0 steps  reward=   19.03  (5.3s)
+         9,830,400 steps  reward=  186.67  (46.4s)
+        58,982,400 steps  reward=  655.33  (181.1s)
+        68,812,800 steps  reward=  749.46  (208.1s)
+        78,643,200 steps  reward=  758.06  (235.1s)
+        88,473,600 steps  reward=  745.44  (262.1s)
+  → final=745.4  peak=758.1  (262s)
+
+  === K=200 (reward every 200 steps) ===
+    K=200   seed=777                   0 steps  reward=   22.81  (5.5s)
+         9,830,400 steps  reward=  164.47  (45.1s)
+        58,982,400 steps  reward=  264.10  (179.5s)
+        68,812,800 steps  reward=  263.85  (206.4s)
+        78,643,200 steps  reward=  220.44  (233.3s)
+        88,473,600 steps  reward=  217.54  (260.2s)
+  → final=217.5  peak=287.1  (261s)
+    K=200   seed=888                   0 steps  reward=   13.47  (6.4s)
+         9,830,400 steps  reward=  203.82  (45.3s)
+        58,982,400 steps  reward=  196.71  (179.8s)
+        68,812,800 steps  reward=  188.92  (206.7s)
+        78,643,200 steps  reward=  187.98  (233.6s)
+        88,473,600 steps  reward=  180.78  (260.6s)
+  → final=180.8  peak=220.4  (261s)
+    K=200   seed=999                   0 steps  reward=   19.03  (7.6s)
+         9,830,400 steps  reward=  209.74  (47.9s)
+        58,982,400 steps  reward=  310.35  (182.3s)
+        68,812,800 steps  reward=  276.25  (209.2s)
+        78,643,200 steps  reward=  251.75  (236.1s)
+        88,473,600 steps  reward=  226.71  (263.1s)
+  → final=226.7  peak=326.1  (263s)
+
+  === K=500 (reward every 500 steps) ===
+    K=500   seed=777                   0 steps  reward=   22.81  (6.9s)
+         9,830,400 steps  reward=  159.40  (47.8s)
+        58,982,400 steps  reward=   57.59  (181.9s)
+        68,812,800 steps  reward=   29.03  (208.7s)
+        78,643,200 steps  reward=   17.52  (235.5s)
+        88,473,600 steps  reward=    0.19  (262.2s)
+  → final=0.2  peak=174.4  (263s)
+    K=500   seed=888                   0 steps  reward=   13.47  (5.8s)
+         9,830,400 steps  reward=    6.95  (47.6s)
+        58,982,400 steps  reward=  138.21  (181.6s)
+        68,812,800 steps  reward=  125.86  (208.3s)
+        78,643,200 steps  reward=   48.26  (235.1s)
+        88,473,600 steps  reward=   44.92  (261.8s)
+  → final=44.9  peak=138.2  (262s)
+    K=500   seed=999                   0 steps  reward=   19.03  (7.2s)
+         9,830,400 steps  reward=    2.43  (49.4s)
+        58,982,400 steps  reward=   20.99  (184.1s)
+        68,812,800 steps  reward=   69.62  (211.0s)
+        78,643,200 steps  reward=   86.43  (237.9s)
+        88,473,600 steps  reward=  104.23  (264.9s)
+  → final=104.2  peak=104.2  (265s)
+
+  === K=1000 (reward every 1000 steps) ===
+    K=1000  seed=777                   0 steps  reward=   22.81  (7.1s)
+         9,830,400 steps  reward=  159.40  (49.2s)
+        58,982,400 steps  reward=   57.59  (183.2s)
+        68,812,800 steps  reward=   29.03  (210.0s)
+        78,643,200 steps  reward=   17.52  (236.9s)
+        88,473,600 steps  reward=    0.19  (263.7s)
+  → final=0.2  peak=174.4  (264s)
+    K=1000  seed=888                   0 steps  reward=   13.47  (6.0s)
+         9,830,400 steps  reward=    6.95  (46.0s)
+        58,982,400 steps  reward=  138.21  (180.7s)
+        68,812,800 steps  reward=  125.86  (207.7s)
+        78,643,200 steps  reward=   48.26  (234.5s)
+        88,473,600 steps  reward=   44.92  (261.5s)
+  → final=44.9  peak=138.2  (262s)
+    K=1000  seed=999                   0 steps  reward=   19.03  (4.6s)
+         9,830,400 steps  reward=    2.43  (45.8s)
+        58,982,400 steps  reward=   20.99  (180.5s)
+        68,812,800 steps  reward=   69.62  (207.4s)
+        78,643,200 steps  reward=   86.43  (234.2s)
+        88,473,600 steps  reward=  104.23  (261.2s)
+  → final=104.2  peak=104.2  (261s)
+
+  ─────────────────────────────────────────────────────────────────
+  SWEEP — CartpoleSwingup
+       K    PPO median    PPO peak   LinePulse    OpenES  Winner
+  ─────────────────────────────────────────────────────────────────
+       1         766.1       829.2       697.6     157.7  ← PPO
+      10         636.1       810.5       697.6     157.7  ← LinePulse
+      50         770.7       823.7       697.6     157.7  ← PPO
+     200         217.5       287.1       697.6     157.7  ← LinePulse
+     500          44.9       138.2       697.6     157.7  ← LinePulse
+    1000          44.9       138.2       697.6     157.7  ← LinePulse
+
+
+######################################################################
+# ENV: WalkerWalk
+######################################################################
+
+  === K=1 (reward every 1 steps) ===
+    K=1     seed=777                   0 steps  reward=   26.55  (50.4s)
+         9,830,400 steps  reward=  195.81  (174.9s)
+        58,982,400 steps  reward=  965.47  (427.8s)
+        68,812,800 steps  reward=  965.94  (478.3s)
+        78,643,200 steps  reward=  967.06  (528.8s)
+        88,473,600 steps  reward=  969.87  (579.2s)
+  → final=969.9  peak=969.9  (580s)
+    K=1     seed=888                   0 steps  reward=   26.65  (52.8s)
+         9,830,400 steps  reward=  293.74  (173.8s)
+        58,982,400 steps  reward=  944.44  (424.9s)
+        68,812,800 steps  reward=  964.44  (475.3s)
+        78,643,200 steps  reward=  968.00  (525.7s)
+        88,473,600 steps  reward=  968.95  (576.0s)
+  → final=969.0  peak=969.0  (577s)
+    K=1     seed=999                   0 steps  reward=   46.80  (49.9s)
+         9,830,400 steps  reward=  328.03  (165.3s)
+        58,982,400 steps  reward=  971.00  (417.3s)
+        68,812,800 steps  reward=  971.99  (467.7s)
+        78,643,200 steps  reward=  970.99  (518.0s)
+        88,473,600 steps  reward=  971.74  (568.7s)
+  → final=971.7  peak=972.0  (569s)
+
+  === K=10 (reward every 10 steps) ===
+    K=10    seed=777                   0 steps  reward=   26.55  (48.9s)
+         9,830,400 steps  reward=  163.49  (170.6s)
+        58,982,400 steps  reward=  790.74  (422.8s)
+        68,812,800 steps  reward=  803.04  (473.4s)
+        78,643,200 steps  reward=  807.66  (524.1s)
+        88,473,600 steps  reward=  817.53  (574.5s)
+  → final=817.5  peak=817.5  (575s)
+    K=10    seed=888                   0 steps  reward=   26.65  (48.9s)
+         9,830,400 steps  reward=  232.21  (170.5s)
+        58,982,400 steps  reward=  781.15  (423.0s)
+        68,812,800 steps  reward=  795.87  (473.6s)
+        78,643,200 steps  reward=  804.54  (524.2s)
+        88,473,600 steps  reward=  818.75  (574.6s)
+  → final=818.8  peak=818.8  (575s)
+    K=10    seed=999                   0 steps  reward=   46.80  (52.9s)
+         9,830,400 steps  reward=  294.42  (171.6s)
+        58,982,400 steps  reward=  963.91  (424.4s)
+        68,812,800 steps  reward=  965.42  (474.7s)
+        78,643,200 steps  reward=  963.33  (525.2s)
+        88,473,600 steps  reward=  962.90  (575.4s)
+  → final=962.9  peak=965.4  (576s)
+
+  === K=50 (reward every 50 steps) ===
+    K=50    seed=777                   0 steps  reward=   26.55  (49.6s)
+         9,830,400 steps  reward=   81.87  (167.3s)
+        58,982,400 steps  reward=  387.16  (419.0s)
+        68,812,800 steps  reward=  390.25  (469.8s)
+        78,643,200 steps  reward=  390.30  (520.1s)
+        88,473,600 steps  reward=  399.81  (570.8s)
+  → final=399.8  peak=399.8  (571s)
+    K=50    seed=888                   0 steps  reward=   26.65  (45.5s)
+         9,830,400 steps  reward=   50.40  (161.0s)
+        58,982,400 steps  reward=  390.30  (413.7s)
+        68,812,800 steps  reward=  455.74  (464.3s)
+        78,643,200 steps  reward=  488.86  (514.7s)
+        88,473,600 steps  reward=  517.46  (565.2s)
+  → final=517.5  peak=517.5  (566s)
+    K=50    seed=999                   0 steps  reward=   46.80  (50.5s)
+         9,830,400 steps  reward=  146.43  (173.7s)
+        58,982,400 steps  reward=  434.87  (427.0s)
+        68,812,800 steps  reward=  445.98  (477.5s)
+        78,643,200 steps  reward=  458.66  (528.1s)
+        88,473,600 steps  reward=  472.85  (578.5s)
+  → final=472.9  peak=472.9  (579s)
+
+  === K=200 (reward every 200 steps) ===
+    K=200   seed=777                   0 steps  reward=   26.55  (53.1s)
+         9,830,400 steps  reward=   35.61  (177.2s)
+        58,982,400 steps  reward=   41.47  (430.2s)
+        68,812,800 steps  reward=   41.99  (480.8s)
+        78,643,200 steps  reward=   40.80  (531.1s)
+        88,473,600 steps  reward=   44.37  (581.4s)
+  → final=44.4  peak=44.4  (582s)
+    K=200   seed=888                   0 steps  reward=   26.65  (51.6s)
+         9,830,400 steps  reward=   33.13  (165.9s)
+        58,982,400 steps  reward=   43.49  (418.6s)
+        68,812,800 steps  reward=   43.69  (469.3s)
+        78,643,200 steps  reward=   43.14  (520.2s)
+        88,473,600 steps  reward=   45.72  (570.9s)
+  → final=45.7  peak=45.7  (572s)
+    K=200   seed=999                   0 steps  reward=   46.80  (50.8s)
+         9,830,400 steps  reward=   34.67  (170.9s)
+        58,982,400 steps  reward=   40.06  (423.9s)
+        68,812,800 steps  reward=   46.92  (474.7s)
+        78,643,200 steps  reward=   45.43  (525.3s)
+        88,473,600 steps  reward=   50.73  (575.6s)
+  → final=50.7  peak=50.7  (576s)
+
+  === K=500 (reward every 500 steps) ===
+    K=500   seed=777                   0 steps  reward=   26.55  (45.3s)
+         9,830,400 steps  reward=   31.76  (157.3s)
+        58,982,400 steps  reward=   32.60  (409.2s)
+        68,812,800 steps  reward=   32.24  (459.4s)
+        78,643,200 steps  reward=   32.34  (509.7s)
+        88,473,600 steps  reward=   32.55  (560.1s)
+  → final=32.5  peak=33.0  (561s)
+    K=500   seed=888                   0 steps  reward=   26.65  (40.1s)
+         9,830,400 steps  reward=   29.09  (153.3s)
+        58,982,400 steps  reward=   31.74  (404.7s)
+        68,812,800 steps  reward=   31.85  (455.0s)
+        78,643,200 steps  reward=   31.27  (505.3s)
+        88,473,600 steps  reward=   30.17  (555.4s)
+  → final=30.2  peak=31.8  (556s)
+    K=500   seed=999                   0 steps  reward=   46.80  (46.4s)
+         9,830,400 steps  reward=   35.33  (154.7s)
+        58,982,400 steps  reward=   32.42  (405.9s)
+        68,812,800 steps  reward=   32.28  (455.9s)
+        78,643,200 steps  reward=   30.05  (506.2s)
+        88,473,600 steps  reward=   29.04  (556.6s)
+  → final=29.0  peak=46.8  (557s)
+
+  === K=1000 (reward every 1000 steps) ===
+    K=1000  seed=777                   0 steps  reward=   26.55  (44.4s)
+         9,830,400 steps  reward=   31.76  (155.1s)
+        58,982,400 steps  reward=   32.60  (406.8s)
+        68,812,800 steps  reward=   32.24  (457.1s)
+        78,643,200 steps  reward=   32.34  (507.1s)
+        88,473,600 steps  reward=   32.55  (557.2s)
+  → final=32.5  peak=33.0  (558s)
+    K=1000  seed=888                   0 steps  reward=   26.65  (46.5s)
+         9,830,400 steps  reward=   29.09  (158.6s)
+        58,982,400 steps  reward=   31.74  (410.1s)
+        68,812,800 steps  reward=   31.85  (460.1s)
+        78,643,200 steps  reward=   31.27  (510.3s)
+        88,473,600 steps  reward=   30.17  (560.8s)
+  → final=30.2  peak=31.8  (561s)
+    K=1000  seed=999                   0 steps  reward=   46.80  (44.9s)
+         9,830,400 steps  reward=   35.33  (153.8s)
+        58,982,400 steps  reward=   32.42  (405.9s)
+        68,812,800 steps  reward=   32.28  (456.2s)
+        78,643,200 steps  reward=   30.05  (506.5s)
+        88,473,600 steps  reward=   29.04  (556.8s)
+  → final=29.0  peak=46.8  (557s)
+
+  ─────────────────────────────────────────────────────────────────
+  SWEEP — WalkerWalk
+       K    PPO median    PPO peak   LinePulse    OpenES  Winner
+  ─────────────────────────────────────────────────────────────────
+       1         969.9       969.9       298.6      53.8  ← PPO
+      10         818.8       818.8       298.6      53.8  ← PPO
+      50         472.9       472.9       298.6      53.8  ← PPO
+     200          45.7        45.7       298.6      53.8  ← LinePulse
+     500          30.2        33.0       298.6      53.8  ← LinePulse
+    1000          30.2        33.0       298.6      53.8  ← LinePulse
+
+
+######################################################################
+# ENV: HumanoidWalk
+######################################################################
+
+  === K=1 (reward every 1 steps) ===
+    K=1     seed=777                   0 steps  reward=    2.40  (84.9s)
+         9,830,400 steps  reward=   14.63  (286.0s)
+        58,982,400 steps  reward=   63.84  (658.7s)
+        68,812,800 steps  reward=   96.10  (733.4s)
+        78,643,200 steps  reward=  209.24  (807.8s)
+        88,473,600 steps  reward=  527.08  (882.2s)
+  → final=527.1  peak=527.1  (883s)
+    K=1     seed=888                   0 steps  reward=    2.65  (84.1s)
+         9,830,400 steps  reward=   14.37  (284.0s)
+        58,982,400 steps  reward=   43.43  (656.7s)
+        68,812,800 steps  reward=   47.50  (731.2s)
+        78,643,200 steps  reward=   61.27  (805.7s)
+        88,473,600 steps  reward=   74.30  (880.3s)
+  → final=74.3  peak=74.3  (881s)
+    K=1     seed=999                   0 steps  reward=    3.76  (85.5s)
+         9,830,400 steps  reward=   15.50  (292.9s)
+        58,982,400 steps  reward=   63.93  (667.3s)
+        68,812,800 steps  reward=  111.67  (744.2s)
+        78,643,200 steps  reward=  307.11  (820.7s)
+        88,473,600 steps  reward=  719.01  (897.4s)
+  → final=719.0  peak=719.0  (898s)
+
+  === K=10 (reward every 10 steps) ===
+    K=10    seed=777                   0 steps  reward=    2.40  (114.0s)
+         9,830,400 steps  reward=   10.44  (361.3s)
+        58,982,400 steps  reward=   27.64  (743.8s)
+        68,812,800 steps  reward=   32.25  (820.5s)
+        78,643,200 steps  reward=   36.17  (897.5s)
+        88,473,600 steps  reward=   41.70  (974.7s)
+  → final=41.7  peak=41.7  (976s)
+    K=10    seed=888                   0 steps  reward=    2.64  (113.5s)
+         9,830,400 steps  reward=   13.34  (350.5s)
+        58,982,400 steps  reward=   32.83  (726.5s)
+        68,812,800 steps  reward=   35.94  (800.8s)
+        78,643,200 steps  reward=   40.70  (875.4s)
+        88,473,600 steps  reward=   43.33  (951.0s)
+  → final=43.3  peak=43.3  (952s)
+    K=10    seed=999                   0 steps  reward=    3.77  (107.6s)
+         9,830,400 steps  reward=   13.69  (358.4s)
+        58,982,400 steps  reward=   39.26  (741.7s)
+        68,812,800 steps  reward=   47.46  (818.2s)
+        78,643,200 steps  reward=   52.85  (894.2s)
+        88,473,600 steps  reward=   61.01  (971.0s)
+  → final=61.0  peak=61.0  (972s)
+
+  === K=50 (reward every 50 steps) ===
+    K=50    seed=777                   0 steps  reward=    2.41  (112.5s)
+         9,830,400 steps  reward=    6.10  (366.1s)
+        58,982,400 steps  reward=   11.01  (746.4s)
+        68,812,800 steps  reward=   11.47  (823.5s)
+        78,643,200 steps  reward=   11.95  (897.9s)
+        88,473,600 steps  reward=     nan  (973.3s)
+Traceback (most recent call last):
+  File "/workspace/Pulse_EVOX/main_ppo_sweep.py", line 296, in <module>
+    main()
+  File "/workspace/Pulse_EVOX/main_ppo_sweep.py", line 218, in main
+    result = run_ppo_at_sparsity(env_name, k, seed, NUM_TIMESTEPS)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Pulse_EVOX/main_ppo_sweep.py", line 166, in run_ppo_at_sparsity
+    make_inference_fn, params, _ = ppo.train(
+                                   ^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/brax/training/agents/ppo/train.py", line 862, in train
+    pmap.assert_is_replicated(training_state)
+  File "/usr/local/lib/python3.11/dist-packages/brax/training/pmap.py", line 70, in assert_is_replicated
+    assert jax.pmap(f, axis_name='i')(x)[0], debug
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+AssertionError: None

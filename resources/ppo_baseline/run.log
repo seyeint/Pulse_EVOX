@@ -1,0 +1,198 @@
+Device: gpu | devices: [CudaDevice(id=0)]
+Mode: PAPER QUALITY
+Envs: ['CartpoleSwingup', 'WalkerWalk', 'HumanoidWalk']
+Seeds: 3
+Timesteps: 60,000,000
+Warp 1.12.0 initialized:
+   CUDA Toolkit 12.9, Driver 12.7
+   Devices:
+     "cpu"      : "x86_64"
+     "cuda:0"   : "NVIDIA GeForce RTX 4090" (24 GiB, sm_89, mempool enabled)
+   Kernel cache:
+     /root/.cache/warp/1.12.0
+Warp DeprecationWarning: The symbol `warp.types.warp_type_to_np_dtype` will soon be removed from the public API. It can still be accessed from `warp._src.types.warp_type_to_np_dtype` but might be changed or removed without notice.
+
+  PPO | seed=777 | CartpoleSwingup | 60,000,000 steps
+Module mujoco.mjx.warp.ffi 98d2031 load on device 'cuda:0' took 0.37 ms  (cached)
+Module mujoco.mjx.third_party.mujoco_warp._src.smooth 12773d5 load on device 'cuda:0' took 4.99 ms  (cached)
+Module mujoco.mjx.third_party.mujoco_warp._src.constraint abf7b17 load on device 'cuda:0' took 0.30 ms  (cached)
+Module _actuator_velocity__locals__actuator_velocity_9e9ac69a fcc7599 load on device 'cuda:0' took 0.24 ms  (cached)
+Module mujoco.mjx.third_party.mujoco_warp._src.passive f6d4bb4 load on device 'cuda:0' took 0.23 ms  (cached)
+Module mujoco.mjx.third_party.mujoco_warp._src.forward 6f039ed load on device 'cuda:0' took 0.24 ms  (cached)
+Module mujoco.mjx.third_party.mujoco_warp._src.support 343d1ae load on device 'cuda:0' took 0.18 ms  (cached)
+Module _tile_cholesky_factorize_solve__locals__cholesky_factorize_solve_46918bae 3c15edc load on device 'cuda:0' took 17.82 ms  (cached)
+Module mujoco.mjx.third_party.mujoco_warp._src.solver f11a68d load on device 'cuda:0' took 0.29 ms  (cached)
+Module solve_init_jaref__locals__kernel_8feab2f8 8feab2f load on device 'cuda:0' took 0.18 ms  (cached)
+Module mul_m_dense__locals___mul_m_dense_689f1540 689f154 load on device 'cuda:0' took 0.18 ms  (cached)
+Module update_constraint_gauss_cost__locals__kernel_c770dbda c770dbd load on device 'cuda:0' took 0.18 ms  (cached)
+Module update_gradient_JTDAJ_dense_tiled__locals__kernel_5a285672 71bd8ea load on device 'cuda:0' took 29.99 ms  (cached)
+Module update_gradient_cholesky__locals__kernel_0b589cea 975bb23 load on device 'cuda:0' took 19.27 ms  (cached)
+Module linesearch_iterative__locals__kernel_9acd46d2 b8a4b50 load on device 'cuda:0' took 0.25 ms  (cached)
+               0 steps  reward=   22.81  (6.1s)
+       9,830,400 steps  reward=  381.75  (45.6s)
+      19,660,800 steps  reward=  716.90  (72.3s)
+      29,491,200 steps  reward=  658.38  (99.0s)
+      39,321,600 steps  reward=  734.64  (125.8s)
+      49,152,000 steps  reward=  708.93  (152.7s)
+      58,982,400 steps  reward=  681.91  (179.5s)
+      68,812,800 steps  reward=  582.57  (206.3s)
+      78,643,200 steps  reward=  533.01  (233.1s)
+      88,473,600 steps  reward=  668.77  (259.8s)
+    DONE: reward=668.77  time=260.1s
+
+  PPO | seed=888 | CartpoleSwingup | 60,000,000 steps
+               0 steps  reward=   13.47  (3.9s)
+       9,830,400 steps  reward=  260.06  (41.1s)
+      19,660,800 steps  reward=  830.74  (67.8s)
+      29,491,200 steps  reward=  565.77  (94.5s)
+      39,321,600 steps  reward=  675.05  (121.2s)
+      49,152,000 steps  reward=  736.72  (147.9s)
+      58,982,400 steps  reward=  690.90  (174.6s)
+      68,812,800 steps  reward=  789.31  (201.3s)
+      78,643,200 steps  reward=  814.10  (227.9s)
+      88,473,600 steps  reward=  766.07  (254.6s)
+    DONE: reward=766.07  time=254.8s
+
+  PPO | seed=999 | CartpoleSwingup | 60,000,000 steps
+               0 steps  reward=   19.03  (4.0s)
+       9,830,400 steps  reward=  235.38  (41.7s)
+      19,660,800 steps  reward=  829.20  (68.5s)
+      29,491,200 steps  reward=  749.33  (95.3s)
+      39,321,600 steps  reward=  787.16  (122.1s)
+      49,152,000 steps  reward=  736.70  (148.9s)
+      58,982,400 steps  reward=  575.17  (175.7s)
+      68,812,800 steps  reward=  749.25  (202.6s)
+      78,643,200 steps  reward=  793.54  (229.4s)
+      88,473,600 steps  reward=  768.56  (256.2s)
+    DONE: reward=768.56  time=256.4s
+
+  PPO | seed=777 | WalkerWalk | 60,000,000 steps
+               0 steps  reward=   26.55  (38.8s)
+       9,830,400 steps  reward=  195.81  (137.5s)
+      19,660,800 steps  reward=  485.22  (187.2s)
+      29,491,200 steps  reward=  803.19  (237.0s)
+      39,321,600 steps  reward=  959.08  (286.8s)
+      49,152,000 steps  reward=  960.10  (336.7s)
+      58,982,400 steps  reward=  965.47  (386.5s)
+      68,812,800 steps  reward=  965.94  (436.3s)
+      78,643,200 steps  reward=  967.06  (486.2s)
+      88,473,600 steps  reward=  969.87  (536.0s)
+    DONE: reward=969.87  time=536.4s
+
+  PPO | seed=888 | WalkerWalk | 60,000,000 steps
+               0 steps  reward=   26.65  (36.8s)
+       9,830,400 steps  reward=  293.74  (136.7s)
+      19,660,800 steps  reward=  602.47  (186.3s)
+      29,491,200 steps  reward=  755.15  (235.9s)
+      39,321,600 steps  reward=  805.70  (285.7s)
+      49,152,000 steps  reward=  843.52  (335.5s)
+      58,982,400 steps  reward=  944.44  (385.4s)
+      68,812,800 steps  reward=  964.44  (435.3s)
+      78,643,200 steps  reward=  968.00  (485.0s)
+      88,473,600 steps  reward=  968.95  (534.9s)
+    DONE: reward=968.95  time=535.4s
+
+  PPO | seed=999 | WalkerWalk | 60,000,000 steps
+               0 steps  reward=   46.80  (40.7s)
+       9,830,400 steps  reward=  328.03  (144.6s)
+      19,660,800 steps  reward=  653.84  (194.2s)
+      29,491,200 steps  reward=  948.62  (244.0s)
+      39,321,600 steps  reward=  966.70  (293.7s)
+      49,152,000 steps  reward=  966.10  (343.5s)
+      58,982,400 steps  reward=  971.00  (393.3s)
+      68,812,800 steps  reward=  971.99  (443.1s)
+      78,643,200 steps  reward=  970.99  (493.0s)
+      88,473,600 steps  reward=  971.74  (542.9s)
+    DONE: reward=971.74  time=543.3s
+
+  PPO | seed=777 | HumanoidWalk | 60,000,000 steps
+               0 steps  reward=    2.40  (71.9s)
+       9,830,400 steps  reward=   13.43  (253.7s)
+      19,660,800 steps  reward=   20.27  (327.7s)
+      29,491,200 steps  reward=   25.45  (401.7s)
+      39,321,600 steps  reward=   29.76  (476.2s)
+      49,152,000 steps  reward=   35.79  (550.8s)
+      58,982,400 steps  reward=   48.99  (625.1s)
+      68,812,800 steps  reward=   74.63  (699.6s)
+      78,643,200 steps  reward=  133.43  (774.0s)
+      88,473,600 steps  reward=  380.00  (848.5s)
+    DONE: reward=380.00  time=849.0s
+
+  PPO | seed=888 | HumanoidWalk | 60,000,000 steps
+               0 steps  reward=    2.65  (72.6s)
+       9,830,400 steps  reward=   13.98  (258.6s)
+      19,660,800 steps  reward=   20.39  (333.0s)
+      29,491,200 steps  reward=   25.08  (407.5s)
+      39,321,600 steps  reward=   30.45  (482.0s)
+      49,152,000 steps  reward=   37.30  (556.5s)
+      58,982,400 steps  reward=   43.97  (631.2s)
+      68,812,800 steps  reward=   58.23  (705.7s)
+      78,643,200 steps  reward=   70.51  (780.2s)
+      88,473,600 steps  reward=  113.16  (854.6s)
+    DONE: reward=113.16  time=855.1s
+
+  PPO | seed=999 | HumanoidWalk | 60,000,000 steps
+               0 steps  reward=    3.79  (73.9s)
+       9,830,400 steps  reward=   15.81  (259.3s)
+      19,660,800 steps  reward=   24.44  (333.3s)
+      29,491,200 steps  reward=   31.12  (408.0s)
+      39,321,600 steps  reward=   37.80  (482.4s)
+      49,152,000 steps  reward=   50.05  (556.8s)
+      58,982,400 steps  reward=   66.97  (630.9s)
+      68,812,800 steps  reward=  109.56  (705.4s)
+      78,643,200 steps  reward=  336.44  (779.6s)
+      88,473,600 steps  reward=  674.66  (853.9s)
+    DONE: reward=674.66  time=854.5s
+
+
+======================================================================
+PPO BASELINE RESULTS  (total: 82.4 min)
+======================================================================
+
+  CartpoleSwingup:
+    rewards:   [668.7711181640625, 766.0694580078125, 768.559326171875]
+    median:    766.07
+    mean:      734.47
+    wall-clock per run: ['260s', '255s', '256s']
+    env steps: 60,000,000
+
+  WalkerWalk:
+    rewards:   [969.8707275390625, 968.9542236328125, 971.741455078125]
+    median:    969.87
+    mean:      970.19
+    wall-clock per run: ['536s', '535s', '543s']
+    env steps: 60,000,000
+
+  HumanoidWalk:
+    rewards:   [380.00341796875, 113.16178894042969, 674.663330078125]
+    median:    380.00
+    mean:      389.28
+    wall-clock per run: ['849s', '855s', '854s']
+    env steps: 60,000,000
+
+→ Results saved to resources/ppo_baseline/ppo_results.json
+
+======================================================================
+EA vs PPO COMPARISON
+======================================================================
+
+  CartpoleSwingup:
+    LinePulse median:   697.57  ( 768,000,000 env steps)
+    PPO median:         766.07  (  60,000,000 env steps)
+    Ratio (EA/PPO):   91.06%
+    PPO uses 12.8× fewer env steps
+    PPO wall-clock:   257s
+
+  WalkerWalk:
+    LinePulse median:   298.61  ( 768,000,000 env steps)
+    PPO median:         969.87  (  60,000,000 env steps)
+    Ratio (EA/PPO):   30.79%
+    PPO uses 12.8× fewer env steps
+    PPO wall-clock:   538s
+
+  HumanoidWalk:
+    LinePulse median:   151.93  ( 768,000,000 env steps)
+    PPO median:         380.00  (  60,000,000 env steps)
+    Ratio (EA/PPO):   39.98%
+    PPO uses 12.8× fewer env steps
+    PPO wall-clock:   853s

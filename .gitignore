@@ -8,3 +8,5 @@ resources/model_weights/
 genetic_algorithm_P.py*.pkl
 __pycache__/
 *.pyc
+archive/experimental_variants
+.venv/

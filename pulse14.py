@@ -34,6 +34,7 @@ class PulseGreedy(Algorithm):
         tournament_size: int = 3,
         minimization: bool = True,
         patience: int = 1,    # consecutive failures before breaking pair
+        center_init: "torch.Tensor | None" = None,  # optional: start population near this vector
         device: str | torch.device | None = None,
         debug: bool = False,
     ):
@@ -50,7 +51,14 @@ class PulseGreedy(Algorithm):
         self.patience = patience
         self.debug = debug
 
-        self.population = torch.rand(pop_size, dim, device=dev) * (ub - lb) + lb
+        self.population = (
+            glued_space(
+                center_init.unsqueeze(0) + torch.randn(pop_size, dim, device=dev) * 0.05,
+                lb, ub
+            )
+            if center_init is not None
+            else torch.rand(pop_size, dim, device=dev) * (ub - lb) + lb
+        )
         self.fitness = torch.empty(pop_size, device=dev)
 
         # Pair state: indices into population

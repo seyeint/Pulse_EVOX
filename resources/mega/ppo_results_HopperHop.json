@@ -1,0 +1,1472 @@
+{
+  "HopperHop": {
+    "k_values": [
+      1,
+      10,
+      50,
+      200,
+      500,
+      1000
+    ],
+    "ea_scores": {
+      "LinePulse": 0.0,
+      "OpenES": 0.0,
+      "DE": 0.0,
+      "PSO": 0.0
+    },
+    "ppo_results": {
+      "1": [
+        {
+          "k": 1,
+          "seed": 777,
+          "final_reward": 2.057922840118408,
+          "peak_reward": 2.3107190132141113,
+          "total_time_s": 335.8,
+          "progress": [
+            {
+              "env_steps": 0,
+              "reward": 0.001305737067013979,
+              "wall_clock_s": 11.1
+            },
+            {
+              "env_steps": 9830400,
+              "reward": 0.7379484176635742,
+              "wall_clock_s": 65.1
+            },
+            {
+              "env_steps": 19660800,
+              "reward": 1.4886916875839233,
+              "wall_clock_s": 98.9
+            },
+            {
+              "env_steps": 29491200,
+              "reward": 1.3744734525680542,
+              "wall_clock_s": 132.6
+            },
+            {
+              "env_steps": 39321600,
+              "reward": 1.4305871725082397,
+              "wall_clock_s": 166.4
+            },
+            {
+              "env_steps": 49152000,
+              "reward": 2.3107190132141113,
+              "wall_clock_s": 200.2
+            },
+            {
+              "env_steps": 58982400,
+              "reward": 0.886237382888794,
+              "wall_clock_s": 233.9
+            },
+            {
+              "env_steps": 68812800,
+              "reward": 2.1115832328796387,
+              "wall_clock_s": 267.7
+            },
+            {
+              "env_steps": 78643200,
+              "reward": 2.088047504425049,
+              "wall_clock_s": 301.5
+            },
+            {
+              "env_steps": 88473600,
+              "reward": 2.057922840118408,
+              "wall_clock_s": 335.4
+            }
+          ]
+        },
+        {
+          "k": 1,
+          "seed": 888,
+          "final_reward": 2.1970787048339844,
+          "peak_reward": 2.1970787048339844,
+          "total_time_s": 330.5,
+          "progress": [
+            {
+              "env_steps": 0,
+              "reward": 0.032684411853551865,
+              "wall_clock_s": 7.2
+            },
+            {
+              "env_steps": 9830400,
+              "reward": 0.9561483263969421,
+              "wall_clock_s": 59.5
+            },
+            {
+              "env_steps": 19660800,
+              "reward": 0.9537655115127563,
+              "wall_clock_s": 93.4
+            },
+            {
+              "env_steps": 29491200,
+              "reward": 1.091203212738037,
+              "wall_clock_s": 127.2
+            },
+            {
+              "env_steps": 39321600,
+              "reward": 1.6269831657409668,
+              "wall_clock_s": 161.0
+            },
+            {
+              "env_steps": 49152000,
+              "reward": 1.0987169742584229,
+              "wall_clock_s": 194.8
+            },
+            {
+              "env_steps": 58982400,
+              "reward": 1.3060381412506104,
+              "wall_clock_s": 228.6
+            },
+            {
+              "env_steps": 68812800,
+              "reward": 1.830237627029419,
+              "wall_clock_s": 262.4
+            },
+            {
+              "env_steps": 78643200,
+              "reward": 1.8668863773345947,
+              "wall_clock_s": 296.2
+            },
+            {
+              "env_steps": 88473600,
+              "reward": 2.1970787048339844,
+              "wall_clock_s": 330.0
+            }
+          ]
+        },
+        {
+          "k": 1,
+          "seed": 999,
+          "final_reward": 2.629714012145996,
+          "peak_reward": 2.629714012145996,
+          "total_time_s": 329.8,
+          "progress": [
+            {
+              "env_steps": 0,
+              "reward": 0.03633657842874527,
+              "wall_clock_s": 7.3
+            },
+            {
+              "env_steps": 9830400,
+              "reward": 1.1504226922988892,
+              "wall_clock_s": 59.5
+            },
+            {
+              "env_steps": 19660800,
+              "reward": 0.9107878804206848,
+              "wall_clock_s": 93.2
+            },
+            {
+              "env_steps": 29491200,
+              "reward": 1.045557975769043,
+              "wall_clock_s": 127.0
+            },
+            {
+              "env_steps": 39321600,
+              "reward": 1.7370765209197998,
+              "wall_clock_s": 160.7
+            },
+            {
+              "env_steps": 49152000,
+              "reward": 1.253037691116333,
+              "wall_clock_s": 194.4
+            },
+            {
+              "env_steps": 58982400,
+              "reward": 1.9729149341583252,
+              "wall_clock_s": 228.1
+            },
+            {
+              "env_steps": 68812800,
+              "reward": 2.3514418601989746,
+              "wall_clock_s": 261.9
+            },
+            {
+              "env_steps": 78643200,
+              "reward": 1.2902133464813232,
+              "wall_clock_s": 295.6
+            },
+            {
+              "env_steps": 88473600,
+              "reward": 2.629714012145996,
+              "wall_clock_s": 329.4
+            }
+          ]
+        },
+        {
+          "k": 1,
+          "seed": 1110,
+          "final_reward": 2.3427038192749023,
+          "peak_reward": 2.4929943084716797,
+          "total_time_s": 332.1,
+          "progress": [
+            {
+              "env_steps": 0,
+              "reward": 0.1849854737520218,
+              "wall_clock_s": 7.7
+            },
+            {
+              "env_steps": 9830400,
+              "reward": 0.862600564956665,
+              "wall_clock_s": 60.8
+            },
+            {
+              "env_steps": 19660800,
+              "reward": 0.7881566286087036,
+              "wall_clock_s": 94.7
+            },
+            {
+              "env_steps": 29491200,
+              "reward": 1.1369317770004272,
+              "wall_clock_s": 128.5
+            },
+            {
+              "env_steps": 39321600,
+              "reward": 1.0546867847442627,
+              "wall_clock_s": 162.3
+            },
+            {
+              "env_steps": 49152000,
+              "reward": 1.6181672811508179,
+              "wall_clock_s": 196.1
+            },
+            {
+              "env_steps": 58982400,
+              "reward": 1.280516505241394,
+              "wall_clock_s": 230.0
+            },
+            {
+              "env_steps": 68812800,
+              "reward": 1.7853357791900635,
+              "wall_clock_s": 263.9
+            },
+            {
+              "env_steps": 78643200,
+              "reward": 2.4929943084716797,
+              "wall_clock_s": 297.8
+            },
+            {
+              "env_steps": 88473600,
+              "reward": 2.3427038192749023,
+              "wall_clock_s": 331.6
+            }
+          ]
+        },
+        {
+          "k": 1,
+          "seed": 1221,
+          "final_reward": 2.351205825805664,
+          "peak_reward": 2.351205825805664,
+          "total_time_s": 329.5,
+          "progress": [
+            {
+              "env_steps": 0,
+              "reward": 0.02429773285984993,
+              "wall_clock_s": 7.6
+            },
+            {
+              "env_steps": 9830400,
+              "reward": 0.724190354347229,
+              "wall_clock_s": 59.8
+            },
+            {
+              "env_steps": 19660800,
+              "reward": 1.2453495264053345,
+              "wall_clock_s": 93.5
+            },
+            {
+              "env_steps": 29491200,
+              "reward": 1.4072078466415405,
+              "wall_clock_s": 127.1
+            },
+            {
+              "env_steps": 39321600,
+              "reward": 2.03540301322937,
+              "wall_clock_s": 160.8
+            },
+            {
+              "env_steps": 49152000,
+              "reward": 1.5345101356506348,
+              "wall_clock_s": 194.4
+            },
+            {
+              "env_steps": 58982400,
+              "reward": 1.1369143724441528,
+              "wall_clock_s": 228.0
+            },
+            {
+              "env_steps": 68812800,
+              "reward": 1.8632047176361084,
+              "wall_clock_s": 261.6
+            },
+            {
+              "env_steps": 78643200,
+              "reward": 1.41806960105896,
+              "wall_clock_s": 295.3
+            },
+            {
+              "env_steps": 88473600,
+              "reward": 2.351205825805664,
+              "wall_clock_s": 329.0
+            }
+          ]
+        },
+        {
+          "k": 1,
+          "seed": 1332,
+          "final_reward": 2.9235033988952637,
+          "peak_reward": 2.9235033988952637,
+          "total_time_s": 330.6,
+          "progress": [
+            {
+              "env_steps": 0,
+              "reward": 0.020342949777841568,
+              "wall_clock_s": 7.1
+            },
+            {
+              "env_steps": 9830400,
+              "reward": 0.5646079778671265,
+              "wall_clock_s": 60.2
+            },
+            {
+              "env_steps": 19660800,
+              "reward": 1.063032865524292,
+              "wall_clock_s": 94.0
+            },
+            {
+              "env_steps": 29491200,
+              "reward": 0.9723191261291504,
+              "wall_clock_s": 127.7
+            },
+            {
+              "env_steps": 39321600,
+              "reward": 1.2757372856140137,
+              "wall_clock_s": 161.4
+            },
+            {
+              "env_steps": 49152000,
+              "reward": 1.3641209602355957,
+              "wall_clock_s": 195.1
+            },
+            {
+              "env_steps": 58982400,
+              "reward": 1.5286072492599487,
+              "wall_clock_s": 228.8
+            },
+            {
+              "env_steps": 68812800,
+              "reward": 2.487062692642212,
+              "wall_clock_s": 262.5
+            },
+            {
+              "env_steps": 78643200,
+              "reward": 1.7456889152526855,
+              "wall_clock_s": 296.3
+            },
+            {
+              "env_steps": 88473600,
+              "reward": 2.9235033988952637,
+              "wall_clock_s": 330.1
+            }
+          ]
+        },
+        {
+          "k": 1,
+          "seed": 1443,
+          "final_reward": 1.4655241966247559,
+          "peak_reward": 2.8981618881225586,
+          "total_time_s": 329.8,
+          "progress": [
+            {
+              "env_steps": 0,
+              "reward": 0.04204488918185234,
+              "wall_clock_s": 7.6
+            },
+            {
+              "env_steps": 9830400,
+              "reward": 0.8276909589767456,
+              "wall_clock_s": 59.7
+            },
+            {
+              "env_steps": 19660800,
+              "reward": 0.9436500072479248,
+              "wall_clock_s": 93.4
+            },
+            {
+              "env_steps": 29491200,
+              "reward": 1.1343498229980469,
+              "wall_clock_s": 127.1
+            },
+            {
+              "env_steps": 39321600,
+              "reward": 0.7412430047988892,
+              "wall_clock_s": 160.8
+            },
+            {
+              "env_steps": 49152000,
+              "reward": 0.8656667470932007,
+              "wall_clock_s": 194.5
+            },
+            {
+              "env_steps": 58982400,
+              "reward": 1.104359745979309,
+              "wall_clock_s": 228.2
+            },
+            {
+              "env_steps": 68812800,
+              "reward": 2.8981618881225586,
+              "wall_clock_s": 262.0
+            },
+            {
+              "env_steps": 78643200,
+              "reward": 1.3650012016296387,
+              "wall_clock_s": 295.7
+            },
+            {
+              "env_steps": 88473600,
+              "reward": 1.4655241966247559,
+              "wall_clock_s": 329.3
+            }
+          ]
+        },
+        {
+          "k": 1,
+          "seed": 1554,
+          "final_reward": 2.230435371398926,
+          "peak_reward": 2.230435371398926,
+          "total_time_s": 331.3,
+          "progress": [
+            {
+              "env_steps": 0,
+              "reward": 0.21285393834114075,
+              "wall_clock_s": 7.6
+            },
+            {
+              "env_steps": 9830400,
+              "reward": 1.2284986972808838,
+              "wall_clock_s": 60.2
+            },
+            {
+              "env_steps": 19660800,
+              "reward": 1.0618090629577637,
+              "wall_clock_s": 94.0
+            },
+            {
+              "env_steps": 29491200,
+              "reward": 0.8570672273635864,
+              "wall_clock_s": 127.8
+            },
+            {
+              "env_steps": 39321600,
+              "reward": 1.2430999279022217,
+              "wall_clock_s": 161.6
+            },
+            {
+              "env_steps": 49152000,
+              "reward": 1.397667646408081,
+              "wall_clock_s": 195.5
+            },
+            {
+              "env_steps": 58982400,
+              "reward": 1.7195625305175781,
+              "wall_clock_s": 229.3
+            },
+            {
+              "env_steps": 68812800,
+              "reward": 1.4337949752807617,
+              "wall_clock_s": 263.2
+            },
+            {
+              "env_steps": 78643200,
+              "reward": 1.943969488143921,
+              "wall_clock_s": 297.0
+            },
+            {
+              "env_steps": 88473600,
+              "reward": 2.230435371398926,
+              "wall_clock_s": 330.8
+            }
+          ]
+        },
+        {
+          "k": 1,
+          "seed": 1665,
+          "final_reward": 2.0448503494262695,
+          "peak_reward": 2.0448503494262695,
+          "total_time_s": 330.7,
+          "progress": [
+            {
+              "env_steps": 0,
+              "reward": 0.027711991220712662,
+              "wall_clock_s": 7.1
+            },
+            {
+              "env_steps": 9830400,
+              "reward": 0.8589819669723511,
+              "wall_clock_s": 59.9
+            },
+            {
+              "env_steps": 19660800,
+              "reward": 1.3975718021392822,
+              "wall_clock_s": 93.7
+            },
+            {
+              "env_steps": 29491200,
+              "reward": 0.7055189609527588,
+              "wall_clock_s": 127.5
+            },
+            {
+              "env_steps": 39321600,
+              "reward": 1.3268386125564575,
+              "wall_clock_s": 161.3
+            },
+            {
+              "env_steps": 49152000,
+              "reward": 1.214971899986267,
+              "wall_clock_s": 195.1
+            },
+            {
+              "env_steps": 58982400,
+              "reward": 1.2183009386062622,
+              "wall_clock_s": 228.8
+            },
+            {
+              "env_steps": 68812800,
+              "reward": 1.525977373123169,
+              "wall_clock_s": 262.6
+            },
+            {
+              "env_steps": 78643200,
+              "reward": 1.5643755197525024,
+              "wall_clock_s": 296.4
+            },
+            {
+              "env_steps": 88473600,
+              "reward": 2.0448503494262695,
+              "wall_clock_s": 330.2
+            }
+          ]
+        },
+        {
+          "k": 1,
+          "seed": 1776,
+          "final_reward": 2.0764729976654053,
+          "peak_reward": 2.0764729976654053,
+          "total_time_s": 331.4,
+          "progress": [
+            {
+              "env_steps": 0,
+              "reward": 0.05592268332839012,
+              "wall_clock_s": 7.2
+            },
+            {
+              "env_steps": 9830400,
+              "reward": 0.8501432538032532,
+              "wall_clock_s": 60.2
+            },
+            {
+              "env_steps": 19660800,
+              "reward": 0.9783425331115723,
+              "wall_clock_s": 94.1
+            },
+            {
+              "env_steps": 29491200,
+              "reward": 1.1096194982528687,
+              "wall_clock_s": 127.9
+            },
+            {
+              "env_steps": 39321600,
+              "reward": 1.5349332094192505,
+              "wall_clock_s": 161.7
+            },
+            {
+              "env_steps": 49152000,
+              "reward": 1.28517484664917,
+              "wall_clock_s": 195.5
+            },
+            {
+              "env_steps": 58982400,
+              "reward": 1.7664244174957275,
+              "wall_clock_s": 229.3
+            },
+            {
+              "env_steps": 68812800,
+              "reward": 1.8097829818725586,
+              "wall_clock_s": 263.2
+            },
+            {
+              "env_steps": 78643200,
+              "reward": 1.8157978057861328,
+              "wall_clock_s": 297.1
+            },
+            {
+              "env_steps": 88473600,
+              "reward": 2.0764729976654053,
+              "wall_clock_s": 330.9
+            }
+          ]
+        }
+      ],
+      "10": [
+        {
+          "k": 10,
+          "seed": 777,
+          "final_reward": 1.7956033945083618,
+          "peak_reward": 1.7956033945083618,
+          "total_time_s": 331.0,
+          "progress": [
+            {
+              "env_steps": 0,
+              "reward": 0.001305737067013979,
+              "wall_clock_s": 7.1
+            },
+            {
+              "env_steps": 9830400,
+              "reward": 0.63872230052948,
+              "wall_clock_s": 60.3
+            },
+            {
+              "env_steps": 19660800,
+              "reward": 1.2241219282150269,
+              "wall_clock_s": 94.1
+            },
+            {
+              "env_steps": 29491200,
+              "reward": 1.2470136880874634,
+              "wall_clock_s": 128.0
+            },
+            {
+              "env_steps": 39321600,
+              "reward": 1.054701805114746,
+              "wall_clock_s": 161.8
+            },
+            {
+              "env_steps": 49152000,
+              "reward": 1.7875365018844604,
+              "wall_clock_s": 195.5
+            },
+            {
+              "env_steps": 58982400,
+              "reward": 0.5189428329467773,
+              "wall_clock_s": 229.3
+            },
+            {
+              "env_steps": 68812800,
+              "reward": 1.2932229042053223,
+              "wall_clock_s": 263.0
+            },
+            {
+              "env_steps": 78643200,
+              "reward": 1.2390971183776855,
+              "wall_clock_s": 296.8
+            },
+            {
+              "env_steps": 88473600,
+              "reward": 1.7956033945083618,
+              "wall_clock_s": 330.6
+            }
+          ]
+        },
+        {
+          "k": 10,
+          "seed": 888,
+          "final_reward": 1.7074986696243286,
+          "peak_reward": 1.7074986696243286,
+          "total_time_s": 331.0,
+          "progress": [
+            {
+              "env_steps": 0,
+              "reward": 0.032684411853551865,
+              "wall_clock_s": 7.9
+            },
+            {
+              "env_steps": 9830400,
+              "reward": 0.888100802898407,
+              "wall_clock_s": 60.3
+            },
+            {
+              "env_steps": 19660800,
+              "reward": 0.7776608467102051,
+              "wall_clock_s": 94.1
+            },
+            {
+              "env_steps": 29491200,
+              "reward": 0.9317431449890137,
+              "wall_clock_s": 127.9
+            },
+            {
+              "env_steps": 39321600,
+              "reward": 1.3375967741012573,
+              "wall_clock_s": 161.7
+            },
+            {
+              "env_steps": 49152000,
+              "reward": 0.8785449266433716,
+              "wall_clock_s": 195.4
+            },
+            {
+              "env_steps": 58982400,
+              "reward": 0.8961561322212219,
+              "wall_clock_s": 229.2
+            },
+            {
+              "env_steps": 68812800,
+              "reward": 1.3160924911499023,
+              "wall_clock_s": 262.9
+            },
+            {
+              "env_steps": 78643200,
+              "reward": 0.9358307123184204,
+              "wall_clock_s": 296.7
+            },
+            {
+              "env_steps": 88473600,
+              "reward": 1.7074986696243286,
+              "wall_clock_s": 330.5
+            }
+          ]
+        },
+        {
+          "k": 10,
+          "seed": 999,
+          "final_reward": 2.336662530899048,
+          "peak_reward": 2.336662530899048,
+          "total_time_s": 330.8,
+          "progress": [
+            {
+              "env_steps": 0,
+              "reward": 0.03633657842874527,
+              "wall_clock_s": 7.9
+            },
+            {
+              "env_steps": 9830400,
+              "reward": 1.1435457468032837,
+              "wall_clock_s": 60.1
+            },
+            {
+              "env_steps": 19660800,
+              "reward": 0.8675048351287842,
+              "wall_clock_s": 93.9
+            },
+            {
+              "env_steps": 29491200,
+              "reward": 1.0866121053695679,
+              "wall_clock_s": 127.7
+            },
+            {
+              "env_steps": 39321600,
+              "reward": 1.400160789489746,
+              "wall_clock_s": 161.4
+            },
+            {
+              "env_steps": 49152000,
+              "reward": 0.8949662446975708,
+              "wall_clock_s": 195.2
+            },
+            {
+              "env_steps": 58982400,
+              "reward": 1.727731466293335,
+              "wall_clock_s": 228.9
+            },
+            {
+              "env_steps": 68812800,
+              "reward": 1.8706791400909424,
+              "wall_clock_s": 262.7
+            },
+            {
+              "env_steps": 78643200,
+              "reward": 1.0946999788284302,
+              "wall_clock_s": 296.5
+            },
+            {
+              "env_steps": 88473600,
+              "reward": 2.336662530899048,
+              "wall_clock_s": 330.3
+            }
+          ]
+        },
+        {
+          "k": 10,
+          "seed": 1110,
+          "final_reward": 1.6978884935379028,
+          "peak_reward": 2.046962261199951,
+          "total_time_s": 330.4,
+          "progress": [
+            {
+              "env_steps": 0,
+              "reward": 0.18498532474040985,
+              "wall_clock_s": 7.9
+            },
+            {
+              "env_steps": 9830400,
+              "reward": 0.8014023303985596,
+              "wall_clock_s": 60.1
+            },
+            {
+              "env_steps": 19660800,
+              "reward": 0.746992826461792,
+              "wall_clock_s": 93.9
+            },
+            {
+              "env_steps": 29491200,
+              "reward": 1.1096432209014893,
+              "wall_clock_s": 127.6
+            },
+            {
+              "env_steps": 39321600,
+              "reward": 1.0280154943466187,
+              "wall_clock_s": 161.3
+            },
+            {
+              "env_steps": 49152000,
+              "reward": 1.2382936477661133,
+              "wall_clock_s": 195.0
+            },
+            {
+              "env_steps": 58982400,
+              "reward": 0.7995373010635376,
+              "wall_clock_s": 228.7
+            },
+            {
+              "env_steps": 68812800,
+              "reward": 1.4500865936279297,
+              "wall_clock_s": 262.4
+            },
+            {
+              "env_steps": 78643200,
+              "reward": 2.046962261199951,
+              "wall_clock_s": 296.2
+            },
+            {
+              "env_steps": 88473600,
+              "reward": 1.6978884935379028,
+              "wall_clock_s": 329.9
+            }
+          ]
+        },
+        {
+          "k": 10,
+          "seed": 1221,
+          "final_reward": 1.8593151569366455,
+          "peak_reward": 2.167344808578491,
+          "total_time_s": 331.8,
+          "progress": [
+            {
+              "env_steps": 0,
+              "reward": 0.10448676347732544,
+              "wall_clock_s": 8.2
+            },
+            {
+              "env_steps": 9830400,
+              "reward": 0.6879937648773193,
+              "wall_clock_s": 60.9
+            },
+            {
+              "env_steps": 19660800,
+              "reward": 0.928972065448761,
+              "wall_clock_s": 94.7
+            },
+            {
+              "env_steps": 29491200,
+              "reward": 1.3188142776489258,
+              "wall_clock_s": 128.5
+            },
+            {
+              "env_steps": 39321600,
+              "reward": 2.167344808578491,
+              "wall_clock_s": 162.3
+            },
+            {
+              "env_steps": 49152000,
+              "reward": 1.4318034648895264,
+              "wall_clock_s": 196.1
+            },
+            {
+              "env_steps": 58982400,
+              "reward": 1.2016873359680176,
+              "wall_clock_s": 229.8
+            },
+            {
+              "env_steps": 68812800,
+              "reward": 1.568838357925415,
+              "wall_clock_s": 263.6
+            },
+            {
+              "env_steps": 78643200,
+              "reward": 1.1934075355529785,
+              "wall_clock_s": 297.5
+            },
+            {
+              "env_steps": 88473600,
+              "reward": 1.8593151569366455,
+              "wall_clock_s": 331.3
+            }
+          ]
+        },
+        {
+          "k": 10,
+          "seed": 1332,
+          "final_reward": 1.5649011135101318,
+          "peak_reward": 1.8902323246002197,
+          "total_time_s": 331.6,
+          "progress": [
+            {
+              "env_steps": 0,
+              "reward": 0.020342949777841568,
+              "wall_clock_s": 7.2
+            },
+            {
+              "env_steps": 9830400,
+              "reward": 0.5373290181159973,
+              "wall_clock_s": 60.7
+            },
+            {
+              "env_steps": 19660800,
+              "reward": 0.8533134460449219,
+              "wall_clock_s": 94.6
+            },
+            {
+              "env_steps": 29491200,
+              "reward": 0.9004368782043457,
+              "wall_clock_s": 128.4
+            },
+            {
+              "env_steps": 39321600,
+              "reward": 1.0045045614242554,
+              "wall_clock_s": 162.2
+            },
+            {
+              "env_steps": 49152000,
+              "reward": 1.0637636184692383,
+              "wall_clock_s": 196.0
+            },
+            {
+              "env_steps": 58982400,
+              "reward": 1.4279723167419434,
+              "wall_clock_s": 229.8
+            },
+            {
+              "env_steps": 68812800,
+              "reward": 1.8902323246002197,
+              "wall_clock_s": 263.6
+            },
+            {
+              "env_steps": 78643200,
+              "reward": 1.099289894104004,
+              "wall_clock_s": 297.3
+            },
+            {
+              "env_steps": 88473600,
+              "reward": 1.5649011135101318,
+              "wall_clock_s": 331.1
+            }
+          ]
+        },
+        {
+          "k": 10,
+          "seed": 1443,
+          "final_reward": 0.5860746502876282,
+          "peak_reward": 1.8638054132461548,
+          "total_time_s": 331.3,
+          "progress": [
+            {
+              "env_steps": 0,
+              "reward": 0.04204488918185234,
+              "wall_clock_s": 7.1
+            },
+            {
+              "env_steps": 9830400,
+              "reward": 0.8915634155273438,
+              "wall_clock_s": 60.7
+            },
+            {
+              "env_steps": 19660800,
+              "reward": 1.0627517700195312,
+              "wall_clock_s": 94.5
+            },
+            {
+              "env_steps": 29491200,
+              "reward": 0.86016446352005,
+              "wall_clock_s": 128.3
+            },
+            {
+              "env_steps": 39321600,
+              "reward": 0.621715247631073,
+              "wall_clock_s": 162.1
+            },
+            {
+              "env_steps": 49152000,
+              "reward": 0.7442892789840698,
+              "wall_clock_s": 195.8
+            },
+            {
+              "env_steps": 58982400,
+              "reward": 0.800853967666626,
+              "wall_clock_s": 229.6
+            },
+            {
+              "env_steps": 68812800,
+              "reward": 1.8638054132461548,
+              "wall_clock_s": 263.4
+            },
+            {
+              "env_steps": 78643200,
+              "reward": 0.8685782551765442,
+              "wall_clock_s": 297.1
+            },
+            {
+              "env_steps": 88473600,
+              "reward": 0.5860746502876282,
+              "wall_clock_s": 330.8
+            }
+          ]
+        },
+        {
+          "k": 10,
+          "seed": 1554,
+          "final_reward": 1.6492472887039185,
+          "peak_reward": 1.7942811250686646,
+          "total_time_s": 331.5,
+          "progress": [
+            {
+              "env_steps": 0,
+              "reward": 0.21285411715507507,
+              "wall_clock_s": 7.1
+            },
+            {
+              "env_steps": 9830400,
+              "reward": 1.2452495098114014,
+              "wall_clock_s": 60.3
+            },
+            {
+              "env_steps": 19660800,
+              "reward": 0.9253398180007935,
+              "wall_clock_s": 94.2
+            },
+            {
+              "env_steps": 29491200,
+              "reward": 0.841212272644043,
+              "wall_clock_s": 128.0
+            },
+            {
+              "env_steps": 39321600,
+              "reward": 1.2047566175460815,
+              "wall_clock_s": 161.9
+            },
+            {
+              "env_steps": 49152000,
+              "reward": 1.2180743217468262,
+              "wall_clock_s": 195.7
+            },
+            {
+              "env_steps": 58982400,
+              "reward": 1.7026355266571045,
+              "wall_clock_s": 229.5
+            },
+            {
+              "env_steps": 68812800,
+              "reward": 1.04988694190979,
+              "wall_clock_s": 263.4
+            },
+            {
+              "env_steps": 78643200,
+              "reward": 1.7942811250686646,
+              "wall_clock_s": 297.2
+            },
+            {
+              "env_steps": 88473600,
+              "reward": 1.6492472887039185,
+              "wall_clock_s": 331.0
+            }
+          ]
+        },
+        {
+          "k": 10,
+          "seed": 1665,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 10,
+          "seed": 1776,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        }
+      ],
+      "50": [
+        {
+          "k": 50,
+          "seed": 777,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 50,
+          "seed": 888,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 50,
+          "seed": 999,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 50,
+          "seed": 1110,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 50,
+          "seed": 1221,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 50,
+          "seed": 1332,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 50,
+          "seed": 1443,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 50,
+          "seed": 1554,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 50,
+          "seed": 1665,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 50,
+          "seed": 1776,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        }
+      ],
+      "200": [
+        {
+          "k": 200,
+          "seed": 777,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 200,
+          "seed": 888,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 200,
+          "seed": 999,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 200,
+          "seed": 1110,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 200,
+          "seed": 1221,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 200,
+          "seed": 1332,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 200,
+          "seed": 1443,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 200,
+          "seed": 1554,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 200,
+          "seed": 1665,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 200,
+          "seed": 1776,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        }
+      ],
+      "500": [
+        {
+          "k": 500,
+          "seed": 777,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 500,
+          "seed": 888,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 500,
+          "seed": 999,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 500,
+          "seed": 1110,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 500,
+          "seed": 1221,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 500,
+          "seed": 1332,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 500,
+          "seed": 1443,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 500,
+          "seed": 1554,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 500,
+          "seed": 1665,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 500,
+          "seed": 1776,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        }
+      ],
+      "1000": [
+        {
+          "k": 1000,
+          "seed": 777,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 1000,
+          "seed": 888,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 1000,
+          "seed": 999,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 1000,
+          "seed": 1110,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 1000,
+          "seed": 1221,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 1000,
+          "seed": 1332,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 1000,
+          "seed": 1443,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 1000,
+          "seed": 1554,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 1000,
+          "seed": 1665,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        },
+        {
+          "k": 1000,
+          "seed": 1776,
+          "final_reward": 0.0,
+          "peak_reward": 0.0,
+          "total_time_s": 0.0,
+          "progress": [],
+          "crashed": true
+        }
+      ]
+    }
+  }
+}

@@ -59,9 +59,25 @@ def load_ppo():
     return all_ppo
 
 def load_capacity():
-    f = MEGA_DIR / "capacity_sweep_results.json"
-    with open(f) as fh:
-        return json.load(fh)
+    """Merge capacity sweep results from multiple sources.
+    - capacity_sweep_results_5090.json: d=100K (from 5090 run)
+    - capacity_sweep_results.json: d=385 to d=25K (from 4090 run)
+    """
+    merged = {}
+    for fname in ["capacity_sweep_results_5090.json", "capacity_sweep_results.json"]:
+        f = MEGA_DIR / fname
+        if f.exists():
+            with open(f) as fh:
+                data = json.load(fh)
+            for arch_key, arch_data in data.items():
+                if arch_key not in merged:
+                    merged[arch_key] = arch_data
+                else:
+                    # Merge algo data from both sources
+                    for k, v in arch_data.items():
+                        if k not in merged[arch_key]:
+                            merged[arch_key][k] = v
+    return merged
 
 def get_finals(algo_data):
     return [sd["final"] for sk, sd in algo_data.items()
@@ -127,59 +143,38 @@ def fig1_vise_grip():
     ax1.axhspan(-0.3, 0.05, color='#FEE2E2', alpha=0.5, zorder=0)
     ax1.text(500, -0.15, "Total Failure Zone", ha='center', fontsize=8, color='#991B1B')
 
-    # ── RIGHT: Capacity Sweep ──
+    # ── RIGHT: Capacity Sweep (all 4 algorithms) ──
     cap_data = load_capacity()
+    algos_cap = ["LinePulse", "OpenES", "DE", "PSO"]
+    markers = {"LinePulse": "s", "OpenES": "o", "DE": "D", "PSO": "^"}
 
     archs = sorted(cap_data.keys(), key=lambda x: cap_data[x].get("d", 0))
-    ds, snrs, lp_meds, oes_meds = [], [], [], []
-    lp_stds, oes_stds = [], []
+    ds = [cap_data[a].get("d", 0) for a in archs]
+    snrs = [cap_data[a].get("snr", 0) for a in archs]
 
-    for arch in archs:
-        a = cap_data[arch]
-        d = a.get("d", 0)
-        snr = a.get("snr", 0)
-        lp_scores = [sd["final"] for sk, sd in a.get("LinePulse", {}).items()
-                     if isinstance(sd, dict) and "final" in sd]
-        oes_scores = [sd["final"] for sk, sd in a.get("OpenES", {}).items()
-                      if isinstance(sd, dict) and "final" in sd]
-
-        ds.append(d)
-        snrs.append(snr)
-        lp_meds.append(np.median(lp_scores) if lp_scores else 0)
-        oes_meds.append(np.median(oes_scores) if oes_scores else 0)
-        lp_stds.append(np.std(lp_scores) if lp_scores else 0)
-        oes_stds.append(np.std(oes_scores) if oes_scores else 0)
-
-    ax2.errorbar(ds, lp_meds, yerr=lp_stds, fmt='s-', color=C_LP, linewidth=2.5,
-                 markersize=8, capsize=4, label="LinePulse", zorder=3)
-    ax2.errorbar(ds, oes_meds, yerr=oes_stds, fmt='o-', color=C_OES, linewidth=2.5,
-                 markersize=8, capsize=4, label="OpenES", zorder=3)
-
-    # Theoretical 1/sqrt(d) curve (scaled)
-    d_theory = np.linspace(300, 120000, 200)
-    snr_theory = np.sqrt(512 / d_theory)
-    # Scale to match OpenES peak
-    oes_theory = 830 * np.minimum(1.0, (snr_theory / 0.4) ** 3)
-    oes_theory[snr_theory < 0.15] = 0
-    ax2.plot(d_theory, oes_theory, '--', color=C_OES, alpha=0.4, linewidth=1.5,
-             label=r"OpenES theoretical $\propto (\sqrt{N/d})^3$")
+    for algo in algos_cap:
+        meds, stds = [], []
+        for arch in archs:
+            scores = [sd["final"] for sk, sd in cap_data[arch].get(algo, {}).items()
+                      if isinstance(sd, dict) and "final" in sd
+                      and not sd.get("crashed", False)]
+            meds.append(np.median(scores) if scores else 0)
+            stds.append(np.std(scores) if scores else 0)
+        ax2.errorbar(ds, meds, yerr=stds, fmt=f'{markers[algo]}-',
+                     color=ALGO_COLORS[algo], linewidth=2.5, markersize=8,
+                     capsize=4, label=algo, zorder=3)
 
     ax2.set_xscale('log')
     ax2.set_xlabel("Parameter Count d")
     ax2.set_ylabel("Median Score (10 seeds)")
-    ax2.set_title("(b) SNR Collapse: OpenES vs LinePulse")
-    ax2.legend(loc='center right', framealpha=0.9)
+    ax2.set_title("(b) Topology Scaling: All Algorithms")
+    ax2.legend(loc='lower left', framealpha=0.9)
     ax2.grid(True, alpha=0.3)
 
     # Add SNR labels on top
     for d, snr in zip(ds, snrs):
         ax2.annotate(f"SNR={snr:.2f}", (d, 870), fontsize=7, ha='center',
                      color='gray', style='italic')
-
-    # Collapse zone
-    ax2.axvspan(20000, 120000, color='#FEE2E2', alpha=0.3, zorder=0)
-    ax2.text(55000, 50, "Gradient\nCollapse\nZone", ha='center', fontsize=8,
-             color='#991B1B', style='italic')
 
     plt.tight_layout()
     plt.savefig(FIG_DIR / "fig1_vise_grip.png")
@@ -394,6 +389,59 @@ def fig5_ppo_detail():
 
 
 # ════════════════════════════════════════════════════════════════════
+# FIGURE 6: TOPOLOGY CURSE — Standalone capacity sweep
+# ════════════════════════════════════════════════════════════════════
+def fig6_topology_curse():
+    cap_data = load_capacity()
+    algos = ["LinePulse", "OpenES", "DE", "PSO"]
+    markers = {"LinePulse": "s", "OpenES": "o", "DE": "D", "PSO": "^"}
+
+    archs = sorted(cap_data.keys(), key=lambda x: cap_data[x].get("d", 0))
+    ds = [cap_data[a].get("d", 0) for a in archs]
+    snrs = [cap_data[a].get("snr", 0) for a in archs]
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    for algo in algos:
+        meds, stds, q25s, q75s = [], [], [], []
+        for arch in archs:
+            scores = [sd["final"] for sk, sd in cap_data[arch].get(algo, {}).items()
+                      if isinstance(sd, dict) and "final" in sd
+                      and not sd.get("crashed", False)]
+            if scores:
+                meds.append(np.median(scores))
+                q25s.append(np.percentile(scores, 25))
+                q75s.append(np.percentile(scores, 75))
+            else:
+                meds.append(0)
+                q25s.append(0)
+                q75s.append(0)
+
+        ax.plot(ds, meds, f'{markers[algo]}-', color=ALGO_COLORS[algo],
+                linewidth=2.5, markersize=10, label=algo, zorder=3)
+        ax.fill_between(ds, q25s, q75s, alpha=0.15, color=ALGO_COLORS[algo])
+
+    # SNR annotations
+    for d, snr in zip(ds, snrs):
+        ax.annotate(f"SNR={snr:.2f}", (d, ax.get_ylim()[1] * 0.95),
+                    fontsize=8, ha='center', color='gray', style='italic')
+
+    ax.set_xscale('log')
+    ax.set_xlabel("Parameter Count d", fontsize=13)
+    ax.set_ylabel("Median Score (10 seeds, IQR shaded)", fontsize=13)
+    ax.set_title("Topology Scaling: Algorithm Performance vs Network Capacity",
+                 fontsize=14, fontweight='bold')
+    ax.legend(loc='best', framealpha=0.9, fontsize=11)
+    ax.grid(True, alpha=0.3)
+
+    plt.tight_layout()
+    plt.savefig(FIG_DIR / "fig6_topology_curse.png")
+    plt.savefig(FIG_DIR / "fig6_topology_curse.pdf")
+    print(f"  ✓ Figure 6 saved")
+    plt.close()
+
+
+# ════════════════════════════════════════════════════════════════════
 if __name__ == "__main__":
     print("\nGenerating paper figures...")
     print(f"Output: {FIG_DIR.resolve()}\n")
@@ -403,6 +451,7 @@ if __name__ == "__main__":
     fig3_curves()
     fig4_ablation()
     fig5_ppo_detail()
+    fig6_topology_curse()
 
     print(f"\n✓ All figures saved to {FIG_DIR}/")
     print("  fig1_vise_grip.png/pdf   — Main figure (PPO + capacity collapse)")
@@ -410,3 +459,4 @@ if __name__ == "__main__":
     print("  fig3_learning_curves.png/pdf — Training trajectories")
     print("  fig4_ablation.png/pdf    — Ray ablation")
     print("  fig5_ppo_detail.png/pdf  — PPO sparsity per environment")
+    print("  fig6_topology_curse.png/pdf — Topology scaling (4 algos)")

@@ -2,9 +2,10 @@
 # ============================================================================
 # RunPod Setup Script for Pulse Neuroevolution
 # 
-# Template: runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
-# Container Disk: 50GB+
-# GPU: L4 or RTX 4090 (24GB is plenty)
+# Template: runpod/pytorch:1.0.2-cu128-torch280-ubuntu2404 (5090)
+#      or:  runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04 (4090)
+# Container Disk: 40GB+
+# GPU: RTX 5090 (32GB) or A100 40GB+
 #
 # Usage:
 #   1. rsync code to pod (see bottom of this file)
@@ -24,18 +25,27 @@ apt-get update -qq && apt-get install -y -qq rsync libosmesa6-dev 2>/dev/null
 
 # 2. JAX with CUDA
 echo "[2/5] JAX with CUDA 12..."
-pip install -U "jax[cuda12]"
+pip install -U "jax[cuda12]" --break-system-packages
 
 # 3. MuJoCo Playground (GitHub, force past blinker conflict)
 echo "[3/5] MuJoCo Playground..."
-pip install git+https://github.com/google-deepmind/mujoco_playground.git --ignore-installed blinker
+pip install git+https://github.com/google-deepmind/mujoco_playground.git --ignore-installed blinker --break-system-packages
 
 # 4. EvoX + utilities
 echo "[4/5] EvoX + utilities..."
-pip install evox imageio tqdm numpy ml-collections etils
+pip install evox imageio tqdm numpy ml-collections etils --break-system-packages
+
+# 4b. Fix CUDA compatibility — pip install evox may upgrade torch to a cu130
+# build that's incompatible with the pod's CUDA driver.
+# Reinstall torch from the matching CUDA index + fix JAX cuDNN to match.
+# cu124 for RTX 4090 pods, cu128 for RTX 5090 pods.
+CUDA_INDEX="cu124"
+echo "[4b/6] Fixing CUDA ${CUDA_INDEX} compatibility..."
+pip install --force-reinstall torch --index-url https://download.pytorch.org/whl/${CUDA_INDEX} --break-system-packages
+pip install -U "jax[cuda12]" --break-system-packages
 
 # 5. Patch evox for latest mujoco_playground API (num_vision_envs removed)
-echo "[5/5] Patching evox compatibility..."
+echo "[5/6] Patching evox compatibility..."
 EVOX_MJX=$(python3 -c "import evox; import os; print(os.path.join(os.path.dirname(evox.__file__), 'problems/neuroevolution/mujoco_playground.py'))")
 if grep -q "num_vision_envs" "$EVOX_MJX" 2>/dev/null; then
     sed -i 's/num_vision_envs=pop_size,//' "$EVOX_MJX"

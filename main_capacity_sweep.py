@@ -1,10 +1,18 @@
 """
-Capacity Sweep — LinePulse vs OpenES across network sizes
-=========================================================
-Proves the SNR collapse of OpenES as d increases.
-LinePulse should remain flat (immune to ambient dimensionality).
+Capacity Sweep — LinePulse vs OpenES vs DE vs PSO
+===================================================
+Complete 4-algorithm dimensionality scaling comparison.
+Proves the "Topology Curse": coordinate-wise operators (DE's binomial
+crossover, PSO's per-dimension velocity, OpenES's isotropic Gaussian)
+shatter neural network weight correlations at high d — while LinePulse's
+vector-wise scalar operations survive.
 
-Only CartpoleSwingup (obs=5, act=1) — fast runs, ~15 min each.
+All algorithms use Kaiming-centered initialization for fair comparison.
+Architecture order is REVERSED (largest d first) so the most informative
+high-dimensional results arrive early.
+
+Environment: CartpoleSwingup (obs=5, act=1)
+GPU: A100 40GB+ recommended for d=100K with pop_size=512
 
 Usage:
     MUJOCO_GL=osmesa python3 -u main_capacity_sweep.py 2>&1 | tee resources/mega/capacity_sweep.log
@@ -17,7 +25,6 @@ import time
 import math
 import subprocess
 import tempfile
-import numpy as np
 
 os.environ["MUJOCO_GL"] = "osmesa"
 
@@ -37,24 +44,24 @@ if DRY_RUN:
     NUM_EPISODES = 2
     MAX_EPISODE_LENGTH = 200
     HIDDEN_CONFIGS = [
-        [16, 16],
         [32, 32, 32, 32],
+        [16, 16],
     ]
-    ALGO_NAMES = ["LinePulse", "OpenES"]
+    ALGO_NAMES = ["DE", "PSO", "OpenES", "LinePulse"]
 else:
     POP_SIZE = 512
     GENERATIONS = 300
-    N_SEEDS = 10  # matches mega EA for uniform methodology
+    N_SEEDS = 10
     NUM_EPISODES = 5
     MAX_EPISODE_LENGTH = 1000
+    # d=100K already done on 5090 — results in capacity_sweep_results_5090.json
     HIDDEN_CONFIGS = [
-        [16, 16],           # d=385   SNR=1.15
-        [32, 32, 32, 32],   # d=3393  SNR=0.39
-        [64, 64],           # d=4609  SNR=0.33
-        [128, 128, 64],     # d=25601 SNR=0.14
-        [256, 256, 128],    # d=100353 SNR=0.07
+        [128, 128, 64],     # d=25601  SNR=0.14
+        [64, 64],           # d=4609   SNR=0.33
+        [32, 32, 32, 32],   # d=3393   SNR=0.39
+        [16, 16],           # d=385    SNR=1.15
     ]
-    ALGO_NAMES = ["LinePulse", "OpenES"]
+    ALGO_NAMES = ["DE", "PSO", "OpenES", "LinePulse"]
 
 
 def count_params(obs_dim, act_dim, hidden_layers):
@@ -62,7 +69,7 @@ def count_params(obs_dim, act_dim, hidden_layers):
     layers = [obs_dim] + hidden_layers + [act_dim]
     total = 0
     for i in range(len(layers) - 1):
-        total += layers[i] * layers[i+1] + layers[i+1]  # weight + bias
+        total += layers[i] * layers[i+1] + layers[i+1]
     return total
 
 
@@ -75,17 +82,20 @@ def theoretical_snr(n, d):
 # Worker script (subprocess per seed, ensures full GPU memory release)
 # ============================================================================
 WORKER_SCRIPT = """
-import os, sys, json, time, math, torch, torch.nn as nn
+import os
+# MUST be set before JAX/PyTorch is imported
+os.environ["MUJOCO_GL"] = "osmesa"
+os.environ["XLA_PYTHON_CLIENT_PREALLOCATE"] = "false"
+
+import sys, json, time, math, torch, torch.nn as nn
 from evox import algorithms
 from evox.problems.neuroevolution.mujoco_playground import MujocoProblem
 from evox.utils import ParamsAndVector
 from evox.workflows import EvalMonitor, StdWorkflow
 from pulse14 import PulseGreedy
 
-os.environ["MUJOCO_GL"] = "osmesa"
-
 env_name   = sys.argv[1]   # CartpoleSwingup
-algo_name  = sys.argv[2]   # LinePulse or OpenES
+algo_name  = sys.argv[2]   # LinePulse, OpenES, DE, or PSO
 seed       = int(sys.argv[3])
 out_file   = sys.argv[4]
 hidden_str = sys.argv[5]   # e.g. "32,32,32,32"
@@ -117,25 +127,43 @@ torch.manual_seed(seed)
 if device == "cuda":
     torch.cuda.manual_seed_all(seed)
 
+# Kaiming-initialized parameter vector — ALL algorithms start from this
 model = PolicyMLP(obs_dim, act_dim, hidden_layers).to(device)
 adapter = ParamsAndVector(dummy_model=model)
-pop_center = adapter.to_vector(dict(model.named_parameters()))
+pop_center = adapter.to_vector(dict(model.named_parameters())).detach()
 n_params = len(pop_center)
 b = 1
 lb = torch.full_like(pop_center, -b)
 ub = torch.full_like(pop_center, b)
 
+# Kaiming noise scale — matches OpenES noise_stdev=0.02
+KAIMING_NOISE = 0.02
+
 def make_algo():
-    # IMPORTANT: both algorithms start from the SAME Kaiming-initialized vector (pop_center).
-    # This controls initialization as a variable — the only difference is how each
-    # algorithm takes its next steps (line search vs. isotropic Gaussian).
+    # IMPORTANT: all algorithms start near the SAME Kaiming-initialized vector
+    # (pop_center). This controls initialization as a variable — the only
+    # difference is how each algorithm takes its next steps.
     if algo_name == "LinePulse":
         return PulseGreedy(pop_size=POP_SIZE, dim=n_params, lb=-b, ub=b,
                            patience=1, center_init=pop_center, device=device)
     elif algo_name == "OpenES":
         return algorithms.OpenES(pop_size=POP_SIZE,
-            center_init=pop_center,  # Kaiming init, not zeros — same start as LinePulse
-            learning_rate=0.01, noise_stdev=0.02, optimizer="adam", device=device)
+            center_init=pop_center,
+            learning_rate=0.01, noise_stdev=KAIMING_NOISE,
+            optimizer="adam", device=device)
+    elif algo_name == "DE":
+        # DE natively supports mean/stdev initialization
+        return algorithms.DE(
+            pop_size=POP_SIZE, lb=lb, ub=ub,
+            mean=pop_center,
+            stdev=torch.full_like(pop_center, KAIMING_NOISE),
+            device=device,
+        )
+    elif algo_name == "PSO":
+        # PSO has no center_init — we inject after init_step() below
+        return algorithms.PSO(pop_size=POP_SIZE, lb=lb, ub=ub, device=device)
+    else:
+        raise ValueError(f"Unknown algorithm: {algo_name}")
 
 policy = PolicyMLP(obs_dim, act_dim, hidden_layers).to(device)
 problem = MujocoProblem(policy=policy, env_name=env_name,
@@ -149,6 +177,29 @@ workflow = StdWorkflow(algorithm=algorithm, problem=problem,
 
 t0 = time.time()
 workflow.init_step()
+
+# ============================================================================
+# PSO KAIMING INIT INJECTION
+# ============================================================================
+# LinePulse, OpenES, and DE all support Kaiming center_init natively.
+# PSO has no such parameter, so we inject after init_step().
+# NOTE: algorithms minimize internally (workflow handles sign flip for
+# opt_direction="max"), so "worst" fitness = +inf.
+if algo_name == "PSO":
+    kaiming_pop = pop_center.unsqueeze(0) + torch.randn(POP_SIZE, n_params, device=device) * KAIMING_NOISE
+    kaiming_pop = torch.clamp(kaiming_pop, lb, ub)
+    algorithm.pop = kaiming_pop
+    algorithm.velocity = torch.randn(POP_SIZE, n_params, device=device) * 0.01
+    algorithm.local_best_location = kaiming_pop.clone()
+    algorithm.local_best_fit = torch.full((POP_SIZE,), float('inf'), device=device)
+    algorithm.global_best_location = kaiming_pop[0].clone()
+    algorithm.global_best_fit = torch.tensor(float('inf'), device=device)
+    print(f"  Injected Kaiming init into PSO ({POP_SIZE}x{n_params})", flush=True)
+else:
+    init_type = "center_init" if algo_name in ("LinePulse", "OpenES") else "mean/stdev"
+    print(f"  {algo_name} using native {init_type} Kaiming init ({POP_SIZE}x{n_params})", flush=True)
+# ============================================================================
+
 trajectory = []
 for gen in range(GENERATIONS):
     workflow.step()
@@ -189,6 +240,7 @@ def run_one_seed(env_name, algo_name, hidden_layers, seed_idx, seed):
     ]
     env = os.environ.copy()
     env["MUJOCO_GL"] = "osmesa"
+    env["XLA_PYTHON_CLIENT_PREALLOCATE"] = "false"
     # Workers run from /tmp/tmpXXX.py — add workspace dir to PYTHONPATH so pulse14.py is importable.
     script_dir = os.path.dirname(os.path.abspath(__file__))
     env["PYTHONPATH"] = script_dir + os.pathsep + env.get("PYTHONPATH", "")
@@ -218,7 +270,7 @@ def run_one_seed(env_name, algo_name, hidden_layers, seed_idx, seed):
 # Main
 # ============================================================================
 def main():
-    print(f"Mode: {'DRY RUN' if DRY_RUN else 'PAPER QUALITY'} — CAPACITY SWEEP")
+    print(f"Mode: {'DRY RUN' if DRY_RUN else 'PAPER QUALITY'} — CAPACITY SWEEP (ALL ALGORITHMS)")
     print(f"Env: {ENV_NAME}, Algos: {ALGO_NAMES}")
     print(f"Pop: {POP_SIZE}  Gens: {GENERATIONS}  Seeds: {N_SEEDS}")
     total_runs = len(HIDDEN_CONFIGS) * len(ALGO_NAMES) * N_SEEDS
@@ -260,20 +312,24 @@ def main():
             finals = [all_results[arch_key][algo_name][s]["final"]
                       for s in range(N_SEEDS) if s in all_results[arch_key][algo_name]]
             if finals:
-                med = np.median(finals)
-                std = np.std(finals)
-                print(f"  {algo_name:<18}  median={med:>8.2f}  std={std:>6.2f}")
+                med = sorted(finals)[len(finals)//2]
+                std_val = (sum((x - sum(finals)/len(finals))**2 for x in finals) / len(finals)) ** 0.5
+                print(f"  {algo_name:<18}  median={med:>8.2f}  std={std_val:>6.2f}")
 
         _save_results(all_results)
 
     total_time = time.time() - total_t0
 
     # Final summary table
-    print(f"\n\n{'='*70}")
+    print(f"\n\n{'='*90}")
     print(f"CAPACITY SWEEP — FINAL RESULTS  (total: {total_time/60:.1f} min)")
-    print(f"{'='*70}")
-    print(f"\n  {'Architecture':<20}  {'d':>7}  {'SNR':>6}  {'LinePulse':>10}  {'OpenES':>10}  {'Winner'}")
-    print(f"  {'─'*70}")
+    print(f"{'='*90}")
+    header = f"\n  {'Architecture':<20}  {'d':>7}  {'SNR':>6}"
+    for a in ALGO_NAMES:
+        header += f"  {a:>12}"
+    header += f"  {'Winner'}"
+    print(header)
+    print(f"  {'─'*90}")
 
     for hidden_layers in HIDDEN_CONFIGS:
         arch_key = str(hidden_layers)
@@ -284,12 +340,14 @@ def main():
         for algo_name in ALGO_NAMES:
             finals = [all_results[arch_key][algo_name][s]["final"]
                       for s in range(N_SEEDS) if s in all_results[arch_key][algo_name]]
-            scores[algo_name] = np.median(finals) if finals else 0.0
+            scores[algo_name] = sorted(finals)[len(finals)//2] if finals else 0.0
 
         winner = max(scores, key=scores.get)
-        lp = scores.get("LinePulse", 0.0)
-        oes = scores.get("OpenES", 0.0)
-        print(f"  {str(hidden_layers):<20}  {d:>7,}  {snr:>6.3f}  {lp:>10.1f}  {oes:>10.1f}  ← {winner}")
+        row = f"  {str(hidden_layers):<20}  {d:>7,}  {snr:>6.3f}"
+        for a in ALGO_NAMES:
+            row += f"  {scores.get(a, 0.0):>12.1f}"
+        row += f"  ← {winner}"
+        print(row)
 
     _save_results(all_results)
 

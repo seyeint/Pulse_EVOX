@@ -10,3 +10,4 @@ __pycache__/
 *.pyc
 archive/experimental_variants
 .venv/
+.DS_Store

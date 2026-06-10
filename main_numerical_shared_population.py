@@ -32,6 +32,11 @@ algo_factories = {
 
 # Algorithms that need eager execution
 needs_eager = {"P14_borrow"}
+if not torch.cuda.is_available():
+    # On CPU-only machines torch.compile re-warms per (seed, function) cell
+    # and costs far more than it saves (eager PSO/DE run ~1 ms/iter); compile
+    # only on GPU.
+    needs_eager = set(algo_factories)
 
 # Initialize storage
 functions_final_fitness = np.full(
@@ -50,6 +55,7 @@ for x in range(n_seeds):
         print("-" * 50)
         
         # Generate shared starting population for all algorithms
+        torch.manual_seed(1000 * (x + 1) + j)  # reproducible per (seed, function) cell
         shared_population = torch.rand(400, n_dims) * (ub - lb) + lb
         
         # Create fresh algorithms

@@ -6,6 +6,14 @@ from evox import algorithms
 from evox.problems.numerical import CEC2022
 from evox.workflows import EvalMonitor, StdWorkflow
 from tqdm import tqdm
+import os
+import sys
+
+# pulse4/pulse7 were moved to the archive; keep them importable so the
+# committed 5-algorithm lineup still runs.
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                "archive", "experimental_variants"))
+
 from pulse4 import PulseConvexRayGA
 from pulse7 import PulseExclusive, OPS, glued_space
 from pulse14 import PulseGreedy
@@ -66,6 +74,10 @@ algo_factories = {
 
 # Algorithms that need eager execution (can't be compiled)
 needs_eager = {"Pulse4", "P7_r90", "P14_borrow"}
+if not torch.cuda.is_available():
+    # On CPU-only machines torch.compile warmup costs more than it saves
+    # (eager PSO/DE run at ~1 ms/iter here); compile only on GPU.
+    needs_eager = set(algo_factories)
 
 # Initialize storage
 functions_final_fitness = np.full(
@@ -83,6 +95,7 @@ for x in range(n_seeds):
         print(f'\nSeed {x+1} - Function {j+1} ({utils.FUNCTION_NAMES[j]})')
         print("-" * 50)
         
+        torch.manual_seed(1000 * (x + 1) + j)  # reproducible init per (seed, function) cell
         algorithm_list = [factory() for factory in algo_factories.values()]
         
         for i, (algo_key, algo) in enumerate(zip(algo_factories.keys(), algorithm_list)):

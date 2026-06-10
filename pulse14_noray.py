@@ -100,9 +100,13 @@ class PulseGreedyNoRay(Algorithm):
             ia = self.pair_a[k].item()
             ib = self.pair_b[k].item()
 
+            # clone() the parent rows: they are views into self.population,
+            # and the in-place winner writes below would alias them — whenever
+            # parent A is the runner-up to a non-A winner, the winner would be
+            # duplicated into both slots and the runner-up destroyed.
             candidates_geno = [
-                self.population[ia],
-                self.population[ib],
+                self.population[ia].clone(),
+                self.population[ib].clone(),
                 offspring_c1[k],
                 offspring_c2[k],
             ]

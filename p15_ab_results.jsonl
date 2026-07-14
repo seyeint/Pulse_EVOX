@@ -1,0 +1,480 @@
+{"seed": 0, "func": 1, "algo": "PSO", "final": 310.5669250488281}
+{"seed": 0, "func": 1, "algo": "DE", "final": 846.2734985351562}
+{"seed": 0, "func": 1, "algo": "P14", "final": 316.4295959472656}
+{"seed": 0, "func": 1, "algo": "P15", "final": 460.4208679199219, "extend_frac": 0.8434555984555985, "ray_frac": 0.05066924066924067}
+{"seed": 0, "func": 2, "algo": "PSO", "final": 444.8955078125}
+{"seed": 0, "func": 2, "algo": "DE", "final": 444.8954772949219}
+{"seed": 0, "func": 2, "algo": "P14", "final": 447.9799499511719}
+{"seed": 0, "func": 2, "algo": "P15", "final": 451.0939636230469, "extend_frac": 0.7670592020592021, "ray_frac": 0.08002574002574002}
+{"seed": 0, "func": 3, "algo": "PSO", "final": 620.8927001953125}
+{"seed": 0, "func": 3, "algo": "DE", "final": 600.0508422851562}
+{"seed": 0, "func": 3, "algo": "P14", "final": 614.871337890625}
+{"seed": 0, "func": 3, "algo": "P15", "final": 602.0836791992188, "extend_frac": 0.4358687258687259, "ray_frac": 0.242020592020592}
+{"seed": 0, "func": 4, "algo": "PSO", "final": 856.9949951171875}
+{"seed": 0, "func": 4, "algo": "DE", "final": 897.7847900390625}
+{"seed": 0, "func": 4, "algo": "P14", "final": 834.7117309570312}
+{"seed": 0, "func": 4, "algo": "P15", "final": 841.468505859375, "extend_frac": 0.6974581724581724, "ray_frac": 0.11151866151866152}
+{"seed": 0, "func": 5, "algo": "PSO", "final": 931.6115112304688}
+{"seed": 0, "func": 5, "algo": "DE", "final": 900.0000610351562}
+{"seed": 0, "func": 5, "algo": "P14", "final": 939.205078125}
+{"seed": 0, "func": 5, "algo": "P15", "final": 908.87939453125, "extend_frac": 0.5804890604890605, "ray_frac": 0.1551737451737452}
+{"seed": 0, "func": 6, "algo": "PSO", "final": 19551.20703125}
+{"seed": 0, "func": 6, "algo": "DE", "final": 1836.023681640625}
+{"seed": 0, "func": 6, "algo": "P14", "final": 1858.1156005859375}
+{"seed": 0, "func": 6, "algo": "P15", "final": 1960.863037109375, "extend_frac": 0.7604311454311454, "ray_frac": 0.07463320463320464}
+{"seed": 0, "func": 7, "algo": "PSO", "final": 2020.5865478515625}
+{"seed": 0, "func": 7, "algo": "DE", "final": 2046.8397216796875}
+{"seed": 0, "func": 7, "algo": "P14", "final": 2025.488525390625}
+{"seed": 0, "func": 7, "algo": "P15", "final": 2026.842041015625, "extend_frac": 0.4171814671814672, "ray_frac": 0.2541698841698842}
+{"seed": 0, "func": 8, "algo": "PSO", "final": 2221.17919921875}
+{"seed": 0, "func": 8, "algo": "DE", "final": 2228.882568359375}
+{"seed": 0, "func": 8, "algo": "P14", "final": 2206.91943359375}
+{"seed": 0, "func": 8, "algo": "P15", "final": 2223.328857421875, "extend_frac": 0.3812097812097812, "ray_frac": 0.2760746460746461}
+{"seed": 0, "func": 9, "algo": "PSO", "final": 2480.91259765625}
+{"seed": 0, "func": 9, "algo": "DE", "final": 2480.78125}
+{"seed": 0, "func": 9, "algo": "P14", "final": 2483.0595703125}
+{"seed": 0, "func": 9, "algo": "P15", "final": 2487.3369140625, "extend_frac": 0.6225353925353926, "ray_frac": 0.1320978120978121}
+{"seed": 0, "func": 10, "algo": "PSO", "final": 2500.445068359375}
+{"seed": 0, "func": 10, "algo": "DE", "final": 2500.58349609375}
+{"seed": 0, "func": 10, "algo": "P14", "final": 2500.603515625}
+{"seed": 0, "func": 10, "algo": "P15", "final": 2500.532958984375, "extend_frac": 0.4592342342342342, "ray_frac": 0.26007722007722006}
+{"seed": 0, "func": 11, "algo": "PSO", "final": 3890.91845703125}
+{"seed": 0, "func": 11, "algo": "DE", "final": 3000.003173828125}
+{"seed": 0, "func": 11, "algo": "P14", "final": 3020.2646484375}
+{"seed": 0, "func": 11, "algo": "P15", "final": 3062.739501953125, "extend_frac": 0.7787387387387388, "ray_frac": 0.07485199485199485}
+{"seed": 0, "func": 12, "algo": "PSO", "final": 2948.551513671875}
+{"seed": 0, "func": 12, "algo": "DE", "final": 2933.98388671875}
+{"seed": 0, "func": 12, "algo": "P14", "final": 2990.38916015625}
+{"seed": 0, "func": 12, "algo": "P15", "final": 2973.5595703125, "extend_frac": 0.6041184041184041, "ray_frac": 0.1546010296010296}
+{"seed": 1, "func": 1, "algo": "PSO", "final": 301.40765380859375}
+{"seed": 1, "func": 1, "algo": "DE", "final": 661.6658935546875}
+{"seed": 1, "func": 1, "algo": "P14", "final": 309.9224548339844}
+{"seed": 1, "func": 1, "algo": "P15", "final": 355.29541015625, "extend_frac": 0.8301994851994852, "ray_frac": 0.05608751608751609}
+{"seed": 1, "func": 2, "algo": "PSO", "final": 449.08465576171875}
+{"seed": 1, "func": 2, "algo": "DE", "final": 444.89544677734375}
+{"seed": 1, "func": 2, "algo": "P14", "final": 469.186767578125}
+{"seed": 1, "func": 2, "algo": "P15", "final": 444.8080749511719, "extend_frac": 0.78507722007722, "ray_frac": 0.07499356499356499}
+{"seed": 1, "func": 3, "algo": "PSO", "final": 603.88671875}
+{"seed": 1, "func": 3, "algo": "DE", "final": 600.0751342773438}
+{"seed": 1, "func": 3, "algo": "P14", "final": 613.3103637695312}
+{"seed": 1, "func": 3, "algo": "P15", "final": 607.4296264648438, "extend_frac": 0.43185971685971686, "ray_frac": 0.2295881595881596}
+{"seed": 1, "func": 4, "algo": "PSO", "final": 832.61376953125}
+{"seed": 1, "func": 4, "algo": "DE", "final": 897.6273803710938}
+{"seed": 1, "func": 4, "algo": "P14", "final": 838.852783203125}
+{"seed": 1, "func": 4, "algo": "P15", "final": 832.192138671875, "extend_frac": 0.6679279279279279, "ray_frac": 0.11910553410553411}
+{"seed": 1, "func": 5, "algo": "PSO", "final": 902.2032470703125}
+{"seed": 1, "func": 5, "algo": "DE", "final": 900.0001220703125}
+{"seed": 1, "func": 5, "algo": "P14", "final": 959.1144409179688}
+{"seed": 1, "func": 5, "algo": "P15", "final": 926.4539184570312, "extend_frac": 0.6078507078507078, "ray_frac": 0.14562419562419562}
+{"seed": 1, "func": 6, "algo": "PSO", "final": 25146.9375}
+{"seed": 1, "func": 6, "algo": "DE", "final": 1825.171630859375}
+{"seed": 1, "func": 6, "algo": "P14", "final": 1833.720947265625}
+{"seed": 1, "func": 6, "algo": "P15", "final": 1906.8409423828125, "extend_frac": 0.7382882882882883, "ray_frac": 0.07957528957528957}
+{"seed": 1, "func": 7, "algo": "PSO", "final": 2031.2850341796875}
+{"seed": 1, "func": 7, "algo": "DE", "final": 2048.42724609375}
+{"seed": 1, "func": 7, "algo": "P14", "final": 2027.9229736328125}
+{"seed": 1, "func": 7, "algo": "P15", "final": 2029.3284912109375, "extend_frac": 0.4122200772200772, "ray_frac": 0.24403474903474903}
+{"seed": 1, "func": 8, "algo": "PSO", "final": 2221.556640625}
+{"seed": 1, "func": 8, "algo": "DE", "final": 2229.016357421875}
+{"seed": 1, "func": 8, "algo": "P14", "final": 2221.71484375}
+{"seed": 1, "func": 8, "algo": "P15", "final": 2201.411865234375, "extend_frac": 0.42127413127413127, "ray_frac": 0.2564092664092664}
+{"seed": 1, "func": 9, "algo": "PSO", "final": 2480.781494140625}
+{"seed": 1, "func": 9, "algo": "DE", "final": 2480.78125}
+{"seed": 1, "func": 9, "algo": "P14", "final": 2482.0341796875}
+{"seed": 1, "func": 9, "algo": "P15", "final": 2486.84912109375, "extend_frac": 0.6767245817245817, "ray_frac": 0.11121621621621622}
+{"seed": 1, "func": 10, "algo": "PSO", "final": 2500.696044921875}
+{"seed": 1, "func": 10, "algo": "DE", "final": 2500.572998046875}
+{"seed": 1, "func": 10, "algo": "P14", "final": 2501.0986328125}
+{"seed": 1, "func": 10, "algo": "P15", "final": 2500.56591796875, "extend_frac": 0.4432689832689833, "ray_frac": 0.2687387387387387}
+{"seed": 1, "func": 11, "algo": "PSO", "final": 2997.987548828125}
+{"seed": 1, "func": 11, "algo": "DE", "final": 3000.001708984375}
+{"seed": 1, "func": 11, "algo": "P14", "final": 2948.3232421875}
+{"seed": 1, "func": 11, "algo": "P15", "final": 3194.518798828125, "extend_frac": 0.7798262548262548, "ray_frac": 0.07332689832689833}
+{"seed": 1, "func": 12, "algo": "PSO", "final": 2944.6962890625}
+{"seed": 1, "func": 12, "algo": "DE", "final": 2938.85888671875}
+{"seed": 1, "func": 12, "algo": "P14", "final": 3003.52978515625}
+{"seed": 1, "func": 12, "algo": "P15", "final": 2980.28076171875, "extend_frac": 0.5677091377091377, "ray_frac": 0.16466537966537967}
+{"seed": 2, "func": 1, "algo": "PSO", "final": 301.18768310546875}
+{"seed": 2, "func": 1, "algo": "DE", "final": 741.962890625}
+{"seed": 2, "func": 1, "algo": "P14", "final": 317.7943420410156}
+{"seed": 2, "func": 1, "algo": "P15", "final": 408.07684326171875, "extend_frac": 0.8366023166023167, "ray_frac": 0.05436936936936937}
+{"seed": 2, "func": 2, "algo": "PSO", "final": 445.6304931640625}
+{"seed": 2, "func": 2, "algo": "DE", "final": 444.8954772949219}
+{"seed": 2, "func": 2, "algo": "P14", "final": 449.253173828125}
+{"seed": 2, "func": 2, "algo": "P15", "final": 455.108154296875, "extend_frac": 0.7797490347490348, "ray_frac": 0.07484555984555985}
+{"seed": 2, "func": 3, "algo": "PSO", "final": 604.7022094726562}
+{"seed": 2, "func": 3, "algo": "DE", "final": 600.078369140625}
+{"seed": 2, "func": 3, "algo": "P14", "final": 606.4384765625}
+{"seed": 2, "func": 3, "algo": "P15", "final": 603.6234130859375, "extend_frac": 0.4471428571428571, "ray_frac": 0.23888674388674389}
+{"seed": 2, "func": 4, "algo": "PSO", "final": 832.8336181640625}
+{"seed": 2, "func": 4, "algo": "DE", "final": 909.25830078125}
+{"seed": 2, "func": 4, "algo": "P14", "final": 840.0848388671875}
+{"seed": 2, "func": 4, "algo": "P15", "final": 829.5537109375, "extend_frac": 0.6821106821106822, "ray_frac": 0.11589446589446589}
+{"seed": 2, "func": 5, "algo": "PSO", "final": 903.2698974609375}
+{"seed": 2, "func": 5, "algo": "DE", "final": 900.0000610351562}
+{"seed": 2, "func": 5, "algo": "P14", "final": 925.182373046875}
+{"seed": 2, "func": 5, "algo": "P15", "final": 906.8264770507812, "extend_frac": 0.5787001287001287, "ray_frac": 0.15640926640926642}
+{"seed": 2, "func": 6, "algo": "PSO", "final": 20502.763671875}
+{"seed": 2, "func": 6, "algo": "DE", "final": 1825.674560546875}
+{"seed": 2, "func": 6, "algo": "P14", "final": 1849.1148681640625}
+{"seed": 2, "func": 6, "algo": "P15", "final": 1906.92578125, "extend_frac": 0.7123552123552124, "ray_frac": 0.08673745173745173}
+{"seed": 2, "func": 7, "algo": "PSO", "final": 2039.2445068359375}
+{"seed": 2, "func": 7, "algo": "DE", "final": 2052.22412109375}
+{"seed": 2, "func": 7, "algo": "P14", "final": 2023.1968994140625}
+{"seed": 2, "func": 7, "algo": "P15", "final": 2023.6318359375, "extend_frac": 0.4196138996138996, "ray_frac": 0.24995495495495496}
+{"seed": 2, "func": 8, "algo": "PSO", "final": 2221.338623046875}
+{"seed": 2, "func": 8, "algo": "DE", "final": 2228.287353515625}
+{"seed": 2, "func": 8, "algo": "P14", "final": 2222.61328125}
+{"seed": 2, "func": 8, "algo": "P15", "final": 2221.3017578125, "extend_frac": 0.4102831402831403, "ray_frac": 0.25435006435006435}
+{"seed": 2, "func": 9, "algo": "PSO", "final": 2480.8037109375}
+{"seed": 2, "func": 9, "algo": "DE", "final": 2480.78125}
+{"seed": 2, "func": 9, "algo": "P14", "final": 2481.58837890625}
+{"seed": 2, "func": 9, "algo": "P15", "final": 2482.650146484375, "extend_frac": 0.6278056628056629, "ray_frac": 0.13104890604890604}
+{"seed": 2, "func": 10, "algo": "PSO", "final": 2500.532470703125}
+{"seed": 2, "func": 10, "algo": "DE", "final": 2500.65869140625}
+{"seed": 2, "func": 10, "algo": "P14", "final": 2500.848876953125}
+{"seed": 2, "func": 10, "algo": "P15", "final": 2501.01708984375, "extend_frac": 0.4453474903474903, "ray_frac": 0.26845559845559847}
+{"seed": 2, "func": 11, "algo": "PSO", "final": 2916.524169921875}
+{"seed": 2, "func": 11, "algo": "DE", "final": 3000.002685546875}
+{"seed": 2, "func": 11, "algo": "P14", "final": 3065.065185546875}
+{"seed": 2, "func": 11, "algo": "P15", "final": 3166.648193359375, "extend_frac": 0.8003603603603604, "ray_frac": 0.06648648648648649}
+{"seed": 2, "func": 12, "algo": "PSO", "final": 2941.80517578125}
+{"seed": 2, "func": 12, "algo": "DE", "final": 2932.01025390625}
+{"seed": 2, "func": 12, "algo": "P14", "final": 2992.072509765625}
+{"seed": 2, "func": 12, "algo": "P15", "final": 3033.697509765625, "extend_frac": 0.5898455598455599, "ray_frac": 0.1681981981981982}
+{"seed": 3, "func": 1, "algo": "PSO", "final": 344.6819763183594}
+{"seed": 3, "func": 1, "algo": "DE", "final": 887.8439331054688}
+{"seed": 3, "func": 1, "algo": "P14", "final": 320.11053466796875}
+{"seed": 3, "func": 1, "algo": "P15", "final": 366.0128479003906, "extend_frac": 0.8656048906048907, "ray_frac": 0.04458172458172458}
+{"seed": 3, "func": 2, "algo": "PSO", "final": 449.14715576171875}
+{"seed": 3, "func": 2, "algo": "DE", "final": 444.89544677734375}
+{"seed": 3, "func": 2, "algo": "P14", "final": 481.30145263671875}
+{"seed": 3, "func": 2, "algo": "P15", "final": 471.1639099121094, "extend_frac": 0.7715250965250965, "ray_frac": 0.07832046332046332}
+{"seed": 3, "func": 3, "algo": "PSO", "final": 609.1181640625}
+{"seed": 3, "func": 3, "algo": "DE", "final": 600.0587768554688}
+{"seed": 3, "func": 3, "algo": "P14", "final": 613.6273193359375}
+{"seed": 3, "func": 3, "algo": "P15", "final": 604.7688598632812, "extend_frac": 0.460990990990991, "ray_frac": 0.21441441441441442}
+{"seed": 3, "func": 4, "algo": "PSO", "final": 829.852294921875}
+{"seed": 3, "func": 4, "algo": "DE", "final": 907.5930786132812}
+{"seed": 3, "func": 4, "algo": "P14", "final": 835.9537963867188}
+{"seed": 3, "func": 4, "algo": "P15", "final": 837.1051025390625, "extend_frac": 0.6752702702702703, "ray_frac": 0.11804375804375804}
+{"seed": 3, "func": 5, "algo": "PSO", "final": 902.61328125}
+{"seed": 3, "func": 5, "algo": "DE", "final": 900.0000610351562}
+{"seed": 3, "func": 5, "algo": "P14", "final": 918.6647338867188}
+{"seed": 3, "func": 5, "algo": "P15", "final": 911.2763061523438, "extend_frac": 0.6188159588159589, "ray_frac": 0.14175675675675675}
+{"seed": 3, "func": 6, "algo": "PSO", "final": 25234.248046875}
+{"seed": 3, "func": 6, "algo": "DE", "final": 1824.3612060546875}
+{"seed": 3, "func": 6, "algo": "P14", "final": 1857.23486328125}
+{"seed": 3, "func": 6, "algo": "P15", "final": 1856.7110595703125, "extend_frac": 0.7288223938223938, "ray_frac": 0.08196267696267696}
+{"seed": 3, "func": 7, "algo": "PSO", "final": 2038.94921875}
+{"seed": 3, "func": 7, "algo": "DE", "final": 2044.661376953125}
+{"seed": 3, "func": 7, "algo": "P14", "final": 2027.5313720703125}
+{"seed": 3, "func": 7, "algo": "P15", "final": 2024.879150390625, "extend_frac": 0.43385456885456886, "ray_frac": 0.24014800514800516}
+{"seed": 3, "func": 8, "algo": "PSO", "final": 2222.135009765625}
+{"seed": 3, "func": 8, "algo": "DE", "final": 2228.537109375}
+{"seed": 3, "func": 8, "algo": "P14", "final": 2222.1865234375}
+{"seed": 3, "func": 8, "algo": "P15", "final": 2221.089599609375, "extend_frac": 0.3935263835263835, "ray_frac": 0.2817245817245817}
+{"seed": 3, "func": 9, "algo": "PSO", "final": 2480.78173828125}
+{"seed": 3, "func": 9, "algo": "DE", "final": 2480.78125}
+{"seed": 3, "func": 9, "algo": "P14", "final": 2484.91162109375}
+{"seed": 3, "func": 9, "algo": "P15", "final": 2481.535400390625, "extend_frac": 0.6319626769626769, "ray_frac": 0.12924710424710426}
+{"seed": 3, "func": 10, "algo": "PSO", "final": 2500.391357421875}
+{"seed": 3, "func": 10, "algo": "DE", "final": 2500.4423828125}
+{"seed": 3, "func": 10, "algo": "P14", "final": 2500.618896484375}
+{"seed": 3, "func": 10, "algo": "P15", "final": 2500.854736328125, "extend_frac": 0.4631016731016731, "ray_frac": 0.25833976833976835}
+{"seed": 3, "func": 11, "algo": "PSO", "final": 3295.19775390625}
+{"seed": 3, "func": 11, "algo": "DE", "final": 3000.002197265625}
+{"seed": 3, "func": 11, "algo": "P14", "final": 3012.31298828125}
+{"seed": 3, "func": 11, "algo": "P15", "final": 3067.44384765625, "extend_frac": 0.7694851994851994, "ray_frac": 0.07711068211068212}
+{"seed": 3, "func": 12, "algo": "PSO", "final": 2947.73388671875}
+{"seed": 3, "func": 12, "algo": "DE", "final": 2940.90625}
+{"seed": 3, "func": 12, "algo": "P14", "final": 2986.9072265625}
+{"seed": 3, "func": 12, "algo": "P15", "final": 2979.94091796875, "extend_frac": 0.5502574002574002, "ray_frac": 0.16954954954954954}
+{"seed": 4, "func": 1, "algo": "PSO", "final": 302.7259216308594}
+{"seed": 4, "func": 1, "algo": "DE", "final": 709.8160400390625}
+{"seed": 4, "func": 1, "algo": "P14", "final": 322.7355651855469}
+{"seed": 4, "func": 1, "algo": "P15", "final": 331.4068908691406, "extend_frac": 0.8421750321750322, "ray_frac": 0.052052767052767054}
+{"seed": 4, "func": 2, "algo": "PSO", "final": 497.880126953125}
+{"seed": 4, "func": 2, "algo": "DE", "final": 444.89544677734375}
+{"seed": 4, "func": 2, "algo": "P14", "final": 456.78656005859375}
+{"seed": 4, "func": 2, "algo": "P15", "final": 475.86669921875, "extend_frac": 0.7428442728442728, "ray_frac": 0.08718790218790219}
+{"seed": 4, "func": 3, "algo": "PSO", "final": 610.3423461914062}
+{"seed": 4, "func": 3, "algo": "DE", "final": 600.0665893554688}
+{"seed": 4, "func": 3, "algo": "P14", "final": 601.6063842773438}
+{"seed": 4, "func": 3, "algo": "P15", "final": 606.6553955078125, "extend_frac": 0.4735714285714286, "ray_frac": 0.2227155727155727}
+{"seed": 4, "func": 4, "algo": "PSO", "final": 857.202880859375}
+{"seed": 4, "func": 4, "algo": "DE", "final": 900.0445556640625}
+{"seed": 4, "func": 4, "algo": "P14", "final": 829.0108642578125}
+{"seed": 4, "func": 4, "algo": "P15", "final": 826.1005859375, "extend_frac": 0.6566473616473616, "ray_frac": 0.1250965250965251}
+{"seed": 4, "func": 5, "algo": "PSO", "final": 900.4545288085938}
+{"seed": 4, "func": 5, "algo": "DE", "final": 900.0000610351562}
+{"seed": 4, "func": 5, "algo": "P14", "final": 909.81103515625}
+{"seed": 4, "func": 5, "algo": "P15", "final": 912.619140625, "extend_frac": 0.599041184041184, "ray_frac": 0.14863577863577865}
+{"seed": 4, "func": 6, "algo": "PSO", "final": 10815.3427734375}
+{"seed": 4, "func": 6, "algo": "DE", "final": 1819.6871337890625}
+{"seed": 4, "func": 6, "algo": "P14", "final": 1847.4755859375}
+{"seed": 4, "func": 6, "algo": "P15", "final": 1895.606201171875, "extend_frac": 0.7108815958815958, "ray_frac": 0.08643500643500643}
+{"seed": 4, "func": 7, "algo": "PSO", "final": 2026.8907470703125}
+{"seed": 4, "func": 7, "algo": "DE", "final": 2051.5712890625}
+{"seed": 4, "func": 7, "algo": "P14", "final": 2024.549560546875}
+{"seed": 4, "func": 7, "algo": "P15", "final": 2023.3731689453125, "extend_frac": 0.4080952380952381, "ray_frac": 0.24905405405405406}
+{"seed": 4, "func": 8, "algo": "PSO", "final": 2221.98193359375}
+{"seed": 4, "func": 8, "algo": "DE", "final": 2229.310546875}
+{"seed": 4, "func": 8, "algo": "P14", "final": 2222.39599609375}
+{"seed": 4, "func": 8, "algo": "P15", "final": 2220.804443359375, "extend_frac": 0.4108944658944659, "ray_frac": 0.2692020592020592}
+{"seed": 4, "func": 9, "algo": "PSO", "final": 2510.33349609375}
+{"seed": 4, "func": 9, "algo": "DE", "final": 2480.78125}
+{"seed": 4, "func": 9, "algo": "P14", "final": 2481.47314453125}
+{"seed": 4, "func": 9, "algo": "P15", "final": 2504.1064453125, "extend_frac": 0.6450579150579151, "ray_frac": 0.1213127413127413}
+{"seed": 4, "func": 10, "algo": "PSO", "final": 2500.554931640625}
+{"seed": 4, "func": 10, "algo": "DE", "final": 2500.455810546875}
+{"seed": 4, "func": 10, "algo": "P14", "final": 2501.017578125}
+{"seed": 4, "func": 10, "algo": "P15", "final": 2500.73876953125, "extend_frac": 0.45435649935649935, "ray_frac": 0.2631209781209781}
+{"seed": 4, "func": 11, "algo": "PSO", "final": 2907.14501953125}
+{"seed": 4, "func": 11, "algo": "DE", "final": 3000.00390625}
+{"seed": 4, "func": 11, "algo": "P14", "final": 3027.490478515625}
+{"seed": 4, "func": 11, "algo": "P15", "final": 3354.314453125, "extend_frac": 0.6888288288288288, "ray_frac": 0.10545688545688546}
+{"seed": 4, "func": 12, "algo": "PSO", "final": 2992.0693359375}
+{"seed": 4, "func": 12, "algo": "DE", "final": 2938.85888671875}
+{"seed": 4, "func": 12, "algo": "P14", "final": 3032.804931640625}
+{"seed": 4, "func": 12, "algo": "P15", "final": 2989.8251953125, "extend_frac": 0.5770849420849421, "ray_frac": 0.15726512226512226}
+{"seed": 5, "func": 1, "algo": "PSO", "final": 305.5479431152344}
+{"seed": 5, "func": 1, "algo": "DE", "final": 743.9137573242188}
+{"seed": 5, "func": 1, "algo": "P14", "final": 878.455810546875}
+{"seed": 5, "func": 1, "algo": "P15", "final": 383.4708251953125, "extend_frac": 0.8598455598455599, "ray_frac": 0.046048906048906046}
+{"seed": 5, "func": 2, "algo": "PSO", "final": 449.0848388671875}
+{"seed": 5, "func": 2, "algo": "DE", "final": 444.89544677734375}
+{"seed": 5, "func": 2, "algo": "P14", "final": 470.8284912109375}
+{"seed": 5, "func": 2, "algo": "P15", "final": 411.34698486328125, "extend_frac": 0.7968275418275418, "ray_frac": 0.06815958815958816}
+{"seed": 5, "func": 3, "algo": "PSO", "final": 602.7863159179688}
+{"seed": 5, "func": 3, "algo": "DE", "final": 600.07568359375}
+{"seed": 5, "func": 3, "algo": "P14", "final": 607.6389770507812}
+{"seed": 5, "func": 3, "algo": "P15", "final": 604.773681640625, "extend_frac": 0.4844015444015444, "ray_frac": 0.21586229086229086}
+{"seed": 5, "func": 4, "algo": "PSO", "final": 839.79833984375}
+{"seed": 5, "func": 4, "algo": "DE", "final": 908.0521240234375}
+{"seed": 5, "func": 4, "algo": "P14", "final": 821.5488891601562}
+{"seed": 5, "func": 4, "algo": "P15", "final": 835.9376220703125, "extend_frac": 0.637001287001287, "ray_frac": 0.12812741312741313}
+{"seed": 5, "func": 5, "algo": "PSO", "final": 906.61181640625}
+{"seed": 5, "func": 5, "algo": "DE", "final": 900.0000610351562}
+{"seed": 5, "func": 5, "algo": "P14", "final": 904.5023193359375}
+{"seed": 5, "func": 5, "algo": "P15", "final": 919.38330078125, "extend_frac": 0.6244272844272845, "ray_frac": 0.1429021879021879}
+{"seed": 5, "func": 6, "algo": "PSO", "final": 6824.806640625}
+{"seed": 5, "func": 6, "algo": "DE", "final": 1821.76513671875}
+{"seed": 5, "func": 6, "algo": "P14", "final": 1868.9925537109375}
+{"seed": 5, "func": 6, "algo": "P15", "final": 1864.39697265625, "extend_frac": 0.6991055341055341, "ray_frac": 0.08887387387387387}
+{"seed": 5, "func": 7, "algo": "PSO", "final": 2035.6048583984375}
+{"seed": 5, "func": 7, "algo": "DE", "final": 2043.5836181640625}
+{"seed": 5, "func": 7, "algo": "P14", "final": 2029.2935791015625}
+{"seed": 5, "func": 7, "algo": "P15", "final": 2025.895751953125, "extend_frac": 0.4136293436293436, "ray_frac": 0.26022522522522523}
+{"seed": 5, "func": 8, "algo": "PSO", "final": 2221.185302734375}
+{"seed": 5, "func": 8, "algo": "DE", "final": 2227.30908203125}
+{"seed": 5, "func": 8, "algo": "P14", "final": 2221.976318359375}
+{"seed": 5, "func": 8, "algo": "P15", "final": 2220.99169921875, "extend_frac": 0.40653796653796653, "ray_frac": 0.27866795366795366}
+{"seed": 5, "func": 9, "algo": "PSO", "final": 2480.78125}
+{"seed": 5, "func": 9, "algo": "DE", "final": 2480.78125}
+{"seed": 5, "func": 9, "algo": "P14", "final": 2481.654052734375}
+{"seed": 5, "func": 9, "algo": "P15", "final": 2485.750244140625, "extend_frac": 0.6291055341055342, "ray_frac": 0.1302895752895753}
+{"seed": 5, "func": 10, "algo": "PSO", "final": 2500.383544921875}
+{"seed": 5, "func": 10, "algo": "DE", "final": 2500.503662109375}
+{"seed": 5, "func": 10, "algo": "P14", "final": 2500.638916015625}
+{"seed": 5, "func": 10, "algo": "P15", "final": 2500.43212890625, "extend_frac": 0.42693693693693696, "ray_frac": 0.2766924066924067}
+{"seed": 5, "func": 11, "algo": "PSO", "final": 2900.000244140625}
+{"seed": 5, "func": 11, "algo": "DE", "final": 3000.002197265625}
+{"seed": 5, "func": 11, "algo": "P14", "final": 2767.846923828125}
+{"seed": 5, "func": 11, "algo": "P15", "final": 3112.76806640625, "extend_frac": 0.7787837837837838, "ray_frac": 0.07307593307593307}
+{"seed": 5, "func": 12, "algo": "PSO", "final": 2947.74169921875}
+{"seed": 5, "func": 12, "algo": "DE", "final": 2933.974365234375}
+{"seed": 5, "func": 12, "algo": "P14", "final": 2995.351318359375}
+{"seed": 5, "func": 12, "algo": "P15", "final": 3000.439697265625, "extend_frac": 0.5706177606177606, "ray_frac": 0.1687966537966538}
+{"seed": 6, "func": 1, "algo": "PSO", "final": 313.5725402832031}
+{"seed": 6, "func": 1, "algo": "DE", "final": 654.061767578125}
+{"seed": 6, "func": 1, "algo": "P14", "final": 331.6664123535156}
+{"seed": 6, "func": 1, "algo": "P15", "final": 419.593017578125, "extend_frac": 0.8436100386100386, "ray_frac": 0.05117760617760618}
+{"seed": 6, "func": 2, "algo": "PSO", "final": 449.0845642089844}
+{"seed": 6, "func": 2, "algo": "DE", "final": 444.8954772949219}
+{"seed": 6, "func": 2, "algo": "P14", "final": 461.2571105957031}
+{"seed": 6, "func": 2, "algo": "P15", "final": 480.6675720214844, "extend_frac": 0.7782818532818533, "ray_frac": 0.07301801801801802}
+{"seed": 6, "func": 3, "algo": "PSO", "final": 605.7615356445312}
+{"seed": 6, "func": 3, "algo": "DE", "final": 600.0672607421875}
+{"seed": 6, "func": 3, "algo": "P14", "final": 607.3906860351562}
+{"seed": 6, "func": 3, "algo": "P15", "final": 608.6607666015625, "extend_frac": 0.4515379665379665, "ray_frac": 0.24218790218790218}
+{"seed": 6, "func": 4, "algo": "PSO", "final": 852.732666015625}
+{"seed": 6, "func": 4, "algo": "DE", "final": 881.4476318359375}
+{"seed": 6, "func": 4, "algo": "P14", "final": 839.1461181640625}
+{"seed": 6, "func": 4, "algo": "P15", "final": 843.8640747070312, "extend_frac": 0.6101029601029601, "ray_frac": 0.1434877734877735}
+{"seed": 6, "func": 5, "algo": "PSO", "final": 901.542236328125}
+{"seed": 6, "func": 5, "algo": "DE", "final": 900.0000610351562}
+{"seed": 6, "func": 5, "algo": "P14", "final": 972.7308349609375}
+{"seed": 6, "func": 5, "algo": "P15", "final": 903.7431030273438, "extend_frac": 0.5508558558558558, "ray_frac": 0.16055341055341055}
+{"seed": 6, "func": 6, "algo": "PSO", "final": 3455.357177734375}
+{"seed": 6, "func": 6, "algo": "DE", "final": 1832.3984375}
+{"seed": 6, "func": 6, "algo": "P14", "final": 1813.592041015625}
+{"seed": 6, "func": 6, "algo": "P15", "final": 1837.3172607421875, "extend_frac": 0.7622393822393823, "ray_frac": 0.0731016731016731}
+{"seed": 6, "func": 7, "algo": "PSO", "final": 2051.49462890625}
+{"seed": 6, "func": 7, "algo": "DE", "final": 2040.503662109375}
+{"seed": 6, "func": 7, "algo": "P14", "final": 2027.4620361328125}
+{"seed": 6, "func": 7, "algo": "P15", "final": 2030.613037109375, "extend_frac": 0.40976833976833976, "ray_frac": 0.2528314028314028}
+{"seed": 6, "func": 8, "algo": "PSO", "final": 2221.62841796875}
+{"seed": 6, "func": 8, "algo": "DE", "final": 2228.344482421875}
+{"seed": 6, "func": 8, "algo": "P14", "final": 2221.366943359375}
+{"seed": 6, "func": 8, "algo": "P15", "final": 2202.495849609375, "extend_frac": 0.4026190476190476, "ray_frac": 0.2802702702702703}
+{"seed": 6, "func": 9, "algo": "PSO", "final": 2480.78173828125}
+{"seed": 6, "func": 9, "algo": "DE", "final": 2480.78125}
+{"seed": 6, "func": 9, "algo": "P14", "final": 2481.84228515625}
+{"seed": 6, "func": 9, "algo": "P15", "final": 2484.892578125, "extend_frac": 0.6135521235521235, "ray_frac": 0.13481981981981983}
+{"seed": 6, "func": 10, "algo": "PSO", "final": 2500.4951171875}
+{"seed": 6, "func": 10, "algo": "DE", "final": 2500.413330078125}
+{"seed": 6, "func": 10, "algo": "P14", "final": 2500.793701171875}
+{"seed": 6, "func": 10, "algo": "P15", "final": 2500.447265625, "extend_frac": 0.4488030888030888, "ray_frac": 0.2678185328185328}
+{"seed": 6, "func": 11, "algo": "PSO", "final": 3306.1123046875}
+{"seed": 6, "func": 11, "algo": "DE", "final": 3000.001953125}
+{"seed": 6, "func": 11, "algo": "P14", "final": 3308.293701171875}
+{"seed": 6, "func": 11, "algo": "P15", "final": 3164.8876953125, "extend_frac": 0.7738288288288289, "ray_frac": 0.07477477477477477}
+{"seed": 6, "func": 12, "algo": "PSO", "final": 2950.8583984375}
+{"seed": 6, "func": 12, "algo": "DE", "final": 2939.89306640625}
+{"seed": 6, "func": 12, "algo": "P14", "final": 2968.5849609375}
+{"seed": 6, "func": 12, "algo": "P15", "final": 2990.0634765625, "extend_frac": 0.5762483912483912, "ray_frac": 0.16863577863577864}
+{"seed": 7, "func": 1, "algo": "PSO", "final": 309.18719482421875}
+{"seed": 7, "func": 1, "algo": "DE", "final": 634.569580078125}
+{"seed": 7, "func": 1, "algo": "P14", "final": 332.20477294921875}
+{"seed": 7, "func": 1, "algo": "P15", "final": 438.549560546875, "extend_frac": 0.8326319176319177, "ray_frac": 0.055945945945945944}
+{"seed": 7, "func": 2, "algo": "PSO", "final": 544.6295166015625}
+{"seed": 7, "func": 2, "algo": "DE", "final": 444.89544677734375}
+{"seed": 7, "func": 2, "algo": "P14", "final": 475.557861328125}
+{"seed": 7, "func": 2, "algo": "P15", "final": 485.46234130859375, "extend_frac": 0.781016731016731, "ray_frac": 0.07515444015444016}
+{"seed": 7, "func": 3, "algo": "PSO", "final": 603.51123046875}
+{"seed": 7, "func": 3, "algo": "DE", "final": 600.0770874023438}
+{"seed": 7, "func": 3, "algo": "P14", "final": 608.4938354492188}
+{"seed": 7, "func": 3, "algo": "P15", "final": 604.824462890625, "extend_frac": 0.45620978120978123, "ray_frac": 0.22758687258687257}
+{"seed": 7, "func": 4, "algo": "PSO", "final": 873.675048828125}
+{"seed": 7, "func": 4, "algo": "DE", "final": 904.5086059570312}
+{"seed": 7, "func": 4, "algo": "P14", "final": 835.8569946289062}
+{"seed": 7, "func": 4, "algo": "P15", "final": 838.0802001953125, "extend_frac": 0.627960102960103, "ray_frac": 0.13165379665379665}
+{"seed": 7, "func": 5, "algo": "PSO", "final": 901.6316528320312}
+{"seed": 7, "func": 5, "algo": "DE", "final": 900.0000610351562}
+{"seed": 7, "func": 5, "algo": "P14", "final": 925.2302856445312}
+{"seed": 7, "func": 5, "algo": "P15", "final": 933.8290405273438, "extend_frac": 0.6227992277992278, "ray_frac": 0.13983268983268984}
+{"seed": 7, "func": 6, "algo": "PSO", "final": 25003.412109375}
+{"seed": 7, "func": 6, "algo": "DE", "final": 1824.4749755859375}
+{"seed": 7, "func": 6, "algo": "P14", "final": 1830.20556640625}
+{"seed": 7, "func": 6, "algo": "P15", "final": 1897.8170166015625, "extend_frac": 0.6853153153153153, "ray_frac": 0.09522522522522522}
+{"seed": 7, "func": 7, "algo": "PSO", "final": 2062.029052734375}
+{"seed": 7, "func": 7, "algo": "DE", "final": 2047.20263671875}
+{"seed": 7, "func": 7, "algo": "P14", "final": 2025.7645263671875}
+{"seed": 7, "func": 7, "algo": "P15", "final": 2023.759033203125, "extend_frac": 0.40273487773487776, "ray_frac": 0.27140926640926644}
+{"seed": 7, "func": 8, "algo": "PSO", "final": 2223.4736328125}
+{"seed": 7, "func": 8, "algo": "DE", "final": 2227.95068359375}
+{"seed": 7, "func": 8, "algo": "P14", "final": 2222.19189453125}
+{"seed": 7, "func": 8, "algo": "P15", "final": 2220.99560546875, "extend_frac": 0.41309523809523807, "ray_frac": 0.2486100386100386}
+{"seed": 7, "func": 9, "algo": "PSO", "final": 2480.78271484375}
+{"seed": 7, "func": 9, "algo": "DE", "final": 2480.78125}
+{"seed": 7, "func": 9, "algo": "P14", "final": 2481.404052734375}
+{"seed": 7, "func": 9, "algo": "P15", "final": 2480.93017578125, "extend_frac": 0.5964736164736165, "ray_frac": 0.14496782496782495}
+{"seed": 7, "func": 10, "algo": "PSO", "final": 2500.394287109375}
+{"seed": 7, "func": 10, "algo": "DE", "final": 2500.5791015625}
+{"seed": 7, "func": 10, "algo": "P14", "final": 2501.29541015625}
+{"seed": 7, "func": 10, "algo": "P15", "final": 2500.737548828125, "extend_frac": 0.45765122265122266, "ray_frac": 0.25955598455598455}
+{"seed": 7, "func": 11, "algo": "PSO", "final": 2900.000244140625}
+{"seed": 7, "func": 11, "algo": "DE", "final": 3000.00244140625}
+{"seed": 7, "func": 11, "algo": "P14", "final": 3010.99658203125}
+{"seed": 7, "func": 11, "algo": "P15", "final": 3056.43359375, "extend_frac": 0.7740926640926641, "ray_frac": 0.0763963963963964}
+{"seed": 7, "func": 12, "algo": "PSO", "final": 2954.080322265625}
+{"seed": 7, "func": 12, "algo": "DE", "final": 2933.984130859375}
+{"seed": 7, "func": 12, "algo": "P14", "final": 2989.346923828125}
+{"seed": 7, "func": 12, "algo": "P15", "final": 3009.669921875, "extend_frac": 0.5792921492921493, "ray_frac": 0.15536679536679537}
+{"seed": 8, "func": 1, "algo": "PSO", "final": 347.3298034667969}
+{"seed": 8, "func": 1, "algo": "DE", "final": 886.248046875}
+{"seed": 8, "func": 1, "algo": "P14", "final": 305.96636962890625}
+{"seed": 8, "func": 1, "algo": "P15", "final": 422.91455078125, "extend_frac": 0.8378828828828829, "ray_frac": 0.05348777348777349}
+{"seed": 8, "func": 2, "algo": "PSO", "final": 453.1304626464844}
+{"seed": 8, "func": 2, "algo": "DE", "final": 444.8954772949219}
+{"seed": 8, "func": 2, "algo": "P14", "final": 448.32061767578125}
+{"seed": 8, "func": 2, "algo": "P15", "final": 468.5922546386719, "extend_frac": 0.7964929214929215, "ray_frac": 0.06937580437580437}
+{"seed": 8, "func": 3, "algo": "PSO", "final": 613.7308959960938}
+{"seed": 8, "func": 3, "algo": "DE", "final": 600.0801391601562}
+{"seed": 8, "func": 3, "algo": "P14", "final": 612.7101440429688}
+{"seed": 8, "func": 3, "algo": "P15", "final": 608.6154174804688, "extend_frac": 0.4772779922779923, "ray_frac": 0.22134491634491635}
+{"seed": 8, "func": 4, "algo": "PSO", "final": 832.8336181640625}
+{"seed": 8, "func": 4, "algo": "DE", "final": 906.8764038085938}
+{"seed": 8, "func": 4, "algo": "P14", "final": 831.9065551757812}
+{"seed": 8, "func": 4, "algo": "P15", "final": 832.8425903320312, "extend_frac": 0.6944144144144144, "ray_frac": 0.11362290862290862}
+{"seed": 8, "func": 5, "algo": "PSO", "final": 900.8125610351562}
+{"seed": 8, "func": 5, "algo": "DE", "final": 900.0000610351562}
+{"seed": 8, "func": 5, "algo": "P14", "final": 901.0628051757812}
+{"seed": 8, "func": 5, "algo": "P15", "final": 908.5504760742188, "extend_frac": 0.5892664092664093, "ray_frac": 0.14834620334620335}
+{"seed": 8, "func": 6, "algo": "PSO", "final": 7132.9453125}
+{"seed": 8, "func": 6, "algo": "DE", "final": 1822.078857421875}
+{"seed": 8, "func": 6, "algo": "P14", "final": 1829.584228515625}
+{"seed": 8, "func": 6, "algo": "P15", "final": 1857.06689453125, "extend_frac": 0.7343951093951094, "ray_frac": 0.08277992277992278}
+{"seed": 8, "func": 7, "algo": "PSO", "final": 2030.9610595703125}
+{"seed": 8, "func": 7, "algo": "DE", "final": 2046.62890625}
+{"seed": 8, "func": 7, "algo": "P14", "final": 2024.5855712890625}
+{"seed": 8, "func": 7, "algo": "P15", "final": 2026.6834716796875, "extend_frac": 0.40736164736164737, "ray_frac": 0.25238738738738736}
+{"seed": 8, "func": 8, "algo": "PSO", "final": 2222.2587890625}
+{"seed": 8, "func": 8, "algo": "DE", "final": 2229.27685546875}
+{"seed": 8, "func": 8, "algo": "P14", "final": 2221.6064453125}
+{"seed": 8, "func": 8, "algo": "P15", "final": 2221.0986328125, "extend_frac": 0.40954954954954953, "ray_frac": 0.26880952380952383}
+{"seed": 8, "func": 9, "algo": "PSO", "final": 2480.8037109375}
+{"seed": 8, "func": 9, "algo": "DE", "final": 2480.78125}
+{"seed": 8, "func": 9, "algo": "P14", "final": 2484.08740234375}
+{"seed": 8, "func": 9, "algo": "P15", "final": 2481.774658203125, "extend_frac": 0.6257915057915058, "ray_frac": 0.13285070785070785}
+{"seed": 8, "func": 10, "algo": "PSO", "final": 3134.05078125}
+{"seed": 8, "func": 10, "algo": "DE", "final": 2500.595703125}
+{"seed": 8, "func": 10, "algo": "P14", "final": 2501.003173828125}
+{"seed": 8, "func": 10, "algo": "P15", "final": 2500.630126953125, "extend_frac": 0.4427863577863578, "ray_frac": 0.2682947232947233}
+{"seed": 8, "func": 11, "algo": "PSO", "final": 2900.000244140625}
+{"seed": 8, "func": 11, "algo": "DE", "final": 3000.00146484375}
+{"seed": 8, "func": 11, "algo": "P14", "final": 3194.76904296875}
+{"seed": 8, "func": 11, "algo": "P15", "final": 3076.062744140625, "extend_frac": 0.7917889317889318, "ray_frac": 0.06901544401544402}
+{"seed": 8, "func": 12, "algo": "PSO", "final": 2948.153076171875}
+{"seed": 8, "func": 12, "algo": "DE", "final": 2935.655029296875}
+{"seed": 8, "func": 12, "algo": "P14", "final": 2976.474365234375}
+{"seed": 8, "func": 12, "algo": "P15", "final": 2973.287353515625, "extend_frac": 0.5520849420849421, "ray_frac": 0.17388674388674388}
+{"seed": 9, "func": 1, "algo": "PSO", "final": 300.7904052734375}
+{"seed": 9, "func": 1, "algo": "DE", "final": 760.313232421875}
+{"seed": 9, "func": 1, "algo": "P14", "final": 312.4714660644531}
+{"seed": 9, "func": 1, "algo": "P15", "final": 443.09149169921875, "extend_frac": 0.8421235521235522, "ray_frac": 0.051833976833976836}
+{"seed": 9, "func": 2, "algo": "PSO", "final": 469.76513671875}
+{"seed": 9, "func": 2, "algo": "DE", "final": 444.8954772949219}
+{"seed": 9, "func": 2, "algo": "P14", "final": 458.4354553222656}
+{"seed": 9, "func": 2, "algo": "P15", "final": 479.50750732421875, "extend_frac": 0.7767117117117117, "ray_frac": 0.07644787644787644}
+{"seed": 9, "func": 3, "algo": "PSO", "final": 606.1473388671875}
+{"seed": 9, "func": 3, "algo": "DE", "final": 600.0617065429688}
+{"seed": 9, "func": 3, "algo": "P14", "final": 607.0526733398438}
+{"seed": 9, "func": 3, "algo": "P15", "final": 606.5431518554688, "extend_frac": 0.43294079794079793, "ray_frac": 0.2318146718146718}
+{"seed": 9, "func": 4, "algo": "PSO", "final": 830.84375}
+{"seed": 9, "func": 4, "algo": "DE", "final": 901.7390747070312}
+{"seed": 9, "func": 4, "algo": "P14", "final": 829.4434814453125}
+{"seed": 9, "func": 4, "algo": "P15", "final": 840.4609375, "extend_frac": 0.6615379665379666, "ray_frac": 0.12453024453024453}
+{"seed": 9, "func": 5, "algo": "PSO", "final": 902.27197265625}
+{"seed": 9, "func": 5, "algo": "DE", "final": 900.0001220703125}
+{"seed": 9, "func": 5, "algo": "P14", "final": 902.63232421875}
+{"seed": 9, "func": 5, "algo": "P15", "final": 909.783203125, "extend_frac": 0.5856306306306306, "ray_frac": 0.15285070785070784}
+{"seed": 9, "func": 6, "algo": "PSO", "final": 5676.35302734375}
+{"seed": 9, "func": 6, "algo": "DE", "final": 1825.21875}
+{"seed": 9, "func": 6, "algo": "P14", "final": 1851.31640625}
+{"seed": 9, "func": 6, "algo": "P15", "final": 1894.7244873046875, "extend_frac": 0.7251158301158301, "ray_frac": 0.08252252252252253}
+{"seed": 9, "func": 7, "algo": "PSO", "final": 2011.2559814453125}
+{"seed": 9, "func": 7, "algo": "DE", "final": 2046.5599365234375}
+{"seed": 9, "func": 7, "algo": "P14", "final": 2036.0509033203125}
+{"seed": 9, "func": 7, "algo": "P15", "final": 2023.6474609375, "extend_frac": 0.38796653796653796, "ray_frac": 0.28737451737451736}
+{"seed": 9, "func": 8, "algo": "PSO", "final": 2221.996826171875}
+{"seed": 9, "func": 8, "algo": "DE", "final": 2229.64599609375}
+{"seed": 9, "func": 8, "algo": "P14", "final": 2220.81787109375}
+{"seed": 9, "func": 8, "algo": "P15", "final": 2220.4560546875, "extend_frac": 0.40326254826254826, "ray_frac": 0.26880952380952383}
+{"seed": 9, "func": 9, "algo": "PSO", "final": 2480.781494140625}
+{"seed": 9, "func": 9, "algo": "DE", "final": 2480.78125}
+{"seed": 9, "func": 9, "algo": "P14", "final": 2483.156982421875}
+{"seed": 9, "func": 9, "algo": "P15", "final": 2482.918212890625, "extend_frac": 0.6552638352638352, "ray_frac": 0.122007722007722}
+{"seed": 9, "func": 10, "algo": "PSO", "final": 2500.569091796875}
+{"seed": 9, "func": 10, "algo": "DE", "final": 2500.578369140625}
+{"seed": 9, "func": 10, "algo": "P14", "final": 2500.60888671875}
+{"seed": 9, "func": 10, "algo": "P15", "final": 2500.559814453125, "extend_frac": 0.43807593307593307, "ray_frac": 0.27105534105534107}
+{"seed": 9, "func": 11, "algo": "PSO", "final": 2900.346435546875}
+{"seed": 9, "func": 11, "algo": "DE", "final": 3000.00146484375}
+{"seed": 9, "func": 11, "algo": "P14", "final": 2946.4169921875}
+{"seed": 9, "func": 11, "algo": "P15", "final": 3131.718994140625, "extend_frac": 0.791962676962677, "ray_frac": 0.06877091377091377}
+{"seed": 9, "func": 12, "algo": "PSO", "final": 2954.39892578125}
+{"seed": 9, "func": 12, "algo": "DE", "final": 2933.984130859375}
+{"seed": 9, "func": 12, "algo": "P14", "final": 2975.01123046875}
+{"seed": 9, "func": 12, "algo": "P15", "final": 3002.19677734375, "extend_frac": 0.5898326898326899, "ray_frac": 0.1588867438867439}

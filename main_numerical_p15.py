@@ -20,6 +20,17 @@ from pulse14 import PulseGreedy
 from pulse15 import PulseDirected
 from pulse15v2 import PulseDirectedV2
 from pulse15m import PulseMixed
+from pulse15t import PulseDirectedT
+from pulse15n import PulseDirectedN
+from pulse16 import PulseScalePair
+from pulse15e import PulseExtendFirst
+from pulse17 import PulseCoarseToFine
+from pulse17d import PulseDithered
+from pulse18 import PulseTiered
+from pulse15e_noray import PulseKnoRay
+from pulse15e_symray import PulseKsymRay
+from pulse15e_mid import PulseKmid
+from pulse15e_nox2 import PulseKnoX2
 import utils
 
 n_dims = 20
@@ -42,6 +53,18 @@ algo_factories = {
     "P15":   lambda: PulseDirected(pop_size=400, dim=n_dims, lb=lb, ub=ub, patience=1),
     "P15v2": lambda: PulseDirectedV2(pop_size=400, dim=n_dims, lb=lb, ub=ub, patience=1),
     "P15m":  lambda: PulseMixed(pop_size=400, dim=n_dims, lb=lb, ub=ub, patience=1),
+    "P15T":  lambda: PulseDirectedT(pop_size=400, dim=n_dims, lb=lb, ub=ub, patience=1),
+    "P15n":  lambda: PulseDirectedN(pop_size=400, dim=n_dims, lb=lb, ub=ub, patience=1),
+    "P16":   lambda: PulseScalePair(pop_size=400, dim=n_dims, lb=lb, ub=ub, patience=1),
+    "P15e":  lambda: PulseExtendFirst(pop_size=400, dim=n_dims, lb=lb, ub=ub, patience=1),
+    "P17":   lambda: PulseCoarseToFine(pop_size=400, dim=n_dims, lb=lb, ub=ub, patience=1),
+    "P17d":  lambda: PulseDithered(pop_size=400, dim=n_dims, lb=lb, ub=ub, patience=1),
+    "P18":   lambda: PulseTiered(pop_size=400, dim=n_dims, lb=lb, ub=ub, patience=1),
+    "KnoRay":  lambda: PulseKnoRay(pop_size=400, dim=n_dims, lb=lb, ub=ub, patience=1),
+    "KsymRay": lambda: PulseKsymRay(pop_size=400, dim=n_dims, lb=lb, ub=ub, patience=1),
+    "Kmid":    lambda: PulseKmid(pop_size=400, dim=n_dims, lb=lb, ub=ub, patience=1),
+    "KnoX2":   lambda: PulseKnoX2(pop_size=400, dim=n_dims, lb=lb, ub=ub, patience=1),
+    "KnoEvict": lambda: PulseExtendFirst(pop_size=400, dim=n_dims, lb=lb, ub=ub, patience=10**9),
 }
 
 done = set()
@@ -132,7 +155,7 @@ for f in range(1, 13):
 
 for g in [100, 777]:
     print(f"\nHEAD-TO-HEAD at G={g}:")
-    for a, b in [("P15m", "P14"), ("P15m", "P15"), ("P15m", "DE"), ("P15m", "PSO")]:
+    for a, b in [("KnoRay", "P15e"), ("KsymRay", "P15e"), ("Kmid", "P15e"), ("KnoX2", "P15e"), ("KnoEvict", "P15e")]:
         wa = wb = 0
         for f in range(1, 13):
             ma, mb = med_at(f, a, g), med_at(f, b, g)
